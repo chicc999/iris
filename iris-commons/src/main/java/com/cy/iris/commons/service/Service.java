@@ -7,7 +7,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Created by cy on 2016/7/19.
+ * 子类实现抽象方法,调用start()方法启动,Service管理整个生命周期的具体变化
+ *
+ *  ACTION            sercive:start()                beforeStart()             doStart()            afterStart()
+ *  STATE    STOPPED -----------------> WILL_START ----------------> STARTING ------------> STARTED
+ *
+ *  ACTION                          sercive:stop()                beforeStop()             doStop()           afterStop()
+ *  STATE    STARTED/START_FAILED -----------------> WILL_STOP ----------------> STOPPING -------------> STOPPED
+ *
  */
 public abstract class Service implements LifeCycle {
 
@@ -28,8 +35,8 @@ public abstract class Service implements LifeCycle {
             try {
                 serviceState.set(ServiceState.STARTING);
                 doStart();
-                afterStart();
                 serviceState.set(ServiceState.STARTED);
+                afterStart();
             } catch (Exception e) {
                 serviceState.set(ServiceState.START_FAILED);
                 logger.error("启动失败", e);
@@ -48,8 +55,8 @@ public abstract class Service implements LifeCycle {
         if (started.compareAndSet(true, false)) {
             serviceState.set(ServiceState.STOPPING);
             doStop();
-            afterStop();
             serviceState.set(ServiceState.STOPPED);
+            afterStop();
         }
 
 
