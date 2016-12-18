@@ -59,6 +59,8 @@ hs_err_pid*
 .idea/gradle.xml
 .idea/libraries
 .idea
+.iml
+*/*.iml
 
 # Mongo Explorer plugin:
 .idea/mongoSettings.xml
