@@ -17,9 +17,20 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <slf4j.version>1.7.6</slf4j.version>
   </properties>
 
+  <dependencyManagement>
   <dependencies>
+
+    <!--log-->
+    <dependency>
+      <artifactId>slf4j-api</artifactId>
+      <groupId>org.slf4j</groupId>
+      <version>${slf4j.version}</version>
+    </dependency>
+
+    <!--test-->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -27,4 +38,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  </dependencyManagement>
 </project>
