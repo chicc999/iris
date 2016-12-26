@@ -1,5 +1,6 @@
 package com.cy.iris.commons.netty;
 
+import com.cy.iris.commons.exception.ConnectException;
 import com.cy.iris.commons.network.netty.client.NettyClient;
 import com.cy.iris.commons.network.netty.client.NettyClientConfig;
 
@@ -22,6 +23,10 @@ public class NettyClientTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		nettyClient.createChannel(new InetSocketAddress("www.baidu.com",50088));
+		try {
+			nettyClient.createChannelSync(new InetSocketAddress("localhost",50088));
+		} catch (ConnectException e) {
+			e.printStackTrace();
+		}
 	}
 }

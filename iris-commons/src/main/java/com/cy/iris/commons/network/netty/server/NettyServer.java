@@ -1,6 +1,8 @@
 package com.cy.iris.commons.network.netty.server;
 
 import com.cy.iris.commons.network.handler.CommandHandlerFactory;
+import com.cy.iris.commons.network.handler.DefaultConnectionHandler;
+import com.cy.iris.commons.network.handler.DefaultDispatcherHandler;
 import com.cy.iris.commons.network.netty.NettyTransport;
 import com.cy.iris.commons.util.NamedThreadFactory;
 import io.netty.bootstrap.ServerBootstrap;
@@ -12,10 +14,12 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.EventExecutorGroup;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by cy on 16/12/26.
@@ -120,6 +124,7 @@ public class NettyServer extends NettyTransport {
 						ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(
 								2 * 1024 * 1024, 0, 4, 0, 4));
 						ch.pipeline().addLast(new LengthFieldPrepender(4));
+						ch.pipeline().addLast(new IdleStateHandler(0, 0, config.getChannelMaxIdleTime(), TimeUnit.MILLISECONDS));
 						ch.pipeline().addLast(connectionHandler);
 						ch.pipeline().addLast(dispatcherHandler);
 					}
@@ -136,4 +141,11 @@ public class NettyServer extends NettyTransport {
 		super.doStop();
 	}
 
+	public void setDispatcherHandler(DefaultDispatcherHandler dispatcherHandler) {
+		super.setDispatcherHandler(dispatcherHandler);
+	}
+
+	public void setConnectionHandler(DefaultConnectionHandler connectionHandler) {
+		super.setConnectionHandler(connectionHandler);
+	}
 }

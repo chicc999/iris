@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
  * command派发handler
  */
 @ChannelHandler.Sharable
-public class DispatcherHandler extends SimpleChannelInboundHandler<Command> {
+public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Command> {
 
-	private static final Logger logger = LoggerFactory.getLogger(DispatcherHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(DefaultDispatcherHandler.class);
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, Command command) throws Exception {

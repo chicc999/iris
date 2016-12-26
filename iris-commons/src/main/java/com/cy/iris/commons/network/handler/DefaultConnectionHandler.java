@@ -1,6 +1,5 @@
 package com.cy.iris.commons.network.handler;
 
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
@@ -8,14 +7,12 @@ import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 /**
  * Created by cy on 16/12/26.
  */
-public class ConnectionHandler extends ChannelDuplexHandler {
+public class DefaultConnectionHandler extends ChannelDuplexHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(ConnectionHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(DefaultConnectionHandler.class);
 
 	@Override
 	public void channelRegistered(final ChannelHandlerContext ctx) throws Exception {
@@ -40,7 +37,15 @@ public class ConnectionHandler extends ChannelDuplexHandler {
 
 	@Override
 	public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) throws Exception {
-
+		if (evt instanceof IdleStateEvent) {
+			IdleStateEvent event = (IdleStateEvent) evt;
+			if (event.state().equals(IdleState.ALL_IDLE)) {
+//				if (heartbeatHandler != null) {
+//					heartbeatHandler.heartbeat(ctx);
+//				}
+			}
+		}
+		super.userEventTriggered(ctx, evt);
 	}
 
 	@Override

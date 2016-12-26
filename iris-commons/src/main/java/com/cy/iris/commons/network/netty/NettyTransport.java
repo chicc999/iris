@@ -6,8 +6,8 @@ import com.cy.iris.commons.network.CommandCallback;
 import com.cy.iris.commons.network.ResponseFuture;
 import com.cy.iris.commons.network.Transport;
 import com.cy.iris.commons.network.handler.CommandHandlerFactory;
-import com.cy.iris.commons.network.handler.ConnectionHandler;
-import com.cy.iris.commons.network.handler.DispatcherHandler;
+import com.cy.iris.commons.network.handler.DefaultConnectionHandler;
+import com.cy.iris.commons.network.handler.DefaultDispatcherHandler;
 import com.cy.iris.commons.network.protocol.Command;
 import com.cy.iris.commons.service.Service;
 import com.cy.iris.commons.util.ArgumentUtil;
@@ -41,10 +41,9 @@ public abstract class NettyTransport extends Service implements Transport {
     // 是否是内部创建的IO处理线程池
     protected boolean createIoLoopGroup;
 
+    protected DefaultDispatcherHandler dispatcherHandler = new DefaultDispatcherHandler();
 
-    protected DispatcherHandler dispatcherHandler = new DispatcherHandler();
-
-    protected ConnectionHandler connectionHandler = new ConnectionHandler();
+    protected DefaultConnectionHandler connectionHandler = new DefaultConnectionHandler();
 
     public NettyTransport(NettyConfig config) {
 		this(config,null,null,null);
@@ -108,6 +107,15 @@ public abstract class NettyTransport extends Service implements Transport {
      */
     @Override
     public void doStart() throws Exception {
+
+        if(connectionHandler == null){
+            connectionHandler = new DefaultConnectionHandler();
+        }
+
+        if(dispatcherHandler == null){
+            dispatcherHandler = new DefaultDispatcherHandler();
+        }
+
 
         //如果io线程不存在,创建io线程
         if (ioLoopGroup == null) {
@@ -173,5 +181,13 @@ public abstract class NettyTransport extends Service implements Transport {
             return new EpollEventLoopGroup(threads, threadFactory);
         }
         return new NioEventLoopGroup(threads, threadFactory);
+    }
+
+    public void setDispatcherHandler(DefaultDispatcherHandler dispatcherHandler) {
+        this.dispatcherHandler = dispatcherHandler;
+    }
+
+    public void setConnectionHandler(DefaultConnectionHandler connectionHandler) {
+        this.connectionHandler = connectionHandler;
     }
 }

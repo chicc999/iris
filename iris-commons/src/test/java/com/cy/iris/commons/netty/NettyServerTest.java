@@ -16,7 +16,7 @@ public class NettyServerTest {
 
 	private void init(){
 		NettyServerConfig serverConfig= new NettyServerConfig();
-		serverConfig.setPort(50080);
+		serverConfig.setPort(50088);
 
 		nettyServer = new NettyServer(serverConfig);
 		try {
