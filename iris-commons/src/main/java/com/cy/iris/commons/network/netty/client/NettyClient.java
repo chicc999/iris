@@ -1,5 +1,6 @@
 package com.cy.iris.commons.network.netty.client;
 
+import com.cy.iris.commons.exception.ConnectException;
 import com.cy.iris.commons.network.handler.CommandHandlerFactory;
 import com.cy.iris.commons.network.netty.NettyTransport;
 import com.cy.iris.commons.util.ArgumentUtil;
@@ -14,6 +15,7 @@ import io.netty.util.concurrent.EventExecutorGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InterruptedIOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -66,39 +68,22 @@ public class NettyClient extends NettyTransport {
 	/**
 	 * 创建连接，阻塞直到成功或失败
 	 *
-	 * @param address           地址
+	 * @param address  地址
 	 */
-	public Channel createChannel(String address) {
-		if (address == null || address.isEmpty()) {
-			throw new IllegalArgumentException("address must not be empty!");
-		}
-		String[] parts = address.split("[._:]");
-		if (parts.length < 5) {
-			throw new RuntimeException();
-		}
-		int port;
-		try {
-			port = Integer.parseInt(parts[parts.length - 1]);
-		} catch (NumberFormatException e) {
-			throw new RuntimeException();
-		}
-		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < parts.length - 1; i++) {
-			if (i > 0) {
-				builder.append('.');
-			}
-			builder.append(parts[i]);
-		}
-		String ip = builder.toString();
-		try {
-			return createChannel(new InetSocketAddress(InetAddress.getByName(ip), port)).channel();
-		} catch (UnknownHostException e) {
-			logger.error(e.getMessage(), e);
-			throw new RuntimeException();
-		} catch (Throwable e) {
-			logger.error(e.getMessage(), e);
-			throw new RuntimeException();
-		}
+	public ChannelFuture createChannel(String address) throws UnknownHostException {
+
+		return createChannel(com.cy.iris.commons.util.NetUtil.serverNameToISA(address));
+
+	}
+
+	/**
+	 * 创建连接，阻塞直到成功或失败
+	 *
+	 * @param address  地址
+	 */
+	public Channel createChannelSync(String address) throws UnknownHostException, ConnectException {
+
+		return createChannelSync(com.cy.iris.commons.util.NetUtil.serverNameToISA(address));
 	}
 
 
@@ -106,7 +91,7 @@ public class NettyClient extends NettyTransport {
 	 * 创建连接
 	 * @param address           地址
 	 */
-	public ChannelFuture createChannel(SocketAddress address)  {
+	public ChannelFuture createChannel(InetSocketAddress address)  {
 
 		ArgumentUtil.isNotNull(address,"address");
 
@@ -115,6 +100,30 @@ public class NettyClient extends NettyTransport {
 		return channelFuture;
 	}
 
+	/**
+	 * 同步创建连接
+	 *
+	 * @param address
+	 * @return
+	 * @throws ConnectException
+	 */
+	public Channel createChannelSync(InetSocketAddress address) throws ConnectException {
+
+		ChannelFuture channelFuture = this.bootstrap.connect(address);
+		try {
+			channelFuture.sync();
+
+		} catch (InterruptedException e) {
+			logger.error("连接远程服务器被终止,逻辑上不应该发生此错误",e);
+			throw new ConnectException(e,"连接远程服务器:"+address+"终止,逻辑上不应该发生此错误");
+		}
+
+		if (!channelFuture.isSuccess() || channelFuture.channel() == null || !channelFuture.channel().isActive()) {
+			throw new ConnectException(channelFuture.cause(),"向address:"+address+"创建连接失败");
+		}
+
+		return channelFuture.channel();
+	}
 
 	@Override
 	public void doStart() throws Exception {
