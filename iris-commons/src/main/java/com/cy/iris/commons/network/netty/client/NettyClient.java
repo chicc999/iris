@@ -5,24 +5,20 @@ import com.cy.iris.commons.network.handler.CommandHandlerFactory;
 import com.cy.iris.commons.network.netty.NettyTransport;
 import com.cy.iris.commons.util.ArgumentUtil;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.util.concurrent.EventExecutorGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InterruptedIOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.net.UnknownHostException;
 
 /**
- * Created by cy on 16/12/23.
+ * Netty客户端
  */
 public class NettyClient extends NettyTransport {
 
@@ -93,7 +89,7 @@ public class NettyClient extends NettyTransport {
 	 */
 	public ChannelFuture createChannel(InetSocketAddress address)  {
 
-		ArgumentUtil.isNotNull(address,"address");
+		ArgumentUtil.isNotNull("address",address);
 
 		ChannelFuture channelFuture = this.bootstrap.connect(address);
 
@@ -138,7 +134,16 @@ public class NettyClient extends NettyTransport {
 				.option(ChannelOption.SO_LINGER, config.getSoLinger())
 				.option(ChannelOption.SO_RCVBUF, config.getSocketBufferSize())
 				.option(ChannelOption.SO_SNDBUF, config.getSocketBufferSize())
-				.handler(new ClientChannelInitializer());
+				//初始化handler
+				.handler(new ChannelInitializer() {
+					@Override
+					protected void initChannel(Channel ch) throws Exception {
+						ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(
+								2 * 1024 * 1024, 0, 4, 0, 4));
+						ch.pipeline().addLast(new LengthFieldPrepender(4));
+						ch.pipeline().addLast(dispatcherHandler);
+					}
+				});
 	}
 
 

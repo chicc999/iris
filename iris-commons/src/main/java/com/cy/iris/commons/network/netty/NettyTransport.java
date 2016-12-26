@@ -6,8 +6,10 @@ import com.cy.iris.commons.network.CommandCallback;
 import com.cy.iris.commons.network.ResponseFuture;
 import com.cy.iris.commons.network.Transport;
 import com.cy.iris.commons.network.handler.CommandHandlerFactory;
+import com.cy.iris.commons.network.handler.DispatcherHandler;
 import com.cy.iris.commons.network.protocol.Command;
 import com.cy.iris.commons.service.Service;
+import com.cy.iris.commons.util.ArgumentUtil;
 import com.cy.iris.commons.util.NamedThreadFactory;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -19,7 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 /**
- * Created by cy on 2016/7/10.
+ * Netty传输基类,提供client和server的公共逻辑的抽象.
  */
 public abstract class NettyTransport extends Service implements Transport {
 
@@ -37,6 +39,9 @@ public abstract class NettyTransport extends Service implements Transport {
 
     // 是否是内部创建的IO处理线程池
     protected boolean createIoLoopGroup;
+
+
+    protected DispatcherHandler dispatcherHandler = new DispatcherHandler();
 
     public NettyTransport(NettyConfig config) {
 		this(config,null,null,null);
@@ -74,17 +79,7 @@ public abstract class NettyTransport extends Service implements Transport {
     @Override
     public ResponseFuture async(Channel channel, Command command, CommandCallback callback)
             throws RemotingIOException {
-        if (channel == null) {
-            throw new IllegalArgumentException("The argument channel must not be null");
-        }
-
-        if (command == null) {
-            throw new IllegalArgumentException("The argument command must not be null");
-        }
-
-        if (callback == null) {
-            throw new IllegalArgumentException("The argument callback must not be null");
-        }
+        ArgumentUtil.isNotNull(new String[]{"channel","command","callback"},channel,command,callback);
 
         // 同步调用
         ResponseFuture future = new ResponseFuture(channel,command,0,callback);
@@ -111,10 +106,13 @@ public abstract class NettyTransport extends Service implements Transport {
     @Override
     public void doStart() throws Exception {
 
+        //如果io线程不存在,创建io线程
         if (ioLoopGroup == null) {
             ioLoopGroup = createEventLoopGroup(config.getWorkerThreads(), new NamedThreadFactory("IoLoopGroup"));
             createIoLoopGroup = true;
         }
+
+        //创建业务&回调线程池
         serviceExecutor = Executors
                 .newFixedThreadPool(config.getCallbackExecutorThreads(), new NamedThreadFactory("AsyncCallback"));
 
