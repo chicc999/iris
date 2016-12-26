@@ -6,6 +6,7 @@ import com.cy.iris.commons.network.CommandCallback;
 import com.cy.iris.commons.network.ResponseFuture;
 import com.cy.iris.commons.network.Transport;
 import com.cy.iris.commons.network.handler.CommandHandlerFactory;
+import com.cy.iris.commons.network.handler.ConnectionHandler;
 import com.cy.iris.commons.network.handler.DispatcherHandler;
 import com.cy.iris.commons.network.protocol.Command;
 import com.cy.iris.commons.service.Service;
@@ -42,6 +43,8 @@ public abstract class NettyTransport extends Service implements Transport {
 
 
     protected DispatcherHandler dispatcherHandler = new DispatcherHandler();
+
+    protected ConnectionHandler connectionHandler = new ConnectionHandler();
 
     public NettyTransport(NettyConfig config) {
 		this(config,null,null,null);

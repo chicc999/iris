@@ -141,6 +141,7 @@ public class NettyClient extends NettyTransport {
 						ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(
 								2 * 1024 * 1024, 0, 4, 0, 4));
 						ch.pipeline().addLast(new LengthFieldPrepender(4));
+						ch.pipeline().addLast(connectionHandler);
 						ch.pipeline().addLast(dispatcherHandler);
 					}
 				});
