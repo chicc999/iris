@@ -19,10 +19,17 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <slf4j.version>1.7.6</slf4j.version>
     <netty.version>4.1.6.Final</netty.version>
+    <commos-lang.version>3.4</commos-lang.version>
   </properties>
 
   <dependencyManagement>
   <dependencies>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${commos-lang.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>io.netty</groupId>
