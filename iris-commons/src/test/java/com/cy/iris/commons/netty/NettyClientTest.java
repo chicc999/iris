@@ -22,6 +22,6 @@ public class NettyClientTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		nettyClient.createChannel(new InetSocketAddress("www.baidu.com",80));
+		nettyClient.createChannel(new InetSocketAddress("www.baidu.com",50088));
 	}
 }
