@@ -61,7 +61,7 @@ hs_err_pid*
 .idea
 .iml
 */*.iml
-
+*.iml
 # Mongo Explorer plugin:
 .idea/mongoSettings.xml
 
