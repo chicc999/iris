@@ -40,9 +40,7 @@ public class DefaultConnectionHandler extends ChannelDuplexHandler {
 		if (evt instanceof IdleStateEvent) {
 			IdleStateEvent event = (IdleStateEvent) evt;
 			if (event.state().equals(IdleState.ALL_IDLE)) {
-//				if (heartbeatHandler != null) {
-//					heartbeatHandler.heartbeat(ctx);
-//				}
+				//TODO 心跳
 			}
 		}
 		super.userEventTriggered(ctx, evt);
