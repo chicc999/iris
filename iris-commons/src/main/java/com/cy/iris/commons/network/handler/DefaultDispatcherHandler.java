@@ -24,7 +24,7 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 		if (command == null) {
 			return;
 		}
-		logger.debug("dispatcher command");
+		logger.debug("dispatcher command : {} {}",command.getHeader().getHeaderType().toString(),command.getTypeString());
 //		HeaderType headerType = command.getHeader().getHeaderType();
 //		switch (headerType) {
 //			case REQUEST: { // 如果是请求命令， 做请求处理

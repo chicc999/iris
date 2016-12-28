@@ -4,6 +4,8 @@ import com.cy.iris.commons.network.handler.CommandHandlerFactory;
 import com.cy.iris.commons.network.handler.DefaultConnectionHandler;
 import com.cy.iris.commons.network.handler.DefaultDispatcherHandler;
 import com.cy.iris.commons.network.netty.NettyTransport;
+import com.cy.iris.commons.network.protocol.CommandDecoder;
+import com.cy.iris.commons.network.protocol.CommandEncoder;
 import com.cy.iris.commons.util.NamedThreadFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -121,9 +123,8 @@ public class NettyServer extends NettyTransport {
 				.childHandler(new ChannelInitializer() {
 					@Override
 					protected void initChannel(Channel ch) throws Exception {
-						ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(
-								2 * 1024 * 1024, 0, 4, 0, 4));
-						ch.pipeline().addLast(new LengthFieldPrepender(4));
+						ch.pipeline().addLast(new CommandDecoder());
+						ch.pipeline().addLast(new CommandEncoder());
 						ch.pipeline().addLast(new IdleStateHandler(0, 0, config.getChannelMaxIdleTime(), TimeUnit.MILLISECONDS));
 						ch.pipeline().addLast(connectionHandler);
 						ch.pipeline().addLast(dispatcherHandler);

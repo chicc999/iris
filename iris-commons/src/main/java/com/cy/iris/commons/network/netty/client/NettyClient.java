@@ -3,6 +3,8 @@ package com.cy.iris.commons.network.netty.client;
 import com.cy.iris.commons.exception.ConnectException;
 import com.cy.iris.commons.network.handler.CommandHandlerFactory;
 import com.cy.iris.commons.network.netty.NettyTransport;
+import com.cy.iris.commons.network.protocol.CommandDecoder;
+import com.cy.iris.commons.network.protocol.CommandEncoder;
 import com.cy.iris.commons.util.ArgumentUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -10,12 +12,14 @@ import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.EventExecutorGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Netty客户端
@@ -138,9 +142,9 @@ public class NettyClient extends NettyTransport {
 				.handler(new ChannelInitializer() {
 					@Override
 					protected void initChannel(Channel ch) throws Exception {
-						ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(
-								2 * 1024 * 1024, 0, 4, 0, 4));
-						ch.pipeline().addLast(new LengthFieldPrepender(4));
+						ch.pipeline().addLast(new CommandDecoder());
+						ch.pipeline().addLast(new CommandEncoder());
+						ch.pipeline().addLast(new IdleStateHandler(0, 0, config.getChannelMaxIdleTime(), TimeUnit.MILLISECONDS));
 						ch.pipeline().addLast(connectionHandler);
 						ch.pipeline().addLast(dispatcherHandler);
 					}

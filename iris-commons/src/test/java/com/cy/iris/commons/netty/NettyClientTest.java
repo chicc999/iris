@@ -1,8 +1,12 @@
 package com.cy.iris.commons.netty;
 
 import com.cy.iris.commons.exception.ConnectException;
+import com.cy.iris.commons.exception.RemotingIOException;
 import com.cy.iris.commons.network.netty.client.NettyClient;
 import com.cy.iris.commons.network.netty.client.NettyClientConfig;
+import com.cy.iris.commons.network.protocol.Header;
+import com.cy.iris.commons.network.protocol.request.HeartBeat;
+import io.netty.channel.Channel;
 
 import java.net.InetSocketAddress;
 
@@ -24,8 +28,11 @@ public class NettyClientTest {
 			e.printStackTrace();
 		}
 		try {
-			nettyClient.createChannelSync(new InetSocketAddress("localhost",50088));
+			Channel channel = nettyClient.createChannelSync(new InetSocketAddress("localhost",50088));
+			nettyClient.sync(channel,new HeartBeat());
 		} catch (ConnectException e) {
+			e.printStackTrace();
+		} catch (RemotingIOException e) {
 			e.printStackTrace();
 		}
 	}

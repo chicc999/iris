@@ -11,46 +11,46 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 命令格式
- * +---------------+--------+------------+------+
- * | header length | header | body length| body |
- * +---------------+--------+------------+------+
- * |    4 byte     |        |   4 byte   |
+ * +--------+------+
+ * | header | body |
+ * +--------+------+
  */
 public abstract class Command {
 
+	// 心跳
+	public static final int HEARTBEAT = 0;
 	// 头部
 	protected Header header;
 
 	protected Command() {
-
+		this.header = new Header();
 	}
 
 	public Command(Header header) {
 		this.header = header;
 	}
 
-	public void encode(ByteBuf out) throws Exception {
-		ArgumentUtil.isNotNull("command encode ByteBuf",out);
-
-		// header的length需要写完后才能知道
-		int begin = out.writerIndex();
-		//写入header长度,此时不知道,先占位
-		out.writeInt(0);
+	public ByteBuf encodeHeader() throws Exception {
+		ByteBuf out = PooledByteBufAllocator.DEFAULT.buffer();
 
 		//header序列化
-		header.encode(out);
-		// 动态计算长度
-		int headerEnd = out.writerIndex();
-		out.writerIndex(begin);
-		out.writeInt(headerEnd-begin-4);
-		out.writerIndex(headerEnd);
+		return header.encode(out);
 
-		out.writeInt(0);
-		encodeBody(out);
-		int bodyEnd = out.writerIndex();
-		out.writeInt(bodyEnd-headerEnd-4);
-		out.writerIndex(bodyEnd);
 	}
 
-	abstract void encodeBody(ByteBuf out) throws Exception ;
+	public Header getHeader() {
+		return header;
+	}
+
+	public String getRequestId() {
+		return header.getRequestId();
+	}
+
+	public abstract String getTypeString();
+
+	protected abstract ByteBuf encodeBody() ;
+
+	protected abstract void decodeBody(ByteBuf in) ;
+
+
 }

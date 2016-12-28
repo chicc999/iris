@@ -35,17 +35,46 @@ public class Header {
 
 	}
 
-	public void encode(final ByteBuf out) throws Exception {
+	public int getType() {
+		return type;
+	}
+
+	public Header Type(int type) {
+		this.type = type;
+		return this;
+	}
+
+	public String getRequestId() {
+		return requestId;
+	}
+
+	public HeaderType getHeaderType() {
+		return headerType;
+	}
+
+	public Header HeaderType(HeaderType headerType) {
+		this.headerType = headerType;
+		return this;
+	}
+
+	public ByteBuf encode(final ByteBuf out) throws Exception {
 		ArgumentUtil.isNotNull("Header encode ByteBuf",out);
 
-		// 4个字节总长度，先占位
-		out.writeInt(0);
 		// 1个字节的数据版本
 		out.writeByte(version);
+		// command大类型
+		out.writeInt(headerType.ordinal());
+		// 具体command类型
+		out.writeInt(type);
+		return out;
 
 	}
 
-	public void decode(final ByteBuf in) throws Exception {
-
+	public Header decode(final ByteBuf in) throws Exception {
+		ArgumentUtil.isNotNull("header decoder ByteBuf",in);
+		this.version = in.readByte();
+		this.headerType = HeaderType.valueOf(in.readInt());
+		this.type = in.readInt();
+		return this;
 	}
 }

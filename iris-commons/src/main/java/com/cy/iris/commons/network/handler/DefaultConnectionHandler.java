@@ -1,6 +1,7 @@
 package com.cy.iris.commons.network.handler;
 
 import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by cy on 16/12/26.
  */
+@ChannelHandler.Sharable
 public class DefaultConnectionHandler extends ChannelDuplexHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(DefaultConnectionHandler.class);
