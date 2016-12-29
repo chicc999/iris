@@ -19,7 +19,11 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -28,6 +32,8 @@ import java.util.concurrent.ThreadFactory;
  * Netty传输基类,提供client和server的公共逻辑的抽象.
  */
 public abstract class NettyTransport extends Service implements Transport {
+
+    private static final Logger logger = LoggerFactory.getLogger(NettyTransport.class);
 
     // 异步回调 & 业务处理执行器
     protected ExecutorService serviceExecutor;
@@ -43,6 +49,9 @@ public abstract class NettyTransport extends Service implements Transport {
 
     // 是否是内部创建的IO处理线程池
     protected boolean createIoLoopGroup;
+
+    // 存放同步和异步命令应答
+    protected final Map<Integer, ResponseFuture> futures = new ConcurrentHashMap<Integer, ResponseFuture>(100);
 
     protected DefaultDispatcherHandler dispatcherHandler ;
 
@@ -90,13 +99,25 @@ public abstract class NettyTransport extends Service implements Transport {
         ArgumentUtil.isNotNull(new String[]{"channel","command","callback"},channel,command,callback);
 
         // 同步调用
-        final ResponseFuture responseFuture = new ResponseFuture(channel,command,0,callback);
+        final ResponseFuture responseFuture = new ResponseFuture(channel,command,config.getSendTimeout(),callback);
+
+        futures.put(command.getRequestId(),responseFuture);
 
         channel.writeAndFlush(command).addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
-                if(future.isDone() && !future.isSuccess()){
-                    responseFuture.cancel(future.cause());
+                //写入过程出现异常,通知response,移除requestId,断开连接
+                if(!future.isSuccess()){
+                    Throwable failCause;
+                    if(future.cause() == null){
+                        failCause = new Throwable("发送请求发生了未知的错误");
+                    }else {
+                        failCause = future.cause();
+                    }
+                    logger.error("send request error",failCause);
+                    responseFuture.cancel(failCause);
+                    futures.remove(responseFuture.getRequestId());
+                    future.channel().close();
                 }
             }
         });
