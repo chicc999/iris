@@ -13,7 +13,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 public class HeartBeat extends Command{
 
 	public HeartBeat() {
-		this.header.Type(HEARTBEAT).HeaderType(HeaderType.REQUEST);
+		super(new Header(HeaderType.REQUEST,HEARTBEAT));
 	}
 
 	@Override

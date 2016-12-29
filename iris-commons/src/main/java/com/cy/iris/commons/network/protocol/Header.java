@@ -35,6 +35,14 @@ public class Header {
 	public Header() {
 	}
 
+	public Header(HeaderType headerType, int type) {
+		this.headerType = headerType;
+		this.type = type;
+		if(this.headerType == HeaderType.REQUEST) {
+			this.requestId = REQUEST_ID.incrementAndGet();
+		}
+	}
+
 	public int getType() {
 		return type;
 	}
@@ -54,9 +62,6 @@ public class Header {
 
 	public Header HeaderType(HeaderType headerType) {
 		this.headerType = headerType;
-		if(this.headerType == HeaderType.REQUEST) {
-			this.requestId = REQUEST_ID.incrementAndGet();
-		}
 		return this;
 	}
 
