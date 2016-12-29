@@ -1,5 +1,6 @@
 package com.cy.iris.commons.network.protocol;
 
+import com.cy.iris.commons.network.protocol.request.GetCluster;
 import com.cy.iris.commons.network.protocol.request.HeartBeat;
 
 /**
@@ -14,6 +15,8 @@ public class CommandFactory {
 		switch (header.getType()) {
 			case Command.HEARTBEAT:
 				return new HeartBeat();
+			case Command.GET_CLUSTER:
+				return new GetCluster();
 		}
 		return null;
 	}

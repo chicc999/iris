@@ -18,15 +18,21 @@ public class CommandEncoder extends MessageToByteEncoder {
 		if(msg instanceof Command){
 			Command command = (Command)msg;
 			ByteBuf header = command.encodeHeader();
-			logger.debug("header len {}",header.readableBytes());
+
+			logger.debug("encode : header len {}",header.readableBytes());
+
 			out.writeInt(header.readableBytes());
 			out.writeBytes(header);
 
 			ByteBuf body = command.encodeBody();
+
+			logger.debug("encode : body len {}",body.readableBytes());
+
 			out.writeInt(body.readableBytes());
 			out.writeBytes(body);
 		}else{
 			out.writeBytes((ByteBuf)msg);
 		}
 	}
+
 }

@@ -39,6 +39,7 @@ public class CommandDecoder extends ByteToMessageDecoder {
 					return;
 				}
 				headerSize = in.readInt();
+				logger.debug("decode : header len {}",headerSize);
 
 				if(in.readableBytes()<headerSize){
 					return;
@@ -54,6 +55,8 @@ public class CommandDecoder extends ByteToMessageDecoder {
 					return;
 				}
 				bodySize = in.readInt();
+
+				logger.debug("decode : body len {}",bodySize);
 
 				if(in.readableBytes()<bodySize){
 					return;

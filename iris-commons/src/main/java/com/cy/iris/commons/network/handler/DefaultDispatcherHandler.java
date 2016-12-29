@@ -57,6 +57,10 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 	private void processRequest(ChannelHandlerContext ctx, Command command) {
 
 	}
-	
+
+	@Override
+	public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
+		logger.error(cause.getMessage(),cause);
+	}
 	
 }

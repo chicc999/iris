@@ -14,6 +14,8 @@ import com.cy.iris.commons.service.Service;
 import com.cy.iris.commons.util.ArgumentUtil;
 import com.cy.iris.commons.util.NamedThreadFactory;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -76,6 +78,9 @@ public abstract class NettyTransport extends Service implements Transport {
         } catch (InterruptedException e) {
             throw new RemotingIOException("线程被中断",e);
         }
+        if(!future.isSuccess()) {
+            throw new RemotingIOException(future.getCause());
+        }
         return response;
     }
 
@@ -85,10 +90,17 @@ public abstract class NettyTransport extends Service implements Transport {
         ArgumentUtil.isNotNull(new String[]{"channel","command","callback"},channel,command,callback);
 
         // 同步调用
-        ResponseFuture future = new ResponseFuture(channel,command,0,callback);
+        final ResponseFuture responseFuture = new ResponseFuture(channel,command,0,callback);
 
-        channel.writeAndFlush(command);
-        return future;
+        channel.writeAndFlush(command).addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture future) throws Exception {
+                if(future.isDone() && !future.isSuccess()){
+                    responseFuture.cancel(future.cause());
+                }
+            }
+        });
+        return responseFuture;
     }
 
     /**

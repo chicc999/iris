@@ -20,7 +20,7 @@ public class Serializer {
 
 		byte[] bytes = value.getBytes(Charset.forName("UTF-8"));
 
-		if(bytes.length > 1<<31){
+		if(bytes.length > Integer.MAX_VALUE){
 			throw new IllegalArgumentException("too large String");
 		}
 		//value必须小于2G
