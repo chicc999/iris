@@ -13,7 +13,6 @@ public class Serializer {
 	 *
 	 * @param value      字符串
 	 * @param out        输出缓冲区
-	 * @throws java.lang.Exception
 	 */
 	public static void write(final String value, final ByteBuf out)  {
 
@@ -35,7 +34,6 @@ public class Serializer {
 	 * 读字符串
 	 *
 	 * @param in        输入缓冲区
-	 * @throws java.lang.Exception
 	 */
 	public static String read(final ByteBuf in)  {
 
