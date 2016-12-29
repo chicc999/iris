@@ -15,8 +15,8 @@ public class CommandFactory {
 		switch (header.getType()) {
 			case Command.HEARTBEAT:
 				return new HeartBeat();
-			case Command.GET_CLUSTER:
-				return new GetCluster();
+//			case Command.GET_CLUSTER:
+//				return new GetCluster();
 		}
 		return null;
 	}

@@ -50,9 +50,9 @@ public class DefaultConnectionHandler extends ChannelDuplexHandler {
 		super.userEventTriggered(ctx, evt);
 	}
 
-	@Override
-	public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
-		logger.error(cause.getMessage(),cause);
-		super.userEventTriggered(ctx, cause);
-	}
+//	@Override
+//	public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
+//		logger.error(cause.getMessage(),cause);
+//		super.userEventTriggered(ctx, cause);
+//	}
 }

@@ -58,9 +58,11 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 
 	}
 
+
 	@Override
 	public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
 		logger.error(cause.getMessage(),cause);
+		ctx.close();
 	}
 	
 }
