@@ -14,7 +14,7 @@ public class ArgumentUtil {
 	 */
 	public static <T> T isNotNull(String text,T arg) {
 		if (arg == null) {
-			throw new NullPointerException(text + "is null.");
+			throw new NullPointerException(text + " is null.");
 		}
 		return arg;
 	}

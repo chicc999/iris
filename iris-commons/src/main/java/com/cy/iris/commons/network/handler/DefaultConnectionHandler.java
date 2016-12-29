@@ -1,5 +1,6 @@
 package com.cy.iris.commons.network.handler;
 
+import com.cy.iris.commons.network.protocol.request.HeartBeat;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -42,7 +43,8 @@ public class DefaultConnectionHandler extends ChannelDuplexHandler {
 		if (evt instanceof IdleStateEvent) {
 			IdleStateEvent event = (IdleStateEvent) evt;
 			if (event.state().equals(IdleState.ALL_IDLE)) {
-				//TODO 心跳
+				logger.debug("channel {} is idle.",ctx.channel());
+				ctx.writeAndFlush(new HeartBeat());
 			}
 		}
 		super.userEventTriggered(ctx, evt);

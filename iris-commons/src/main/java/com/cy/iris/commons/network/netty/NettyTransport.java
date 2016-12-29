@@ -8,6 +8,7 @@ import com.cy.iris.commons.network.Transport;
 import com.cy.iris.commons.network.handler.CommandHandlerFactory;
 import com.cy.iris.commons.network.handler.DefaultConnectionHandler;
 import com.cy.iris.commons.network.handler.DefaultDispatcherHandler;
+import com.cy.iris.commons.network.handler.DefaultHandlerFactory;
 import com.cy.iris.commons.network.protocol.Command;
 import com.cy.iris.commons.service.Service;
 import com.cy.iris.commons.util.ArgumentUtil;
@@ -41,9 +42,9 @@ public abstract class NettyTransport extends Service implements Transport {
     // 是否是内部创建的IO处理线程池
     protected boolean createIoLoopGroup;
 
-    protected DefaultDispatcherHandler dispatcherHandler = new DefaultDispatcherHandler();
+    protected DefaultDispatcherHandler dispatcherHandler ;
 
-    protected DefaultConnectionHandler connectionHandler = new DefaultConnectionHandler();
+    protected DefaultConnectionHandler connectionHandler ;
 
     public NettyTransport(NettyConfig config) {
 		this(config,null,null,null);
@@ -107,13 +108,16 @@ public abstract class NettyTransport extends Service implements Transport {
      */
     @Override
     public void doStart() throws Exception {
+        if(factory == null){
+            factory = new DefaultHandlerFactory();
+        }
 
         if(connectionHandler == null){
             connectionHandler = new DefaultConnectionHandler();
         }
 
         if(dispatcherHandler == null){
-            dispatcherHandler = new DefaultDispatcherHandler();
+            dispatcherHandler = new DefaultDispatcherHandler(factory);
         }
 
 
