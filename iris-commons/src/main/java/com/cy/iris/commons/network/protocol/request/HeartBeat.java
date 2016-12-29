@@ -31,4 +31,10 @@ public class HeartBeat extends Command{
 	public String getTypeString() {
 		return "HEART_BEAT";
 	}
+
+
+	@Override
+	public String toString() {
+		return super.toString() + "HeartBeat{} ";
+	}
 }

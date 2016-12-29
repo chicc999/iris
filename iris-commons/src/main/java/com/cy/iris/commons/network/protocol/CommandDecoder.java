@@ -3,6 +3,8 @@ package com.cy.iris.commons.network.protocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -11,7 +13,9 @@ import java.util.List;
  */
 public class CommandDecoder extends ByteToMessageDecoder {
 
-	private enum State {  //2
+	private static final Logger logger = LoggerFactory.getLogger(CommandDecoder.class);
+
+	private enum State {
 		Header,
 		Body
 	}
@@ -57,6 +61,7 @@ public class CommandDecoder extends ByteToMessageDecoder {
 
 				command.decodeBody(in);
 				out.add(command);
+				logger.debug("Command decode : {}",command);
 				state = State.Header;
 		}
 	}

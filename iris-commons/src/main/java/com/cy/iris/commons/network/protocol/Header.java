@@ -3,6 +3,7 @@ package com.cy.iris.commons.network.protocol;
 import com.cy.iris.commons.util.ArgumentUtil;
 import io.netty.buffer.ByteBuf;
 
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -20,19 +21,18 @@ public class Header {
 	private int type;
 	// 应答方式
 	private volatile boolean isNeedAck = true;
-	// 总长度
-	private int length;
 	// 请求ID
-	private String requestId;
-	// 请求或响应时间
-	private long time;
+	private int requestId = 0;
+
 	// 响应状态码
 	private int status;
 	// 响应错误信息
 	private String error;
 
-	public Header() {
+	//接收到请求的时间
+	private long receiveTime;
 
+	public Header() {
 	}
 
 	public int getType() {
@@ -44,7 +44,7 @@ public class Header {
 		return this;
 	}
 
-	public String getRequestId() {
+	public int getRequestId() {
 		return requestId;
 	}
 
@@ -54,6 +54,9 @@ public class Header {
 
 	public Header HeaderType(HeaderType headerType) {
 		this.headerType = headerType;
+		if(this.headerType == HeaderType.REQUEST) {
+			this.requestId = REQUEST_ID.incrementAndGet();
+		}
 		return this;
 	}
 
@@ -62,19 +65,42 @@ public class Header {
 
 		// 1个字节的数据版本
 		out.writeByte(version);
-		// command大类型
+		// command是请求还是响应
 		out.writeInt(headerType.ordinal());
 		// 具体command类型
 		out.writeInt(type);
+		// requestID
+		out.writeInt(requestId);
+
 		return out;
 
 	}
 
 	public Header decode(final ByteBuf in) throws Exception {
 		ArgumentUtil.isNotNull("header decoder ByteBuf",in);
+		//decode时间作为接收时间
+		this.receiveTime = System.currentTimeMillis();
+
 		this.version = in.readByte();
 		this.headerType = HeaderType.valueOf(in.readInt());
 		this.type = in.readInt();
+		this.requestId = in.readInt();
+
 		return this;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Header{" +
+				"headerType=" + headerType +
+				", version=" + version +
+				", type=" + type +
+				", isNeedAck=" + isNeedAck +
+				", requestId=" + requestId +
+				", status=" + status +
+				", error='" + error + '\'' +
+				", receiveTime=" + receiveTime +
+				'}';
 	}
 }

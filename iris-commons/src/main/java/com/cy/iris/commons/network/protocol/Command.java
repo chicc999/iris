@@ -19,6 +19,10 @@ public abstract class Command {
 
 	// 心跳
 	public static final int HEARTBEAT = 0;
+	// 获取集群
+	public static final int GET_CLUSTER = 1;
+
+
 	// 头部
 	protected Header header;
 
@@ -42,7 +46,7 @@ public abstract class Command {
 		return header;
 	}
 
-	public String getRequestId() {
+	public int getRequestId() {
 		return header.getRequestId();
 	}
 
@@ -52,5 +56,9 @@ public abstract class Command {
 
 	protected abstract void decodeBody(ByteBuf in) ;
 
+	@Override
+	public String toString() {
+		return this.header.toString();
+	}
 
 }

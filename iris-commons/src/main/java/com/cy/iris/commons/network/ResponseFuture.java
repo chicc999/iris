@@ -105,7 +105,7 @@ public class ResponseFuture {
 		return timeout;
 	}
 
-	public String getRequestId() {
+	public int getRequestId() {
 		return this.request.getRequestId();
 	}
 
