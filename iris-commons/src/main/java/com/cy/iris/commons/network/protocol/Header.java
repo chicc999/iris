@@ -57,6 +57,10 @@ public class Header {
 		return requestId;
 	}
 
+	public void setRequestId(int requestId) {
+		this.requestId = requestId;
+	}
+
 	public HeaderType getHeaderType() {
 		return headerType;
 	}

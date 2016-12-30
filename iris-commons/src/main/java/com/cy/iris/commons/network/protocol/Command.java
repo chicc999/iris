@@ -1,13 +1,9 @@
 package com.cy.iris.commons.network.protocol;
 
-import com.cy.iris.commons.util.ArgumentUtil;
+import com.cy.iris.commons.network.CommandCallback;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.Unpooled;
-
-import java.nio.ByteBuffer;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import io.netty.channel.ChannelFutureListener;
 
 /**
  * 命令格式
@@ -22,9 +18,14 @@ public abstract class Command {
 	// 获取集群
 	public static final int GET_CLUSTER = 1;
 
-
 	// 头部
 	protected Header header;
+
+	// 执行成功或失败以后的回调
+	protected CommandCallback callback;
+
+	//写网络成功或者失败以后的回调
+	protected ChannelFutureListener listenner;
 
 	protected Command() {
 		this.header = new Header();
@@ -48,6 +49,22 @@ public abstract class Command {
 
 	public int getRequestId() {
 		return header.getRequestId();
+	}
+
+	public CommandCallback getCallback() {
+		return callback;
+	}
+
+	public void setCallback(CommandCallback callback) {
+		this.callback = callback;
+	}
+
+	public ChannelFutureListener getListenner() {
+		return listenner;
+	}
+
+	public void setListenner(ChannelFutureListener listenner) {
+		this.listenner = listenner;
 	}
 
 	protected abstract ByteBuf encodeBody() ;

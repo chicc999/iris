@@ -45,6 +45,10 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 
 	private void processResponse(ChannelHandlerContext ctx, Command command) {
 
+
+	}
+
+	private void processRequest(ChannelHandlerContext ctx, Command command) {
 		int type = command.getHeader().getType();
 		if(Command.HEARTBEAT == type){
 			//双向心跳,无需处理
@@ -52,10 +56,6 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 		}
 
 		CommandHandler handler = handlerFactory.getHandler(command.getHeader().getType());
-	}
-
-	private void processRequest(ChannelHandlerContext ctx, Command command) {
-
 	}
 
 
