@@ -19,7 +19,7 @@ public class GetCluster extends Command{
 	private byte dataCenter;
 
 	public GetCluster() {
-		super(new Header(HeaderType.REQUEST,GET_CLUSTER));
+		super(new Header(HeaderType.REQUEST,GET_CLUSTER).typeString("GET_CLUSTER"));
 	}
 
 	public String getApp() {
@@ -59,11 +59,6 @@ public class GetCluster extends Command{
 	public GetCluster dataCenter(byte dataCenter) {
 		this.dataCenter = dataCenter;
 		return this;
-	}
-
-	@Override
-	public String getTypeString() {
-		return "GET_CLUSTER";
 	}
 
 	@Override

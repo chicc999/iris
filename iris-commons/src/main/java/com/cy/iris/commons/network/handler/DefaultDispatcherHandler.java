@@ -28,7 +28,7 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 			return;
 		}
 
-		logger.debug("dispatcher command : {} {}",command.getHeader().getHeaderType().toString(),command.getTypeString());
+		logger.debug("dispatcher command : {} {}",command.getHeader().getHeaderType().toString(),command.getHeader().getTypeString());
 
 		HeaderType headerType = command.getHeader().getHeaderType();
 		switch (headerType) {

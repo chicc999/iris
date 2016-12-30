@@ -50,8 +50,6 @@ public abstract class Command {
 		return header.getRequestId();
 	}
 
-	public abstract String getTypeString();
-
 	protected abstract ByteBuf encodeBody() ;
 
 	protected abstract void decodeBody(ByteBuf in) ;

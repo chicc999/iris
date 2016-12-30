@@ -19,6 +19,7 @@ public class Header {
 	private byte version = 1;
 	// 命令类型
 	private int type;
+	private String typeString;
 	// 应答方式
 	private volatile boolean isNeedAck = true;
 	// 请求ID
@@ -101,6 +102,7 @@ public class Header {
 				"headerType=" + headerType +
 				", version=" + version +
 				", type=" + type +
+				", typeString='" + typeString + '\'' +
 				", isNeedAck=" + isNeedAck +
 				", requestId=" + requestId +
 				", status=" + status +
@@ -108,4 +110,14 @@ public class Header {
 				", receiveTime=" + receiveTime +
 				'}';
 	}
+
+	public  String getTypeString(){
+		return this.typeString;
+	}
+
+	public Header typeString(String typeString){
+		this.typeString = typeString;
+		return this;
+	}
+
 }

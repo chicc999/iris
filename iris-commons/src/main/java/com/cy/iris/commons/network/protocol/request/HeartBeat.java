@@ -13,7 +13,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 public class HeartBeat extends Command{
 
 	public HeartBeat() {
-		super(new Header(HeaderType.REQUEST,HEARTBEAT));
+		super(new Header(HeaderType.REQUEST,HEARTBEAT).typeString("HEART_BEAT"));
 	}
 
 	@Override
@@ -25,11 +25,6 @@ public class HeartBeat extends Command{
 	@Override
 	protected void decodeBody(ByteBuf in)  {
 
-	}
-
-	@Override
-	public String getTypeString() {
-		return "HEART_BEAT";
 	}
 
 
