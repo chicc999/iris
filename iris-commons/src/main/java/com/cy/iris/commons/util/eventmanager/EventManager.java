@@ -15,9 +15,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  *
  * 事件派发器
- * 如果interval>0,则开启事件合并,每次只发布最后一个事件.否则发布每一个事件.
- * 如果triggerNoEvent==true,则在没有事件时,也触发空事件(触发间隔interval+timeout)
- *
+ * 如果 interval>0 ,则开启事件合并,每次只发布最后一个事件.否则发布每一个事件;
+ * 如果 triggerNoEvent==true ,则在没有事件时,也触发空事件 (触发间隔interval+timeout);
+ * 如果 idleTime>0 ,触发空闲检测.触发间隔为 (最后一次非空事件触发时间+idleTime).
  */
 public class EventManager<E> {
 	// 监听器
@@ -191,6 +191,10 @@ public class EventManager<E> {
 		return false;
 	}
 
+	/**
+	 * 获取监听器
+	 * @return 所有监听器列表
+	 */
 	public List<EventListener<E>> getListeners() {
 		return listeners;
 	}
@@ -260,6 +264,8 @@ public class EventManager<E> {
 	/**
 	 * 同步通知事件
 	 *
+	 * 由添加事件线程直接完成,避免事件派发线程异步派发以及排队触发
+	 *
 	 * @param event 事件
 	 */
 	public void inform(E event) throws Exception {
@@ -274,7 +280,7 @@ public class EventManager<E> {
 	}
 
 	/**
-	 * 空闲事件
+	 * 空闲事件回调方法.
 	 */
 	protected void onIdle() {
 
