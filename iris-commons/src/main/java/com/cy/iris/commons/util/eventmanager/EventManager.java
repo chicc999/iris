@@ -12,18 +12,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 事件管理器
+ *
+ *
+ * 事件派发器
+ * 如果interval>0,则开启事件合并,每次只发布最后一个事件.否则发布每一个事件.
+ * 如果triggerNoEvent==true,则在没有事件时,也触发空事件(触发间隔interval+timeout)
+ *
  */
 public class EventManager<E> {
 	// 监听器
 	protected CopyOnWriteArrayList<EventListener<E>> listeners = new CopyOnWriteArrayList<EventListener<E>>();
-	// 事件队里
+	// 事件队列
 	protected BlockingQueue<EventOwner> eventsQueue;
 	// 线程名称
 	protected String name;
 	// 事件派发线程
 	protected Thread dispatcher;
 	// 事件派发处理器
-	protected EventDispatcher eventDispatcher = new EventDispatcher();
+	protected EventDispatcher eventDispatcher ;
 	// 启动标示
 	protected AtomicBoolean started = new AtomicBoolean(false);
 	// 没有事件的也触发监听器
@@ -32,8 +38,9 @@ public class EventManager<E> {
 	protected long interval;
 	// 空闲时间
 	protected long idleTime;
-	// 获取事件超时时间
-	protected long timeout = 1000;
+
+	// 从队列中获取事件的超时时间,如果队列中没有数据,最多等待此时间
+	private long timeout ;
 
 	public EventManager() {
 		this(null, 0);
@@ -54,6 +61,7 @@ public class EventManager<E> {
 		} else {
 			eventsQueue = new LinkedBlockingDeque<EventOwner>();
 		}
+		eventDispatcher = new EventDispatcher();
 	}
 
 	public EventManager(String name, EventListener<E> listener) {
@@ -92,7 +100,7 @@ public class EventManager<E> {
 	}
 
 	public long getTimeout() {
-		return timeout;
+		return this.timeout;
 	}
 
 	public void setTimeout(long timeout) {
@@ -341,7 +349,7 @@ public class EventManager<E> {
 		/**
 		 * 线程是否存活
 		 *
-		 * @return 存活标示
+		 * @return true 线程已经启动且未被中断
 		 */
 		protected boolean isAlive() {
 			return started.get() && !Thread.currentThread().isInterrupted();
@@ -357,16 +365,16 @@ public class EventManager<E> {
 					eventOwner = null;
 					// 判断是否关闭
 					if (isAlive()) {
-						// 没有关闭，则获取数据
+						// 阻塞的获取数据,除非timeout或者获取到数据
 						eventOwner = eventsQueue.poll(timeout, TimeUnit.MILLISECONDS);
 					}
-					// 再次判断是否关闭
+					// 如果派发器已经不在存活,非优雅关闭直接退出,优雅关闭则再试一次看看有没有新增的事件
 					if (!isAlive()) {
 						if (!gracefully.get()) {
 							// 非优雅关闭
 							break;
 						}
-						// 优雅关闭，如果当前事件为空，则重新取一次
+						//优雅关闭，如果当前事件为空，则重新取一次
 						if (eventOwner == null) {
 							if (!Thread.currentThread().isInterrupted()) {
 								eventOwner = eventsQueue.poll(50, TimeUnit.MILLISECONDS);
@@ -379,6 +387,7 @@ public class EventManager<E> {
 							break;
 						}
 					}
+
 					// 当前事件不为空
 					if (eventOwner != null) {
 						if (idleTime > 0) {
