@@ -1,5 +1,7 @@
 package com.cy.iris.commons.util.eventmanager;
 
+import com.cy.iris.commons.service.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -19,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 如果 triggerNoEvent==true ,则在没有事件时,也触发空事件 (触发间隔interval+timeout);
  * 如果 idleTime>0 ,触发空闲检测.触发间隔为 (最后一次非空事件触发时间+idleTime).
  */
-public class EventManager<E> {
+public class EventManager<E> extends Service{
 	// 监听器
 	protected CopyOnWriteArrayList<EventListener<E>> listeners = new CopyOnWriteArrayList<EventListener<E>>();
 	// 事件队列
@@ -117,30 +119,6 @@ public class EventManager<E> {
 		this.triggerNoEvent = triggerNoEvent;
 	}
 
-	/**
-	 * 开始
-	 */
-	public void start() {
-		if (started.compareAndSet(false, true)) {
-			// 清理一下，防止里面有数据
-			eventsQueue.clear();
-			eventDispatcher.start();
-			if (name != null) {
-				dispatcher = new Thread(eventDispatcher, name);
-			} else {
-				dispatcher = new Thread(eventDispatcher);
-			}
-			dispatcher.setDaemon(true);
-			dispatcher.start();
-		}
-	}
-
-	/**
-	 * 结束
-	 */
-	public void stop() {
-		stop(false);
-	}
 
 	/**
 	 * 结束
@@ -148,23 +126,51 @@ public class EventManager<E> {
 	 * @param gracefully 优雅停止
 	 */
 	public void stop(boolean gracefully) {
-		if (started.compareAndSet(true, false)) {
-			if (dispatcher != null) {
-				dispatcher.interrupt();
-				dispatcher = null;
-				eventDispatcher.stop(gracefully);
-				eventsQueue.clear();
-			}
+		super.stop();
+		eventDispatcher.stop(gracefully);
+	}
+
+	@Override
+	public void beforeStart() throws Exception {
+
+	}
+
+	@Override
+	public void doStart() throws Exception {
+		// 清理一下，防止里面有数据
+		eventsQueue.clear();
+		eventDispatcher.start();
+		if (name != null) {
+			dispatcher = new Thread(eventDispatcher, name);
+		} else {
+			dispatcher = new Thread(eventDispatcher);
+		}
+		dispatcher.setDaemon(true);
+		dispatcher.start();
+	}
+
+	@Override
+	public void afterStart() throws Exception {
+
+	}
+
+	@Override
+	public void beforeStop() {
+
+	}
+
+	@Override
+	public void doStop() {
+		if (dispatcher != null) {
+			dispatcher.interrupt();
+			dispatcher = null;
+			eventsQueue.clear();
 		}
 	}
 
-	/**
-	 * 是否启动
-	 *
-	 * @return 启动标示
-	 */
-	public boolean isStarted() {
-		return started.get();
+	@Override
+	public void afterStop() {
+
 	}
 
 	/**
@@ -325,31 +331,57 @@ public class EventManager<E> {
 	/**
 	 * 事件派发线程
 	 */
-	protected class EventDispatcher implements Runnable {
+	protected class EventDispatcher extends Service implements Runnable {
 
-		private AtomicBoolean started = new AtomicBoolean();
+		//private AtomicBoolean started = new AtomicBoolean();
 		private AtomicBoolean gracefully = new AtomicBoolean(false);
 		private CountDownLatch latch;
 
-		public void start() {
-			if (started.compareAndSet(false, true)) {
+		@Override
+		public void beforeStart() throws Exception {
+
+		}
+
+		@Override
+		public void doStart() throws Exception {
 				latch = new CountDownLatch(1);
 				gracefully.set(false);
+		}
+
+		@Override
+		public void afterStart() throws Exception {
+
+		}
+
+		@Override
+		public void beforeStop() {
+
+		}
+
+		@Override
+		public void doStop() {
+			if (this.gracefully.get()) {
+				try {
+					latch.await();
+				} catch (InterruptedException e) {
+					// 让当前线程中断
+					Thread.currentThread().interrupt();
+				}
 			}
 		}
 
+		@Override
+		public void afterStop() {
+
+		}
+
+		/**
+		 * 优雅关闭
+		 * @param gracefully 是否优雅关闭
+		 */
 		public void stop(boolean gracefully) {
-			if (started.compareAndSet(true, false)) {
-				this.gracefully.set(gracefully);
-				if (gracefully) {
-					try {
-						latch.await();
-					} catch (InterruptedException e) {
-						// 让当前线程中断
-						Thread.currentThread().interrupt();
-					}
-				}
-			}
+			this.gracefully.set(gracefully);
+			super.stop();
 		}
 
 		/**
