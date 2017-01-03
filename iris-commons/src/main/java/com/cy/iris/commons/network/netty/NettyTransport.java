@@ -2,6 +2,7 @@ package com.cy.iris.commons.network.netty;
 
 
 import com.cy.iris.commons.exception.RemotingIOException;
+import com.cy.iris.commons.exception.RequestTimeoutException;
 import com.cy.iris.commons.network.CommandCallback;
 import com.cy.iris.commons.network.ResponseFuture;
 import com.cy.iris.commons.network.Transport;
@@ -69,22 +70,26 @@ public abstract class NettyTransport extends Service implements Transport {
     }
 
     @Override
-    public Command sync(Channel channel, Command command) throws RemotingIOException {
+    public Command sync(Channel channel, Command command) throws RemotingIOException,RequestTimeoutException {
         return sync(channel,command,config.getSendTimeout());
     }
 
     @Override
-    public Command sync(Channel channel, Command command, int timeout) throws RemotingIOException {
+    public Command sync(Channel channel, Command command, int timeout) throws RemotingIOException,RequestTimeoutException {
 
         int sendTimeout = timeout <= 0 ? config.getSendTimeout() : timeout;
         // 同步调用
         ResponseFuture future = async(channel,command,null);
+        future.setTimeout(sendTimeout);
 
         Command response;
         try {
             response = future.get(sendTimeout);
         } catch (InterruptedException e) {
             throw new RemotingIOException("线程被中断",e);
+        }
+        if(!future.isDone()){
+            throw  new RequestTimeoutException("请求 requestId="+command.getRequestId()+" 超时");
         }
         if(!future.isSuccess()) {
             throw new RemotingIOException(future.getCause());

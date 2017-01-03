@@ -43,9 +43,9 @@ public class ClearTimeoutFutureTask implements Runnable{
 
 			if (timeout <= System.currentTimeMillis()) {
 				it.remove();
-				if (responseFuture.release()) {
+				if (!responseFuture.isDone()) {
 					try {
-						responseFuture.cancel(new RemotingIOException("连接"+responseFuture.getChannel()+"的请求"+responseFuture.getRequestId()+"超时"));
+						responseFuture.cancel(new RemotingIOException("请求"+responseFuture.getRequestId()+"超时,"+"链接为"+responseFuture.getChannel()));
 					} catch (Throwable e) {
 						logger.error("clear timeout response exception", e);
 					}

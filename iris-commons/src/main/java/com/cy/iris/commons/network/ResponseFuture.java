@@ -1,6 +1,7 @@
 package com.cy.iris.commons.network;
 
 import com.cy.iris.commons.network.protocol.*;
+import com.cy.iris.commons.util.ArgumentUtil;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +57,8 @@ public class ResponseFuture {
 	 * @param callback  异步调用回调
 	 */
 	public ResponseFuture(Channel channel, Command request, long timeout, CommandCallback callback) {
-		if (request == null) {
-			throw new IllegalArgumentException("request can not be null");
-		}
+		ArgumentUtil.isNotNull("request",request);
+		ArgumentUtil.isNotNull("channel",channel);
 		this.channel = channel;
 		this.request = request;
 		this.timeout = timeout;
@@ -103,6 +103,10 @@ public class ResponseFuture {
 
 	public long getTimeout() {
 		return timeout;
+	}
+
+	public void setTimeout(long timeout) {
+		this.timeout = timeout;
 	}
 
 	public int getRequestId() {

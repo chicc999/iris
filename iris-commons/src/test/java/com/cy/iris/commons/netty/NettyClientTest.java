@@ -2,6 +2,7 @@ package com.cy.iris.commons.netty;
 
 import com.cy.iris.commons.exception.ConnectException;
 import com.cy.iris.commons.exception.RemotingIOException;
+import com.cy.iris.commons.exception.RequestTimeoutException;
 import com.cy.iris.commons.network.netty.client.NettyClient;
 import com.cy.iris.commons.network.netty.client.NettyClientConfig;
 import com.cy.iris.commons.network.protocol.Command;
@@ -9,6 +10,7 @@ import com.cy.iris.commons.network.protocol.Header;
 import com.cy.iris.commons.network.protocol.request.GetCluster;
 import com.cy.iris.commons.network.protocol.request.HeartBeat;
 import io.netty.channel.Channel;
+import io.netty.channel.ConnectTimeoutException;
 
 import java.net.InetSocketAddress;
 
@@ -33,10 +35,12 @@ public class NettyClientTest {
 			Channel channel = nettyClient.createChannelSync(new InetSocketAddress("localhost",50088));
 			GetCluster command = new GetCluster();
 			command.app("aaa").dataCenter((byte)1).clientId("y134huihuew");
-			nettyClient.sync(channel,command);
+			nettyClient.sync(channel,command,10000);
 		} catch (ConnectException e) {
 			e.printStackTrace();
-		} catch (RemotingIOException e) {
+		} catch (RequestTimeoutException e){
+			e.printStackTrace();
+		}catch (RemotingIOException e) {
 			e.printStackTrace();
 		}
 	}

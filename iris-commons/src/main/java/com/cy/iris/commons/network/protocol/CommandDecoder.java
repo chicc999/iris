@@ -48,7 +48,7 @@ public class CommandDecoder extends ByteToMessageDecoder {
 				header = new Header();
 				header.decode(in);
 
-				command = CommandFactory.create(header);
+
 				state = State.Body;
 			case Body:
 				if(in.readableBytes()<4){
@@ -61,6 +61,8 @@ public class CommandDecoder extends ByteToMessageDecoder {
 				if(in.readableBytes()<bodySize){
 					return;
 				}
+
+				command = CommandFactory.create(header);
 
 				command.decodeBody(in);
 				out.add(command);

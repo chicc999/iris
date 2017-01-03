@@ -22,6 +22,11 @@ public class GetCluster extends Command{
 		super(new Header(HeaderType.REQUEST,GET_CLUSTER).typeString("GET_CLUSTER"));
 	}
 
+	public GetCluster(Header header) {
+		super(header);
+		this.header.typeString("GET_CLUSTER");
+	}
+
 	public String getApp() {
 		return app;
 	}

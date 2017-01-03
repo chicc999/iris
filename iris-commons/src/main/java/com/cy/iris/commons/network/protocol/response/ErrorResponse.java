@@ -17,8 +17,9 @@ public class ErrorResponse extends Command {
 	// 响应错误信息
 	private String error;
 
-	public ErrorResponse() {
-		super(new Header(HeaderType.RESPONSE,HEARTBEAT).typeString("ERROR_RESPONSE"));
+	public ErrorResponse(Header header) {
+		this.header = header;
+		this.header.typeString("ERROR_RESPONSE");
 	}
 
 	public ErrorResponse(int status, String error) {

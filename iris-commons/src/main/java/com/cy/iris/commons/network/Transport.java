@@ -2,6 +2,7 @@ package com.cy.iris.commons.network;
 
 
 import com.cy.iris.commons.exception.RemotingIOException;
+import com.cy.iris.commons.exception.RequestTimeoutException;
 import com.cy.iris.commons.network.protocol.*;
 
 import io.netty.channel.Channel;
@@ -18,7 +19,7 @@ public interface Transport {
 	 * @return 应答命令
 	 * @throws RemotingIOException
 	 */
-	Command sync(Channel channel, Command command) throws RemotingIOException;
+	Command sync(Channel channel, Command command) throws RemotingIOException,RequestTimeoutException;
 
 	/**
 	 * 同步发送，需要应答
@@ -29,7 +30,7 @@ public interface Transport {
 	 * @return 应答命令
 	 * @throws RemotingIOException
 	 */
-	Command sync(Channel channel, Command command, int timeout) throws RemotingIOException;
+	Command sync(Channel channel, Command command, int timeout) throws RemotingIOException,RequestTimeoutException;
 
 	/**
 	 * 异步发送，需要应答

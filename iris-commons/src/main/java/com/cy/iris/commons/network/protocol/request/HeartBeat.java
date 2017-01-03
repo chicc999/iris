@@ -16,6 +16,11 @@ public class HeartBeat extends Command{
 		super(new Header(HeaderType.REQUEST,HEARTBEAT).typeString("HEART_BEAT"));
 	}
 
+	public HeartBeat(Header header) {
+		super(header);
+		this.header.typeString("HEART_BEAT");
+	}
+
 	@Override
 	protected ByteBuf encodeBody() {
 		ByteBuf body = PooledByteBufAllocator.DEFAULT.buffer();

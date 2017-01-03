@@ -16,11 +16,11 @@ public class CommandFactory {
 
 		switch (header.getType()) {
 			case Command.HEARTBEAT:
-				return new HeartBeat();
+				return new HeartBeat(header);
 			case Command.GET_CLUSTER:
-				return new GetCluster();
+				return new GetCluster(header);
 			case Command.ERROR_RESPONSE:
-				return new ErrorResponse();
+				return new ErrorResponse(header);
 		}
 		throw new UnknowCommandException("未定义的协议" + header.getType());
 	}
