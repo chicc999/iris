@@ -41,8 +41,6 @@ public class ResponseFuture {
 	private boolean isCancel;
 	// 回调一次
 	private AtomicBoolean onceCallback = new AtomicBoolean(false);
-	// 是否释放
-	private AtomicBoolean released = new AtomicBoolean(false);
 	//是否正在处理
 	private final AtomicBoolean isProcessed = new AtomicBoolean(false);
 	// 门闩
@@ -215,49 +213,6 @@ public class ResponseFuture {
 		latch.countDown();
 		onSuccess();
 		return true;
-	}
-
-	/**
-	 * 释放资源，不回调
-	 *
-	 * @return 成功标示
-	 */
-	public boolean release() {
-		return release(null, false);
-	}
-
-	/**
-	 * 释放资源，并回调
-	 *
-	 * @param e        异常
-	 * @param callback 是否回调
-	 * @return 成功标示
-	 */
-	public boolean release(final Throwable e, final boolean callback) {
-		// 确保释放一次
-		if (released.compareAndSet(false, true)) {
-			// 设置了异常，则不成功
-			if (e != null) {
-				isSuccess = false;
-				cause = e;
-			}
-			// 释放请求资源
-			if (request != null) {
-				//request.release();
-			}
-			// 唤醒同步等待线程
-			if (latch != null) {
-				latch.countDown();
-			}
-			// 回调
-			if (callback) {
-				this.callback();
-			}
-			// 清空资源引用
-			request = null;
-			return true;
-		}
-		return false;
 	}
 
 	public boolean isCancelled() {
