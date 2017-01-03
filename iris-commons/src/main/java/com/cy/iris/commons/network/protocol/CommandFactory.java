@@ -3,6 +3,7 @@ package com.cy.iris.commons.network.protocol;
 import com.cy.iris.commons.exception.UnknowCommandException;
 import com.cy.iris.commons.network.protocol.request.GetCluster;
 import com.cy.iris.commons.network.protocol.request.HeartBeat;
+import com.cy.iris.commons.network.protocol.response.ErrorResponse;
 
 /**
  * Created by cy on 16/12/28.
@@ -18,7 +19,9 @@ public class CommandFactory {
 				return new HeartBeat();
 			case Command.GET_CLUSTER:
 				return new GetCluster();
+			case Command.ERROR_RESPONSE:
+				return new ErrorResponse();
 		}
-		throw new UnknowCommandException("未定义的协议"+header.getType());
+		throw new UnknowCommandException("未定义的协议" + header.getType());
 	}
 }

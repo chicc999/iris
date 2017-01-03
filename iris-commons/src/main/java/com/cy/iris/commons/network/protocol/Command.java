@@ -18,6 +18,9 @@ public abstract class Command {
 	// 获取集群
 	public static final int GET_CLUSTER = 1;
 
+	//请求失败的响应
+	public static final int ERROR_RESPONSE = -100;
+
 	// 头部
 	protected Header header;
 

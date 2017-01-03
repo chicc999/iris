@@ -33,7 +33,7 @@ public class HandlerTask implements Runnable{
 		}
 		response.getHeader().setRequestId(request.getRequestId());
 		ChannelFutureListener listenner = response.getListenner() == null ? ChannelFutureListener.CLOSE_ON_FAILURE : response.getListenner();
-		//服务端不处理commandCallback,直接在DispatcherHandler处理对应type
+		//服务端不处理commandCallback,直接在DispatcherHandler处理对应type.客户端则在发送时指定回调函数.
 		ctx.writeAndFlush(response).addListener(listenner);
 	}
 }

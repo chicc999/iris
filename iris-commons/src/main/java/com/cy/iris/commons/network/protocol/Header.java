@@ -25,11 +25,6 @@ public class Header {
 	// 请求ID
 	private int requestId = 0;
 
-	// 响应状态码
-	private int status;
-	// 响应错误信息
-	private String error;
-
 	//接收到请求的时间
 	private long receiveTime;
 
@@ -109,8 +104,6 @@ public class Header {
 				", typeString='" + typeString + '\'' +
 				", isNeedAck=" + isNeedAck +
 				", requestId=" + requestId +
-				", status=" + status +
-				", error='" + error + '\'' +
 				", receiveTime=" + receiveTime +
 				'}';
 	}
