@@ -2,6 +2,7 @@ package com.cy.iris.commons.network.handler;
 
 import com.cy.iris.commons.network.protocol.request.HeartBeat;
 import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
@@ -10,7 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by cy on 16/12/26.
+ * 处理连接相关的事件,默认处理了心跳事件.
+ * 如果要响应其他channel事件,重写对应方法.
  */
 @ChannelHandler.Sharable
 public class DefaultConnectionHandler extends ChannelDuplexHandler {
@@ -44,15 +46,10 @@ public class DefaultConnectionHandler extends ChannelDuplexHandler {
 			IdleStateEvent event = (IdleStateEvent) evt;
 			if (event.state().equals(IdleState.ALL_IDLE)) {
 				logger.debug("channel {} is idle.",ctx.channel());
-				ctx.writeAndFlush(new HeartBeat());
+				ctx.writeAndFlush(new HeartBeat()).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
 			}
 		}
 		super.userEventTriggered(ctx, evt);
 	}
 
-//	@Override
-//	public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
-//		logger.error(cause.getMessage(),cause);
-//		super.userEventTriggered(ctx, cause);
-//	}
 }
