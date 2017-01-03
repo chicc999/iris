@@ -23,10 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.*;
 
 /**
  * Netty传输基类,提供client和server的公共逻辑的抽象.
@@ -56,6 +53,8 @@ public abstract class NettyTransport extends Service implements Transport {
     protected DefaultDispatcherHandler dispatcherHandler ;
 
     protected DefaultConnectionHandler connectionHandler ;
+
+    private ScheduledExecutorService clear ;
 
     public NettyTransport(NettyConfig config) {
 		this(config,null,null,null);
@@ -164,6 +163,9 @@ public abstract class NettyTransport extends Service implements Transport {
         serviceExecutor = Executors
                 .newFixedThreadPool(config.getCallbackExecutorThreads(), new NamedThreadFactory("AsyncCallback"));
 
+        clear = Executors.newScheduledThreadPool(1);
+        clear.scheduleWithFixedDelay(new ClearTimeoutFutureTask(this,futures),3000,1000,TimeUnit.MILLISECONDS);
+
     }
 
     /**
@@ -195,6 +197,7 @@ public abstract class NettyTransport extends Service implements Transport {
             createIoLoopGroup = false;
         }
         serviceExecutor.shutdown();
+        clear.shutdown();
 
     }
 
