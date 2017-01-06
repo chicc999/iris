@@ -12,7 +12,7 @@ public class ArgumentUtil {
 	 * 检测参数是否为null,如果为null则抛出空指针异常
 	 * 否则返回参数
 	 */
-	public static <T> T isNotNull(String text,T arg) {
+	public static <T> T isNotNull(String text, T arg) {
 		if (arg == null) {
 			throw new NullPointerException(text + " is null.");
 		}
@@ -23,15 +23,15 @@ public class ArgumentUtil {
 	 * 检测若干参数是否为null,如果为null则抛出空指针异常
 	 * 否则返回参数
 	 */
-	public static <T> void isNotNull(String[] text,T... arg) {
-		if(text.length != arg.length){
+	public static <T> void isNotNull(String[] text, T... arg) {
+		if (text.length != arg.length) {
 			throw new IllegalArgumentException("text[] 与 args 长度不等");
 		}
 
-		for(int i= 0; i < arg.length ; i++)
-		if (arg == null) {
-			throw new NullPointerException(text[i] + "is null.");
-		}
+		for (int i = 0; i < arg.length; i++)
+			if (arg == null) {
+				throw new NullPointerException(text[i] + "is null.");
+			}
 	}
 
 	/**
@@ -39,8 +39,8 @@ public class ArgumentUtil {
 	 *
 	 * @param arg
 	 */
-	public static void isNotBlank(String arg){
-		if(StringUtils.isBlank(arg)){
+	public static void isNotBlank(String arg) {
+		if (StringUtils.isBlank(arg)) {
 			throw new IllegalArgumentException(arg + "is Illegal argument.");
 		}
 	}

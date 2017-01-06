@@ -12,23 +12,23 @@ import java.util.Map;
 /**
  * 清理超时的请求
  */
-public class ClearTimeoutFutureTask implements Runnable{
+public class ClearTimeoutFutureTask implements Runnable {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClearTimeoutFutureTask.class);
 
 	LifeCycle parent;
 
 	// 存放同步和异步命令应答
-	protected final Map<Integer, ResponseFuture> futures ;
+	protected final Map<Integer, ResponseFuture> futures;
 
-	public ClearTimeoutFutureTask(LifeCycle nettyTransPort, Map<Integer,ResponseFuture> futures) {
+	public ClearTimeoutFutureTask(LifeCycle nettyTransPort, Map<Integer, ResponseFuture> futures) {
 		this.parent = nettyTransPort;
 		this.futures = futures;
 	}
 
 	@Override
 	public void run() {
-		if(!parent.isStarted()){
+		if (!parent.isStarted()) {
 			return;
 		}
 
@@ -45,7 +45,7 @@ public class ClearTimeoutFutureTask implements Runnable{
 				it.remove();
 				if (!responseFuture.isDone()) {
 					try {
-						responseFuture.cancel(new RemotingIOException("请求"+responseFuture.getRequestId()+"超时,"+"链接为"+responseFuture.getChannel()));
+						responseFuture.cancel(new RemotingIOException("请求" + responseFuture.getRequestId() + "超时," + "链接为" + responseFuture.getChannel()));
 					} catch (Throwable e) {
 						logger.error("clear timeout response exception", e);
 					}

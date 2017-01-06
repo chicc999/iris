@@ -15,11 +15,10 @@ public class NetUtil {
 	 *
 	 * @param address serverName格式的字符串
 	 * @return inetSocketAddress
-	 * @see java.net.InetSocketAddress
-	 *
 	 * @throws UnknownHostException 如果遇到无法转换的serverName
+	 * @see java.net.InetSocketAddress
 	 */
-	public static InetSocketAddress serverNameToISA(String address)throws UnknownHostException {
+	public static InetSocketAddress serverNameToISA(String address) throws UnknownHostException {
 
 		ArgumentUtil.isNotBlank(address);
 

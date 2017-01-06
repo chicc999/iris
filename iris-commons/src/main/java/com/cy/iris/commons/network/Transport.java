@@ -19,7 +19,7 @@ public interface Transport {
 	 * @return 应答命令
 	 * @throws RemotingIOException
 	 */
-	Command sync(Channel channel, Command command) throws RemotingIOException,RequestTimeoutException;
+	Command sync(Channel channel, Command command) throws RemotingIOException, RequestTimeoutException;
 
 	/**
 	 * 同步发送，需要应答
@@ -30,7 +30,7 @@ public interface Transport {
 	 * @return 应答命令
 	 * @throws RemotingIOException
 	 */
-	Command sync(Channel channel, Command command, int timeout) throws RemotingIOException,RequestTimeoutException;
+	Command sync(Channel channel, Command command, int timeout) throws RemotingIOException, RequestTimeoutException;
 
 	/**
 	 * 异步发送，需要应答

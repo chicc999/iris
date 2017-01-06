@@ -49,14 +49,14 @@ public class ResponseFuture {
 	/**
 	 * 异步调用构造函数
 	 *
-	 * @param channel   通道
-	 * @param request   请求
-	 * @param timeout   超时
-	 * @param callback  异步调用回调
+	 * @param channel  通道
+	 * @param request  请求
+	 * @param timeout  超时
+	 * @param callback 异步调用回调
 	 */
 	public ResponseFuture(Channel channel, Command request, long timeout, CommandCallback callback) {
-		ArgumentUtil.isNotNull("request",request);
-		ArgumentUtil.isNotNull("channel",channel);
+		ArgumentUtil.isNotNull("request", request);
+		ArgumentUtil.isNotNull("channel", channel);
 		this.channel = channel;
 		this.request = request;
 		this.timeout = timeout;
@@ -66,9 +66,9 @@ public class ResponseFuture {
 	/**
 	 * 异步调用构造函数
 	 *
-	 * @param channel   通道
-	 * @param request   请求
-	 * @param timeout   超时
+	 * @param channel 通道
+	 * @param request 请求
+	 * @param timeout 超时
 	 */
 	public ResponseFuture(Channel channel, Command request, long timeout) {
 		if (request == null) {
@@ -172,7 +172,7 @@ public class ResponseFuture {
 					logger.error("bigbug: success and exception confused! {}", request);
 				}
 			} catch (Throwable ignored) {
-				logger.error("callback error",ignored);
+				logger.error("callback error", ignored);
 			}
 		}
 	}

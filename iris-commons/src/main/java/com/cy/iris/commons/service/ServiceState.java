@@ -1,7 +1,6 @@
 package com.cy.iris.commons.service;
 
 /**
- *
  * 服务器状态
  */
 public enum ServiceState {

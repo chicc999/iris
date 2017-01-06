@@ -28,7 +28,7 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 			return;
 		}
 
-		logger.debug("dispatcher command : {} {}",command.getHeader().getHeaderType().toString(),command.getHeader().getTypeString());
+		logger.debug("dispatcher command : {} {}", command.getHeader().getHeaderType().toString(), command.getHeader().getTypeString());
 
 		HeaderType headerType = command.getHeader().getHeaderType();
 		switch (headerType) {
@@ -50,7 +50,7 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 
 	private void processRequest(ChannelHandlerContext ctx, Command command) {
 		int type = command.getHeader().getType();
-		if(Command.HEARTBEAT == type){
+		if (Command.HEARTBEAT == type) {
 			//双向心跳,无需处理
 			return;
 		}
@@ -61,8 +61,8 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 
 	@Override
 	public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
-		logger.error(cause.getMessage(),cause);
+		logger.error(cause.getMessage(), cause);
 		ctx.close();
 	}
-	
+
 }

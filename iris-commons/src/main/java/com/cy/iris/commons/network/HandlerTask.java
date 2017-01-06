@@ -9,7 +9,7 @@ import io.netty.channel.ChannelHandlerContext;
 /**
  * Created by cy on 16/12/29.
  */
-public class HandlerTask implements Runnable{
+public class HandlerTask implements Runnable {
 
 	private ChannelHandlerContext ctx;
 	private Command request;

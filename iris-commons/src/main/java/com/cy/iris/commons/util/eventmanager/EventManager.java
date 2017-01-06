@@ -14,14 +14,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 事件管理器
- *
- *
+ * <p>
+ * <p>
  * 事件派发器
  * 如果 interval>0 ,则开启事件合并,每次只发布最后一个事件.否则发布每一个事件;
  * 如果 triggerNoEvent==true ,则在没有事件时,也触发空事件 (触发间隔interval+timeout);
  * 如果 idleTime>0 ,触发空闲检测.触发间隔为 (最后一次非空事件触发时间+idleTime).
  */
-public class EventManager<E> extends Service{
+public class EventManager<E> extends Service {
 	// 监听器
 	protected CopyOnWriteArrayList<EventListener<E>> listeners = new CopyOnWriteArrayList<EventListener<E>>();
 	// 事件队列
@@ -31,7 +31,7 @@ public class EventManager<E> extends Service{
 	// 事件派发线程
 	protected Thread dispatcher;
 	// 事件派发处理器
-	protected EventDispatcher eventDispatcher ;
+	protected EventDispatcher eventDispatcher;
 	// 启动标示
 	protected AtomicBoolean started = new AtomicBoolean(false);
 	// 没有事件的也触发监听器
@@ -42,7 +42,7 @@ public class EventManager<E> extends Service{
 	protected long idleTime;
 
 	// 从队列中获取事件的超时时间,如果队列中没有数据,最多等待此时间
-	private long timeout ;
+	private long timeout;
 
 	public EventManager() {
 		this(null, 0);
@@ -199,6 +199,7 @@ public class EventManager<E> extends Service{
 
 	/**
 	 * 获取监听器
+	 *
 	 * @return 所有监听器列表
 	 */
 	public List<EventListener<E>> getListeners() {
@@ -269,7 +270,7 @@ public class EventManager<E> extends Service{
 
 	/**
 	 * 同步通知事件
-	 *
+	 * <p>
 	 * 由添加事件线程直接完成,避免事件派发线程异步派发以及排队触发
 	 *
 	 * @param event 事件
@@ -279,9 +280,9 @@ public class EventManager<E> extends Service{
 			return;
 		}
 		for (EventListener<E> listener : listeners) {
-			
+
 			listener.onEvent(event);
-			
+
 		}
 	}
 
@@ -318,7 +319,7 @@ public class EventManager<E> extends Service{
 			} catch (Throwable ignored) {
 			}
 		} else {
-			E e = event == null ? null : (E)event.getEvent();
+			E e = event == null ? null : (E) event.getEvent();
 			for (EventListener<E> listener : listeners) {
 				try {
 					listener.onEvent(e);
@@ -344,8 +345,8 @@ public class EventManager<E> extends Service{
 
 		@Override
 		public void doStart() throws Exception {
-				latch = new CountDownLatch(1);
-				gracefully.set(false);
+			latch = new CountDownLatch(1);
+			gracefully.set(false);
 		}
 
 		@Override
@@ -377,6 +378,7 @@ public class EventManager<E> extends Service{
 
 		/**
 		 * 优雅关闭
+		 *
 		 * @param gracefully 是否优雅关闭
 		 */
 		public void stop(boolean gracefully) {

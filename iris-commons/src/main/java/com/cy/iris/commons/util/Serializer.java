@@ -11,16 +11,16 @@ public class Serializer {
 	/**
 	 * 写字符串
 	 *
-	 * @param value      字符串
-	 * @param out        输出缓冲区
+	 * @param value 字符串
+	 * @param out   输出缓冲区
 	 */
-	public static void write(final String value, final ByteBuf out)  {
+	public static void write(final String value, final ByteBuf out) {
 
-		ArgumentUtil.isNotNull("out",out);
+		ArgumentUtil.isNotNull("out", out);
 
 		byte[] bytes = value.getBytes(Charset.forName("UTF-8"));
 
-		if(bytes.length > Integer.MAX_VALUE){
+		if (bytes.length > Integer.MAX_VALUE) {
 			throw new IllegalArgumentException("too large String");
 		}
 		//value必须小于2G
@@ -33,16 +33,16 @@ public class Serializer {
 	/**
 	 * 读字符串
 	 *
-	 * @param in        输入缓冲区
+	 * @param in 输入缓冲区
 	 */
-	public static String read(final ByteBuf in)  {
+	public static String read(final ByteBuf in) {
 
-		ArgumentUtil.isNotNull("in",in);
+		ArgumentUtil.isNotNull("in", in);
 
 		int len = in.readInt();
 		byte[] bytes = new byte[len];
 		in.readBytes(bytes);
-		String value= new String(bytes,Charset.forName("UTF-8"));
+		String value = new String(bytes, Charset.forName("UTF-8"));
 
 		return value;
 
