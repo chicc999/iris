@@ -123,6 +123,7 @@ public class NettyServer extends NettyTransport {
 				.childHandler(new ChannelInitializer() {
 					@Override
 					protected void initChannel(Channel ch) throws Exception {
+						ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(config.getFrameMaxSize(), 0, 4, 0, 4));
 						ch.pipeline().addLast(new CommandDecoder());
 						ch.pipeline().addLast(new CommandEncoder());
 						ch.pipeline().addLast(new IdleStateHandler(0, 0, config.getChannelMaxIdleTime(), TimeUnit.MILLISECONDS));

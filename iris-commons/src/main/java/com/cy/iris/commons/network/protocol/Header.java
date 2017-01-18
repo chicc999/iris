@@ -109,20 +109,20 @@ public class Header {
 		// 1个字节的数据版本
 		version = in.readByte();
 		// 1个字节标识字段 (其中1-1：请求应答标识; 2-3:应答类型; 4-5:事务类型; 6-8:其它)
-		int flag = in.readUnsignedByte();
+		int flag = in.readByte();
 		headerType = HeaderType.valueOf(flag & 0x1);
 		// 应答类型
 		acknowledge = Acknowledge.valueOf((flag >> 1) & 0x3);
 		// 4个字节请求ID
 		requestId = in.readInt();
 		// 1个字节命令类型
-		type = in.readUnsignedByte();
+		type = in.readByte();
 		// 8个字节发送时间
 		time = in.readLong();
 		// 如果为响应类型，需读响应状态吗和错误消息
 		if (headerType == HeaderType.RESPONSE) {
 			// 1个字节的状态码
-			status = in.readUnsignedByte();
+			status = in.readByte();
 			// 2个字节的异常长度
 			// 异常信息
 			error = Serializer.read(in);

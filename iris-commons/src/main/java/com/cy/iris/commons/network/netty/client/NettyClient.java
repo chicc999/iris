@@ -68,7 +68,7 @@ public class NettyClient extends NettyTransport {
 	/**
 	 * 创建连接，阻塞直到成功或失败
 	 *
-	 * @param address  地址
+	 * @param address 地址
 	 */
 	public ChannelFuture createChannel(String address) throws UnknownHostException {
 
@@ -79,7 +79,7 @@ public class NettyClient extends NettyTransport {
 	/**
 	 * 创建连接，阻塞直到成功或失败
 	 *
-	 * @param address  地址
+	 * @param address 地址
 	 */
 	public Channel createChannelSync(String address) throws UnknownHostException, ConnectException {
 
@@ -89,11 +89,12 @@ public class NettyClient extends NettyTransport {
 
 	/**
 	 * 创建连接
-	 * @param address           地址
+	 *
+	 * @param address 地址
 	 */
-	public ChannelFuture createChannel(InetSocketAddress address)  {
+	public ChannelFuture createChannel(InetSocketAddress address) {
 
-		ArgumentUtil.isNotNull("address",address);
+		ArgumentUtil.isNotNull("address", address);
 
 		ChannelFuture channelFuture = this.bootstrap.connect(address);
 
@@ -114,12 +115,12 @@ public class NettyClient extends NettyTransport {
 			channelFuture.sync();
 
 		} catch (InterruptedException e) {
-			logger.error("连接远程服务器被终止,逻辑上不应该发生此错误",e);
-			throw new ConnectException(e,"连接远程服务器:"+address+"终止,逻辑上不应该发生此错误");
+			logger.error("连接远程服务器被终止,逻辑上不应该发生此错误", e);
+			throw new ConnectException(e, "连接远程服务器:" + address + "终止,逻辑上不应该发生此错误");
 		}
 
 		if (!channelFuture.isSuccess() || channelFuture.channel() == null || !channelFuture.channel().isActive()) {
-			throw new ConnectException(channelFuture.cause(),"向address:"+address+"创建连接失败");
+			throw new ConnectException(channelFuture.cause(), "向address:" + address + "创建连接失败");
 		}
 
 		return channelFuture.channel();
@@ -132,7 +133,7 @@ public class NettyClient extends NettyTransport {
 		bootstrap = new Bootstrap();
 		bootstrap.group(ioLoopGroup).channel(config.isEpoll() ? EpollSocketChannel.class : NioSocketChannel.class)
 				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, ((NettyClientConfig) config).getConnectionTimeout())
-				.option(ChannelOption.TCP_NODELAY,  config.isTcpNoDelay())
+				.option(ChannelOption.TCP_NODELAY, config.isTcpNoDelay())
 				.option(ChannelOption.SO_REUSEADDR, config.isReuseAddress())
 				.option(ChannelOption.SO_KEEPALIVE, config.isKeepAlive())
 				.option(ChannelOption.SO_LINGER, config.getSoLinger())
@@ -142,6 +143,7 @@ public class NettyClient extends NettyTransport {
 				.handler(new ChannelInitializer() {
 					@Override
 					protected void initChannel(Channel ch) throws Exception {
+						ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(config.getFrameMaxSize(), 0, 4, 0, 4));
 						ch.pipeline().addLast(new CommandDecoder());
 						ch.pipeline().addLast(new CommandEncoder());
 						ch.pipeline().addLast(new IdleStateHandler(0, 0, config.getChannelMaxIdleTime(), TimeUnit.MILLISECONDS));

@@ -33,15 +33,12 @@ public class CommandDecoder extends ByteToMessageDecoder {
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
 
-		switch (state){
+		switch (state) {
 			case Header:
-				if(in.readableBytes()<4){
-					return;
-				}
 				headerSize = in.readInt();
-				logger.debug("decode : header len {}",headerSize);
+				logger.debug("decode : header len {}", headerSize);
 
-				if(in.readableBytes()<headerSize){
+				if (in.readableBytes() < headerSize) {
 					return;
 				}
 
@@ -51,14 +48,11 @@ public class CommandDecoder extends ByteToMessageDecoder {
 
 				state = State.Body;
 			case Body:
-				if(in.readableBytes()<4){
-					return;
-				}
 				bodySize = in.readInt();
 
-				logger.debug("decode : body len {}",bodySize);
+				logger.debug("decode : body len {}", bodySize);
 
-				if(in.readableBytes()<bodySize){
+				if (in.readableBytes() < bodySize) {
 					return;
 				}
 
@@ -66,7 +60,7 @@ public class CommandDecoder extends ByteToMessageDecoder {
 
 				command.decodeBody(in);
 				out.add(command);
-				logger.debug("Command decode : {}",command);
+				logger.debug("Command decode : {}", command);
 				state = State.Header;
 		}
 	}

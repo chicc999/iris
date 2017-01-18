@@ -19,7 +19,7 @@ public class CommandFactory {
 				return new HeartBeat(header);
 			case Command.GET_CLUSTER:
 				return new GetCluster(header);
-			case Command.ERROR_RESPONSE:
+			case Command.BOOLEAN_ACK:
 				return new ErrorResponse(header);
 		}
 		throw new UnknowCommandException("未定义的协议" + header.getType());
