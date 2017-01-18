@@ -40,6 +40,11 @@ public class Serializer {
 		ArgumentUtil.isNotNull("in", in);
 
 		int len = in.readInt();
+
+		if (len > Integer.MAX_VALUE || len < 0) {
+			throw new IllegalArgumentException("illegal string length: " + len);
+		}
+
 		byte[] bytes = new byte[len];
 		in.readBytes(bytes);
 		String value = new String(bytes, Charset.forName("UTF-8"));
