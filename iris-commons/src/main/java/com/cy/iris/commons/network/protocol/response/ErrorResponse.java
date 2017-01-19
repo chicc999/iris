@@ -12,10 +12,7 @@ import io.netty.buffer.PooledByteBufAllocator;
  */
 public class ErrorResponse extends Command {
 
-	// 响应状态码
-	private int status;
-	// 响应错误信息
-	private String error;
+
 
 	public ErrorResponse(Header header) {
 		this.header = header;
@@ -24,21 +21,18 @@ public class ErrorResponse extends Command {
 
 	public ErrorResponse(int status, String error) {
 		super(new Header(HeaderType.RESPONSE,HEARTBEAT).typeString("ERROR_RESPONSE"));
-		this.status = status;
-		this.error = error;
+		this.header.setStatus(status);
+		this.header.setError(error);
 	}
 
 	@Override
 	protected ByteBuf encodeBody() {
 		ByteBuf body = PooledByteBufAllocator.DEFAULT.buffer();
-		body.writeInt(this.status);
-		Serializer.write(this.error,body);
 		return body;
 	}
 
 	@Override
 	protected void decodeBody(ByteBuf in) {
-		this.status = in.readInt();
-		this.error = Serializer.read(in);
+		return;
 	}
 }

@@ -157,4 +157,30 @@ public class Header {
 		return this;
 	}
 
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public Header status(int status) {
+		this.status = status;
+		return this;
+	}
+
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
+	}
+
+	public Header error(String error) {
+		this.error = error;
+		return this;
+	}
 }
