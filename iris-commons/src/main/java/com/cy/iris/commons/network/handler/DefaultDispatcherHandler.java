@@ -2,9 +2,8 @@ package com.cy.iris.commons.network.handler;
 
 import com.cy.iris.commons.network.protocol.Command;
 import com.cy.iris.commons.network.protocol.HeaderType;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import com.cy.iris.commons.network.protocol.response.ErrorResponse;
+import io.netty.channel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +61,15 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 	@Override
 	public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
 		logger.error(cause.getMessage(), cause);
-		ctx.close();
+		ctx.writeAndFlush(new ErrorResponse(-1,cause.toString())).addListener(new ChannelFutureListener() {
+			@Override
+			public void operationComplete(ChannelFuture future) throws Exception {
+				if(!future.isSuccess() && null != future.cause() ){
+					logger.error("回写response失败",future.cause());
+				}
+				ctx.close();
+			}
+		});
 	}
 
 }

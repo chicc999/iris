@@ -31,7 +31,6 @@ public class DefaultConnectionHandler extends ChannelDuplexHandler {
 
 	@Override
 	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
-		logger.info("active");
 		super.channelActive(ctx);
 	}
 
