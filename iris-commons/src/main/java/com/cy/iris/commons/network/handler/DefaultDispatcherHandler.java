@@ -55,6 +55,11 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 		}
 
 		CommandHandler handler = handlerFactory.getHandler(command.getHeader().getType());
+		try {
+			handler.process(ctx,command);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 
@@ -67,6 +72,7 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 				if(!future.isSuccess() && null != future.cause() ){
 					logger.error("回写response失败",future.cause());
 				}
+				//网络模块发生解析异常直接关闭连接,应用层仅仅回复错误响应
 				ctx.close();
 			}
 		});

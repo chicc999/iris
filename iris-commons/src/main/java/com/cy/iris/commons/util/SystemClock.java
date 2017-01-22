@@ -35,7 +35,7 @@ public class SystemClock {
 		scheduler.scheduleAtFixedRate(new Timer(), precision, precision, TimeUnit.MILLISECONDS);
 	}
 
-	public static long now() {
+	public static long currentTimeMillis() {
 		return instance.now.get();
 	}
 

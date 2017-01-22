@@ -42,7 +42,7 @@ public class ClearTimeoutFutureTask implements Runnable {
 			responseFuture = entry.getValue();
 			timeout = responseFuture.getBeginTime() + responseFuture.getTimeout() + 1000;
 
-			if (timeout <= SystemClock.now()) {
+			if (timeout <= SystemClock.currentTimeMillis()) {
 				it.remove();
 				if (!responseFuture.isDone()) {
 					try {

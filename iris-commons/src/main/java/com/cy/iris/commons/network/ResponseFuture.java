@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ResponseFuture {
 	protected static Logger logger = LoggerFactory.getLogger(ResponseFuture.class);
 	// 开始事件
-	private final long beginTime = SystemClock.now();
+	private final long beginTime = SystemClock.currentTimeMillis();
 	// 请求
 	private Command request;
 	// 应答
@@ -138,7 +138,7 @@ public class ResponseFuture {
 	 * @return
 	 */
 	public boolean isTimeout() {
-		return SystemClock.now() > beginTime + timeout;
+		return SystemClock.currentTimeMillis() > beginTime + timeout;
 	}
 
 

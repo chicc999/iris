@@ -398,7 +398,7 @@ public class EventManager<E> extends Service {
 
 		@Override
 		public void run() {
-			long lastTime = SystemClock.now();
+			long lastTime = SystemClock.currentTimeMillis();
 			long now;
 			EventOwner eventOwner;
 			while (true) {
@@ -433,7 +433,7 @@ public class EventManager<E> extends Service {
 					if (eventOwner != null) {
 						if (idleTime > 0) {
 							// 启用空闲检测
-							lastTime = SystemClock.now();
+							lastTime = SystemClock.currentTimeMillis();
 
 						}
 
@@ -460,7 +460,7 @@ public class EventManager<E> extends Service {
 						}
 						if (idleTime > 0) {
 							// 启用空闲检测
-							now = SystemClock.now();
+							now = SystemClock.currentTimeMillis();
 							if (now - lastTime > idleTime) {
 								lastTime = now;
 								onIdle();
