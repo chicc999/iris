@@ -1,6 +1,7 @@
 package com.cy.iris.commons.util.eventmanager;
 
 import com.cy.iris.commons.service.Service;
+import com.cy.iris.commons.util.SystemClock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -397,7 +398,7 @@ public class EventManager<E> extends Service {
 
 		@Override
 		public void run() {
-			long lastTime = System.currentTimeMillis();
+			long lastTime = SystemClock.now();
 			long now;
 			EventOwner eventOwner;
 			while (true) {
@@ -432,7 +433,7 @@ public class EventManager<E> extends Service {
 					if (eventOwner != null) {
 						if (idleTime > 0) {
 							// 启用空闲检测
-							lastTime = System.currentTimeMillis();
+							lastTime = SystemClock.now();
 
 						}
 
@@ -459,7 +460,7 @@ public class EventManager<E> extends Service {
 						}
 						if (idleTime > 0) {
 							// 启用空闲检测
-							now = System.currentTimeMillis();
+							now = SystemClock.now();
 							if (now - lastTime > idleTime) {
 								lastTime = now;
 								onIdle();

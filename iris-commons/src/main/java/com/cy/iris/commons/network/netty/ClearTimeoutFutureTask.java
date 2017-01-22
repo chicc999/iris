@@ -3,6 +3,7 @@ package com.cy.iris.commons.network.netty;
 import com.cy.iris.commons.exception.RemotingIOException;
 import com.cy.iris.commons.network.ResponseFuture;
 import com.cy.iris.commons.service.LifeCycle;
+import com.cy.iris.commons.util.SystemClock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,7 @@ public class ClearTimeoutFutureTask implements Runnable {
 			responseFuture = entry.getValue();
 			timeout = responseFuture.getBeginTime() + responseFuture.getTimeout() + 1000;
 
-			if (timeout <= System.currentTimeMillis()) {
+			if (timeout <= SystemClock.now()) {
 				it.remove();
 				if (!responseFuture.isDone()) {
 					try {

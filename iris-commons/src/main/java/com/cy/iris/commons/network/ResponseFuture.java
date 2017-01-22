@@ -2,6 +2,7 @@ package com.cy.iris.commons.network;
 
 import com.cy.iris.commons.network.protocol.*;
 import com.cy.iris.commons.util.ArgumentUtil;
+import com.cy.iris.commons.util.SystemClock;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ResponseFuture {
 	protected static Logger logger = LoggerFactory.getLogger(ResponseFuture.class);
 	// 开始事件
-	private final long beginTime = System.currentTimeMillis();
+	private final long beginTime = SystemClock.now();
 	// 请求
 	private Command request;
 	// 应答
@@ -137,7 +138,7 @@ public class ResponseFuture {
 	 * @return
 	 */
 	public boolean isTimeout() {
-		return System.currentTimeMillis() > beginTime + timeout;
+		return SystemClock.now() > beginTime + timeout;
 	}
 
 
