@@ -169,11 +169,6 @@ public class EventManager<E> extends Service {
 		}
 	}
 
-	@Override
-	public void afterStop() {
-
-	}
-
 	/**
 	 * 增加监听器
 	 *
@@ -370,11 +365,6 @@ public class EventManager<E> extends Service {
 					Thread.currentThread().interrupt();
 				}
 			}
-		}
-
-		@Override
-		public void afterStop() {
-
 		}
 
 		/**

@@ -207,14 +207,6 @@ public abstract class NettyTransport extends Service implements Transport {
 	}
 
 	/**
-	 * 停止后
-	 */
-	@Override
-	public void afterStop() {
-
-	}
-
-	/**
 	 * 创建事件循环组，尽量共享
 	 *
 	 * @param threads       线程数

@@ -19,9 +19,6 @@ public abstract class Service implements LifeCycle {
 
 	Logger logger = LoggerFactory.getLogger(Service.class);
 
-	// 是否启动
-	//protected final AtomicBoolean started = new AtomicBoolean(false);
-
 	// 服务状态
 	protected final AtomicReference<ServiceState> serviceState =
 			new AtomicReference<ServiceState>(ServiceState.STOPPED);
@@ -120,10 +117,5 @@ public abstract class Service implements LifeCycle {
 	 * 停止
 	 */
 	public abstract void doStop();
-
-	/**
-	 * 停止后
-	 */
-	public abstract void afterStop();
 
 }
