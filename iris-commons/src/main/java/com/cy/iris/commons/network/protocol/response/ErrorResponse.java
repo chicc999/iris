@@ -20,9 +20,16 @@ public class ErrorResponse extends Command {
 	}
 
 	public ErrorResponse(int status, String error) {
-		super(new Header(HeaderType.RESPONSE,HEARTBEAT).typeString("ERROR_RESPONSE"));
+		super(new Header(HeaderType.RESPONSE,BOOLEAN_ACK).typeString("ERROR_RESPONSE"));
 		this.header.setStatus(status);
 		this.header.setError(error);
+	}
+
+	public ErrorResponse(int status, String error,int requestId) {
+		super(new Header(HeaderType.RESPONSE,BOOLEAN_ACK).typeString("ERROR_RESPONSE"));
+		this.header.setStatus(status);
+		this.header.setError(error);
+		this.header.setRequestId(requestId);
 	}
 
 	@Override

@@ -183,4 +183,8 @@ public class Header {
 		this.error = error;
 		return this;
 	}
+
+	public Acknowledge getAcknowledge() {
+		return acknowledge;
+	}
 }

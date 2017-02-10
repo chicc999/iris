@@ -1,5 +1,7 @@
 package com.cy.iris.commons.network.handler;
 
+import com.cy.iris.commons.exception.UnknowCommandException;
+import com.cy.iris.commons.network.protocol.Acknowledge;
 import com.cy.iris.commons.network.protocol.Command;
 import com.cy.iris.commons.network.protocol.HeaderType;
 import com.cy.iris.commons.network.protocol.response.ErrorResponse;
@@ -32,7 +34,17 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 		HeaderType headerType = command.getHeader().getHeaderType();
 		switch (headerType) {
 			case REQUEST: { // 如果是请求命令， 做请求处理
-				processRequest(ctx, command);
+				try {
+					processRequest(ctx, command);
+				}catch (Exception e){
+					logger.error(e.getMessage(), e);
+					//如果请求需要响应
+					if (command.getHeader().getAcknowledge() != Acknowledge.ACK_NO) {
+						//写出响应,如果出现异常则调用exceptionCaught打印异常关闭连接
+						ctx.writeAndFlush(new ErrorResponse(-1, e.toString(), command.getRequestId()))
+								.addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+					}
+				}
 				break;
 			}
 			case RESPONSE: { // 如果是响应命令， 做响应处理
@@ -47,7 +59,7 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 
 	}
 
-	private void processRequest(ChannelHandlerContext ctx, Command command) {
+	private void processRequest(ChannelHandlerContext ctx, Command command) throws Exception{
 		int type = command.getHeader().getType();
 		if (Command.HEARTBEAT == type) {
 			//双向心跳,无需处理
@@ -55,27 +67,26 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 		}
 
 		CommandHandler handler = handlerFactory.getHandler(command.getHeader().getType());
-		try {
-			handler.process(ctx,command);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(handler == null){
+			throw new UnknowCommandException("处理"+ command.getHeader().getTypeString() + "的handler不存在");
 		}
+
+
+		handler.process(ctx,command);
+
 	}
 
 
+	/**
+	 * 仅为系统错误才在这里回复并关闭网络,正常业务错误不关闭网络
+	 * @param ctx
+	 * @param cause
+	 * @throws Exception
+	 */
 	@Override
 	public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
 		logger.error(cause.getMessage(), cause);
-		ctx.writeAndFlush(new ErrorResponse(-1,cause.toString())).addListener(new ChannelFutureListener() {
-			@Override
-			public void operationComplete(ChannelFuture future) throws Exception {
-				if(!future.isSuccess() && null != future.cause() ){
-					logger.error("回写response失败",future.cause());
-				}
-				//网络模块发生解析异常直接关闭连接,应用层仅仅回复错误响应
-				ctx.close();
-			}
-		});
+		ctx.close();
 	}
 
 }

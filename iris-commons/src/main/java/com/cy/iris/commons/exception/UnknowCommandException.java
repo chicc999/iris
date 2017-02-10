@@ -3,7 +3,7 @@ package com.cy.iris.commons.exception;
 /**
  * Created by cy on 16/12/29.
  */
-public class UnknowCommandException extends RuntimeException{
+public class UnknowCommandException extends Exception{
 	public UnknowCommandException() {
 	}
 
