@@ -1,13 +1,17 @@
 package com.cy.iris.commons.network.handler;
 
 import com.cy.iris.commons.exception.UnknowCommandException;
+import com.cy.iris.commons.network.ResponseFuture;
 import com.cy.iris.commons.network.protocol.Acknowledge;
 import com.cy.iris.commons.network.protocol.Command;
+import com.cy.iris.commons.network.protocol.Header;
 import com.cy.iris.commons.network.protocol.HeaderType;
 import com.cy.iris.commons.network.protocol.response.ErrorResponse;
 import io.netty.channel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * command派发handler
@@ -19,8 +23,12 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 
 	private CommandHandlerFactory handlerFactory;
 
-	public DefaultDispatcherHandler(CommandHandlerFactory handlerFactory) {
+	// 存放同步和异步命令应答
+	protected final Map<Integer, ResponseFuture> futures;
+
+	public DefaultDispatcherHandler(CommandHandlerFactory handlerFactory,Map<Integer, ResponseFuture> futures) {
 		this.handlerFactory = handlerFactory;
+		this.futures = futures;
 	}
 
 	@Override
@@ -55,7 +63,18 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 	}
 
 	private void processResponse(ChannelHandlerContext ctx, Command command) {
+		Header header = command.getHeader();
+		// 超时被删除了
+		final ResponseFuture responseFuture = futures.get(header.getRequestId());
+		if (responseFuture == null) {
+			logger.info("ack type:" + header.getTypeString() + " requestId:" + header
+						.getRequestId() + " but responseFuture is null");
 
+			return;
+		}
+
+		responseFuture.setResponse(command);
+		responseFuture.done();
 
 	}
 

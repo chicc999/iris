@@ -34,11 +34,11 @@ public class ResponseFuture {
 	private Channel channel;
 	// 回调
 	private CommandCallback callback;
-	// 是否成功
+	// 通信是否成功
 	private boolean isSuccess;
-	//是否完成
+	// 通信是否完成
 	private boolean isDone;
-	//是否完成
+	// 通信是否取消
 	private boolean isCancel;
 	// 回调一次
 	private AtomicBoolean onceCallback = new AtomicBoolean(false);
@@ -179,7 +179,7 @@ public class ResponseFuture {
 	}
 
 	/**
-	 * 确定成功
+	 * 确定通信成功
 	 */
 	private void onSuccess() {
 		setSuccess(true);
@@ -187,7 +187,7 @@ public class ResponseFuture {
 	}
 
 	/**
-	 * 确定失败
+	 * 确定通信失败
 	 */
 	private void onFailed(Throwable cause) {
 		setSuccess(false);

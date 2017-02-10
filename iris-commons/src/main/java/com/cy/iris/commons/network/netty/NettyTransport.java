@@ -154,7 +154,7 @@ public abstract class NettyTransport extends Service implements Transport {
 		}
 
 		if (dispatcherHandler == null) {
-			dispatcherHandler = new DefaultDispatcherHandler(factory);
+			dispatcherHandler = new DefaultDispatcherHandler(factory,futures);
 		}
 
 

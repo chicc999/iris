@@ -37,6 +37,7 @@ public class DefaultConnectionHandler extends ChannelDuplexHandler {
 	@Override
 	public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
 		super.channelInactive(ctx);
+		logger.debug("连接 {} 断开",ctx.channel());
 	}
 
 	@Override
