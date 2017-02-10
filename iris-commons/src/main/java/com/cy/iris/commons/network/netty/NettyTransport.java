@@ -153,8 +153,15 @@ public abstract class NettyTransport extends Service implements Transport {
 			connectionHandler = new DefaultConnectionHandler();
 		}
 
+		if (serviceExecutor == null) {
+			//创建业务&回调线程池
+			serviceExecutor = new ThreadPoolExecutor(config.getServiceExecutorThreads(),
+					config.getServiceExecutorThreads(),0L, TimeUnit.MILLISECONDS,
+					new ArrayBlockingQueue<Runnable>(1000),new NamedThreadFactory("ServiceExecutor"));
+		}
+
 		if (dispatcherHandler == null) {
-			dispatcherHandler = new DefaultDispatcherHandler(factory,futures);
+			dispatcherHandler = new DefaultDispatcherHandler(factory,serviceExecutor,futures);
 		}
 
 
@@ -163,10 +170,6 @@ public abstract class NettyTransport extends Service implements Transport {
 			ioLoopGroup = createEventLoopGroup(config.getWorkerThreads(), new NamedThreadFactory("IoLoopGroup"));
 			createIoLoopGroup = true;
 		}
-
-		//创建业务&回调线程池
-		serviceExecutor = Executors
-				.newFixedThreadPool(config.getCallbackExecutorThreads(), new NamedThreadFactory("AsyncCallback"));
 
 		clear = Executors.newScheduledThreadPool(1);
 		clear.scheduleWithFixedDelay(new ClearTimeoutFutureTask(this, futures), 3000, 1000, TimeUnit.MILLISECONDS);

@@ -1,5 +1,6 @@
 package com.cy.iris.commons.network.handler;
 
+import com.cy.iris.commons.exception.ServiceTooBusyException;
 import com.cy.iris.commons.exception.UnknowCommandException;
 import com.cy.iris.commons.network.ResponseFuture;
 import com.cy.iris.commons.network.protocol.Acknowledge;
@@ -12,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionException;
 
 /**
  * command派发handler
@@ -26,8 +29,12 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 	// 存放同步和异步命令应答
 	protected final Map<Integer, ResponseFuture> futures;
 
-	public DefaultDispatcherHandler(CommandHandlerFactory handlerFactory,Map<Integer, ResponseFuture> futures) {
+	//异步处理请求或者响应回调的线程池
+	protected ExecutorService serviceExecutor;
+
+	public DefaultDispatcherHandler(CommandHandlerFactory handlerFactory,ExecutorService serviceExecutor,Map<Integer, ResponseFuture> futures) {
 		this.handlerFactory = handlerFactory;
+		this.serviceExecutor = serviceExecutor;
 		this.futures = futures;
 	}
 
@@ -62,19 +69,29 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 		}
 	}
 
-	private void processResponse(ChannelHandlerContext ctx, Command command) {
+	private void processResponse(final ChannelHandlerContext ctx, final Command command) {
 		Header header = command.getHeader();
 		// 超时被删除了
-		final ResponseFuture responseFuture = futures.get(header.getRequestId());
+		final ResponseFuture responseFuture = futures.remove(header.getRequestId());
 		if (responseFuture == null) {
 			logger.info("ack type:" + header.getTypeString() + " requestId:" + header
 						.getRequestId() + " but responseFuture is null");
-
 			return;
 		}
 
 		responseFuture.setResponse(command);
-		responseFuture.done();
+		//回调交给线程池,避免回调任务阻塞IO线程
+		try {
+			serviceExecutor.submit(new Runnable() {
+				@Override
+				public void run() {
+					responseFuture.done();
+				}
+			});
+		}catch (RejectedExecutionException e){
+			//队列已满,拒绝执行回调
+			responseFuture.cancel(new ServiceTooBusyException("请求成功,但没有足够的资源执行回调",e));
+		}
 
 	}
 

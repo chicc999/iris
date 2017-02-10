@@ -12,7 +12,7 @@ public class NettyClientConfig extends NettyConfig {
     public NettyClientConfig() {
         super();
         workerThreads = 4;
-        callbackExecutorThreads = Runtime.getRuntime().availableProcessors();
+        serviceExecutorThreads = Runtime.getRuntime().availableProcessors();
         selectorThreads = 1;
         channelMaxIdleTime = 120 * 1000;
         maxOneway = 256;
@@ -31,7 +31,7 @@ public class NettyClientConfig extends NettyConfig {
     }
 
     public NettyClientConfig callbackExecutorThreads(final int callbackExecutorThreads) {
-        setCallbackExecutorThreads(callbackExecutorThreads);
+        setServiceExecutorThreads(callbackExecutorThreads);
         return this;
     }
 

@@ -10,8 +10,8 @@ public class NettyConfig {
 	protected int sendTimeout = DEFAULT_ACQUIRE_TIMEOUT;
 	// 工作线程
 	protected int workerThreads = 4;
-	// 异步回调线程数量
-	protected int callbackExecutorThreads = Runtime.getRuntime().availableProcessors();
+	// 业务线程数量
+	protected int serviceExecutorThreads = Runtime.getRuntime().availableProcessors();
 	// 选择器线程
 	protected int selectorThreads = 1;
 	// 通道最大空闲时间(毫秒)
@@ -48,7 +48,7 @@ public class NettyConfig {
 		}
 		setSendTimeout(config.getSendTimeout());
 		setWorkerThreads(config.getWorkerThreads());
-		setCallbackExecutorThreads(config.getCallbackExecutorThreads());
+		setServiceExecutorThreads(config.getServiceExecutorThreads());
 		setSelectorThreads(config.getSelectorThreads());
 		setChannelMaxIdleTime(config.getChannelMaxIdleTime());
 		setReuseAddress(config.isReuseAddress());
@@ -105,16 +105,16 @@ public class NettyConfig {
 		}
 	}
 
-	public int getCallbackExecutorThreads() {
-		if (callbackExecutorThreads <= 0) {
-			callbackExecutorThreads = 4;
+	public int getServiceExecutorThreads() {
+		if (serviceExecutorThreads <= 0) {
+			serviceExecutorThreads = 4;
 		}
-		return callbackExecutorThreads;
+		return serviceExecutorThreads;
 	}
 
-	public void setCallbackExecutorThreads(int callbackExecutorThreads) {
-		if (callbackExecutorThreads > 0) {
-			this.callbackExecutorThreads = callbackExecutorThreads;
+	public void setServiceExecutorThreads(int serviceExecutorThreads) {
+		if (serviceExecutorThreads > 0) {
+			this.serviceExecutorThreads = serviceExecutorThreads;
 		}
 	}
 

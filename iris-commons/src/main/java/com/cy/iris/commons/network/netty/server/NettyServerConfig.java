@@ -37,7 +37,7 @@ public class NettyServerConfig extends NettyConfig {
 	}
 
 	public NettyServerConfig callbackExecutorThreads(final int callbackExecutorThreads) {
-		setCallbackExecutorThreads(callbackExecutorThreads);
+		setServiceExecutorThreads(callbackExecutorThreads);
 		return this;
 	}
 
