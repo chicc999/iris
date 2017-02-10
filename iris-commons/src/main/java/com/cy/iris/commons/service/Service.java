@@ -81,19 +81,10 @@ public abstract class Service implements LifeCycle {
 	}
 
 	/**
-	 * 是否允许启动,如果允许是否更改状态成功
+	 * 是否允许关闭,如果允许是否更改状态成功
 	 * @return 是否能变成将要启动状态
 	 */
 	public  boolean channge2StopState(){
-		return serviceState.compareAndSet(ServiceState.STOPPED,ServiceState.WILL_START)
-				|| serviceState.compareAndSet(ServiceState.STOP_FAILED,ServiceState.WILL_START);
-	}
-
-	/**
-	 * 是否允许关闭,如果允许是否更改状态成功
-	 * @return
-	 */
-	public  boolean channge2StartState(){
 		if(isStarted() || serviceState.get().equals(ServiceState.STOP_FAILED)) {
 			return serviceState.compareAndSet(ServiceState.STOP_FAILED,ServiceState.WILL_STOP)
 					|| serviceState.compareAndSet(ServiceState.WILL_START,ServiceState.WILL_STOP)
@@ -103,6 +94,15 @@ public abstract class Service implements LifeCycle {
 
 		}
 		return false;
+	}
+
+	/**
+	 * 是否允许启动,如果允许是否更改状态成功
+	 * @return
+	 */
+	public  boolean channge2StartState(){
+		return serviceState.compareAndSet(ServiceState.STOPPED,ServiceState.WILL_START)
+				|| serviceState.compareAndSet(ServiceState.STOP_FAILED,ServiceState.WILL_START);
 	}
 
 	/**
