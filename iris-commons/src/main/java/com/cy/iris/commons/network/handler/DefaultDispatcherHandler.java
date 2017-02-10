@@ -2,6 +2,7 @@ package com.cy.iris.commons.network.handler;
 
 import com.cy.iris.commons.exception.ServiceTooBusyException;
 import com.cy.iris.commons.exception.UnknowCommandException;
+import com.cy.iris.commons.network.HandlerTask;
 import com.cy.iris.commons.network.ResponseFuture;
 import com.cy.iris.commons.network.protocol.Acknowledge;
 import com.cy.iris.commons.network.protocol.Command;
@@ -102,13 +103,25 @@ public class DefaultDispatcherHandler extends SimpleChannelInboundHandler<Comman
 			return;
 		}
 
-		CommandHandler handler = handlerFactory.getHandler(command.getHeader().getType());
+		Header header = command.getHeader();
+
+		CommandHandler handler = handlerFactory.getHandler(header.getType());
 		if(handler == null){
-			throw new UnknowCommandException("处理"+ command.getHeader().getTypeString() + "的handler不存在");
+			throw new UnknowCommandException("处理"+ header.getTypeString() + "的handler不存在");
 		}
 
-
-		handler.process(ctx,command);
+		try {
+			HandlerTask task = new HandlerTask(ctx, command, handler);
+			ExecutorService commandExecutor = handler.getExecutorService(command);
+			if (commandExecutor == null) {
+				// 如果没用指定处理该命令专用的线程池，则在普通业务线程池执行
+				this.serviceExecutor.submit(task);
+			} else {
+				commandExecutor.submit(task);
+			}
+		} catch (RejectedExecutionException e) {
+			throw new ServiceTooBusyException("too many requests and thread pool is busy, reject request %d from %s ",e);
+		}
 
 	}
 
