@@ -11,5 +11,12 @@
 
     <artifactId>iris-client</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.cy.iris</groupId>
+            <artifactId>iris-commons</artifactId>
+        </dependency>
+    </dependencies>
+
 
 </project>
