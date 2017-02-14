@@ -22,6 +22,7 @@
     <logback.version>1.1.3</logback.version>
     <netty.version>4.1.6.Final</netty.version>
     <commos-lang.version>3.4</commos-lang.version>
+    <spring.version>4.2.5.RELEASE</spring.version>
   </properties>
 
   <dependencyManagement>
@@ -43,6 +44,20 @@
       <artifactId>netty-all</artifactId>
       <version>${netty.version}</version>
     </dependency>
+
+    <!--spring-->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+
 
     <!--log-->
     <dependency>
