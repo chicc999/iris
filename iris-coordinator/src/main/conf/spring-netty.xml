@@ -25,4 +25,7 @@
         <property name="ip" value="${netty.server.ip}"/>
     </bean>
 
+    <bean id="defaultHandlerFactory" class="com.cy.iris.commons.network.handler.DefaultHandlerFactory"/>
+
+
 </beans>

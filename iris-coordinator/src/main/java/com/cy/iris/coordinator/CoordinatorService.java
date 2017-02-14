@@ -3,6 +3,7 @@ package com.cy.iris.coordinator;
 import com.cy.iris.commons.network.netty.server.NettyServer;
 import com.cy.iris.commons.service.Service;
 import com.cy.iris.commons.util.ArgumentUtil;
+import com.cy.iris.coordinator.handler.CoordinatorHandlerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -24,7 +25,10 @@ public class CoordinatorService extends Service{
 		ArgumentUtil.isNotNull("CoordinatorConfig", coordinatorConfig);
 		ArgumentUtil.isNotNull("NettyServerConfig", coordinatorConfig.getNettyServerConfig());
 
-		nettyServer = new NettyServer(coordinatorConfig.getNettyServerConfig());
+		CoordinatorHandlerFactory coordinatorHandlerFactory = new CoordinatorHandlerFactory();
+		if(nettyServer == null) {
+			nettyServer = new NettyServer(coordinatorConfig.getNettyServerConfig(),null,null,null,coordinatorHandlerFactory);
+		}
 	}
 
 	@Override
