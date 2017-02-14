@@ -5,8 +5,6 @@ package com.cy.iris.commons.network.handler;
  */
 public class DefaultHandlerFactory implements CommandHandlerFactory{
 
-	protected SessionHandler sessionHandler;
-
 	@Override
 	public CommandHandler getHandler(int type) {
 		return null;
