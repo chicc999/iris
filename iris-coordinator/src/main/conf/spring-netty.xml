@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	">
+
+    <bean id="nettyServerConfig" class="com.cy.iris.commons.network.netty.server.NettyServerConfig">
+        <property name="sendTimeout" value="${netty.server.sendTimeout}"/>
+        <property name="workerThreads" value="${netty.server.workerThreads}"/>
+        <property name="serviceExecutorThreads" value="${netty.server.serviceExecutorThreads}"/>
+        <property name="selectorThreads" value="${netty.server.selectorThreads}"/>
+        <property name="channelMaxIdleTime" value="${netty.server.channelMaxIdleTime}"/>
+        <property name="reuseAddress" value="${netty.server.reuseAddress}"/>
+        <property name="soLinger" value="${netty.server.soLinger}"/>
+        <property name="tcpNoDelay" value="${netty.server.tcpNoDelay}"/>
+        <property name="keepAlive" value="${netty.server.keepAlive}"/>
+        <property name="soTimeout" value="${netty.server.soTimeout}"/>
+        <property name="socketBufferSize" value="${netty.server.socketBufferSize}"/>
+        <property name="epoll" value="${netty.server.epoll}"/>
+        <property name="maxOneway" value="${netty.server.maxOneway}"/>
+        <property name="maxAsync" value="${netty.server.maxAsync}"/>
+        <property name="port" value="${netty.server.port}"/>
+        <property name="backlog" value="${netty.server.backlog}"/>
+        <property name="ip" value="${netty.server.ip}"/>
+    </bean>
+
+</beans>
