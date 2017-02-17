@@ -34,6 +34,12 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
 
+        <!--zooKeeper-->
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+        </dependency>
+
         <!--spring-->
         <dependency>
             <groupId>org.springframework</groupId>
