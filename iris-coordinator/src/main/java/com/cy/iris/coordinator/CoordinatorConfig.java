@@ -7,6 +7,8 @@ import com.cy.iris.commons.network.netty.server.NettyServerConfig;
  */
 public class CoordinatorConfig {
 
+
+
 	private NettyServerConfig nettyServerConfig;
 
 	private String connectionString ;
@@ -16,8 +18,6 @@ public class CoordinatorConfig {
 	private int sessionTimeout = 60 * 1000;
 
 	private String nameSpace = "iris";
-
-	private String coordinatorName = "unknown";
 
 	public void setNettyServerConfig(NettyServerConfig nettyServerConfig) {
 		this.nettyServerConfig = nettyServerConfig;
@@ -57,13 +57,5 @@ public class CoordinatorConfig {
 
 	public void setNameSpace(String nameSpace) {
 		this.nameSpace = nameSpace;
-	}
-
-	public String getCoordinatorName() {
-		return coordinatorName;
-	}
-
-	public void setCoordinatorName(String coordinatorName) {
-		this.coordinatorName = coordinatorName;
 	}
 }

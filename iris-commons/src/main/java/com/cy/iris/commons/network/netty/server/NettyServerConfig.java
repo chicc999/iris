@@ -6,10 +6,12 @@ import com.cy.iris.commons.network.netty.NettyConfig;
  * 服务端网络配置
  */
 public class NettyServerConfig extends NettyConfig {
+
+	public static final int DEFAULT_SERVICE_PORT = 60088;
 	// IP地址
 	private String ip;
 	// 端口
-	private int port = 50088;
+	private int port = DEFAULT_SERVICE_PORT;
 	// 连接请求最大队列长度，如果队列满时收到连接指示，则拒绝该连接。
 	private int backlog = 65536;
 

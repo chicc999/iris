@@ -38,17 +38,6 @@ public class CoordinatorService extends Service{
 		ArgumentUtil.isNotNull("CoordinatorConfig", coordinatorConfig);
 		ArgumentUtil.isNotNull("NettyServerConfig", coordinatorConfig.getNettyServerConfig());
 
-		//设置协调器名字
-		String ip = null;
-		try {
-			ip = InetAddress.getLocalHost().getHostAddress();
-			logger.info("本机ip为 {}", ip);
-		} catch (UnknownHostException e) {
-			logger.error("获取本机ip失败", e);
-			ip = "unknown";
-		}
-		coordinatorConfig.setCoordinatorName(ip+":"+coordinatorConfig.getNettyServerConfig().getPort());
-
 		CoordinatorHandlerFactory coordinatorHandlerFactory = new CoordinatorHandlerFactory();
 		if(nettyServer == null) {
 			nettyServer = new NettyServer(coordinatorConfig.getNettyServerConfig(),null,null,null,coordinatorHandlerFactory);

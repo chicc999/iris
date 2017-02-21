@@ -8,6 +8,8 @@ import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.cy.iris.coordinator.startup.Bootstrap.COORDINATOR_NAME;
+
 /**
  * Created by cy on 17/2/16.
  */
@@ -32,7 +34,7 @@ public class ClusterManager extends Service{
 	public void doStart() throws Exception {
 		zkClient.start();
 		zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
-				.forPath(COORDINATOR_PATH + coordinatorConfig.getCoordinatorName() + "_", coordinatorConfig.getCoordinatorName().getBytes("utf-8"));
+				.forPath(COORDINATOR_PATH + System.getProperty(COORDINATOR_NAME) + "_", System.getProperty(COORDINATOR_NAME).getBytes("utf-8"));
 	}
 
 	@Override
