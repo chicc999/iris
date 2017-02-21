@@ -43,16 +43,20 @@ public class CoordinatorService extends Service{
 					.retryPolicy(retryPolicy)
 					.connectionTimeoutMs(coordinatorConfig.getConnectionTimeout())
 					.sessionTimeoutMs(coordinatorConfig.getSessionTimeout())
+					.namespace(coordinatorConfig.getNameSpace())
 					// etc. etc.
 					.build();
 
 			clusterManager = new ClusterManager();
+			clusterManager.setZkClient(zkClient);
+			clusterManager.setCoordinatorConfig(coordinatorConfig);
 		}
 	}
 
 	@Override
 	public void doStart() throws Exception {
 			nettyServer.start();
+			clusterManager.start();
 	}
 
 	@Override

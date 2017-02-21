@@ -15,6 +15,8 @@ public class CoordinatorConfig {
 
 	private int sessionTimeout = 60 * 1000;
 
+	private String nameSpace = "iris";
+
 	public void setNettyServerConfig(NettyServerConfig nettyServerConfig) {
 		this.nettyServerConfig = nettyServerConfig;
 	}
@@ -45,5 +47,13 @@ public class CoordinatorConfig {
 
 	public void setSessionTimeout(int sessionTimeout) {
 		this.sessionTimeout = sessionTimeout;
+	}
+
+	public String getNameSpace() {
+		return nameSpace;
+	}
+
+	public void setNameSpace(String nameSpace) {
+		this.nameSpace = nameSpace;
 	}
 }
