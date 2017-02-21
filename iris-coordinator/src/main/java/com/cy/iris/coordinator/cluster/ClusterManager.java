@@ -8,6 +8,9 @@ import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.cy.iris.coordinator.startup.Bootstrap.COORDINATOR_NAME;
 
 /**
@@ -19,9 +22,14 @@ public class ClusterManager extends Service{
 
 	private static final String COORDINATOR_PATH = "/coordinator/live/";
 
+	private static final String TOPIC_PATH = "topic";
+
 	private CuratorFramework zkClient ;
 
 	private CoordinatorConfig coordinatorConfig;
+
+	// 集群配置信息
+	private Map<String, TopicConfig> topics = new HashMap<String, TopicConfig>();
 
 	@Override
 	public void beforeStart() throws Exception {
@@ -59,4 +67,10 @@ public class ClusterManager extends Service{
 	public void setCoordinatorConfig(CoordinatorConfig coordinatorConfig) {
 		this.coordinatorConfig = coordinatorConfig;
 	}
+
+
+	private boolean addTopic(){
+		return false;
+	}
+
 }
