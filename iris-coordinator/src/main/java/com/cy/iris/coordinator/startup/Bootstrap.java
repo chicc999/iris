@@ -1,6 +1,7 @@
 package com.cy.iris.coordinator.startup;
 
 
+import com.cy.iris.coordinator.CoordinatorConfig;
 import com.cy.iris.coordinator.CoordinatorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +19,6 @@ public class Bootstrap {
 
 	public static void main(String[] args) {
 
-		String ip;
-		try {
-			ip = InetAddress.getLocalHost().getHostAddress();
-			logger.info("本机ip为 {}", ip);
-		} catch (UnknownHostException e) {
-			logger.error("获取本机ip失败", e);
-		}
-
 		//加载spring配置,启动服务器
 		ApplicationContext ctx;
 		try {
@@ -37,6 +30,7 @@ public class Bootstrap {
 			logger.error("load config error.", e);
 			return;
 		}
+
 		final CoordinatorService coordinatorService = (CoordinatorService)ctx.getBean("coordinatorService");
 		try {
 			coordinatorService.start();

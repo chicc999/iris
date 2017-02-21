@@ -17,6 +17,8 @@ public class CoordinatorConfig {
 
 	private String nameSpace = "iris";
 
+	private String coordinatorName = "unknown";
+
 	public void setNettyServerConfig(NettyServerConfig nettyServerConfig) {
 		this.nettyServerConfig = nettyServerConfig;
 	}
@@ -55,5 +57,13 @@ public class CoordinatorConfig {
 
 	public void setNameSpace(String nameSpace) {
 		this.nameSpace = nameSpace;
+	}
+
+	public String getCoordinatorName() {
+		return coordinatorName;
+	}
+
+	public void setCoordinatorName(String coordinatorName) {
+		this.coordinatorName = coordinatorName;
 	}
 }

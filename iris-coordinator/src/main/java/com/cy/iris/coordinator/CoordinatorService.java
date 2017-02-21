@@ -8,12 +8,19 @@ import com.cy.iris.coordinator.handler.CoordinatorHandlerFactory;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Created by cy on 17/2/14.
  */
 public class CoordinatorService extends Service{
+
+	private static final Logger logger = LoggerFactory.getLogger(CoordinatorService.class);
 
 	private CoordinatorConfig coordinatorConfig;
 
@@ -31,6 +38,17 @@ public class CoordinatorService extends Service{
 		ArgumentUtil.isNotNull("CoordinatorConfig", coordinatorConfig);
 		ArgumentUtil.isNotNull("NettyServerConfig", coordinatorConfig.getNettyServerConfig());
 
+		//设置协调器名字
+		String ip = null;
+		try {
+			ip = InetAddress.getLocalHost().getHostAddress();
+			logger.info("本机ip为 {}", ip);
+		} catch (UnknownHostException e) {
+			logger.error("获取本机ip失败", e);
+			ip = "unknown";
+		}
+		coordinatorConfig.setCoordinatorName(ip+":"+coordinatorConfig.getNettyServerConfig().getPort());
+
 		CoordinatorHandlerFactory coordinatorHandlerFactory = new CoordinatorHandlerFactory();
 		if(nettyServer == null) {
 			nettyServer = new NettyServer(coordinatorConfig.getNettyServerConfig(),null,null,null,coordinatorHandlerFactory);
@@ -44,7 +62,6 @@ public class CoordinatorService extends Service{
 					.connectionTimeoutMs(coordinatorConfig.getConnectionTimeout())
 					.sessionTimeoutMs(coordinatorConfig.getSessionTimeout())
 					.namespace(coordinatorConfig.getNameSpace())
-					// etc. etc.
 					.build();
 
 			clusterManager = new ClusterManager();

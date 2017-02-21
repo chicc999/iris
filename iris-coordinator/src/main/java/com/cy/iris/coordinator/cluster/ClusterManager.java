@@ -15,7 +15,7 @@ public class ClusterManager extends Service{
 
 	private static final Logger logger = LoggerFactory.getLogger(ClusterManager.class);
 
-	private static final String COORDINATOR_PATH = "/coordinator/live";
+	private static final String COORDINATOR_PATH = "/coordinator/live/";
 
 	private CuratorFramework zkClient ;
 
@@ -32,7 +32,7 @@ public class ClusterManager extends Service{
 	public void doStart() throws Exception {
 		zkClient.start();
 		zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
-				.forPath(COORDINATOR_PATH , new byte[0]);
+				.forPath(COORDINATOR_PATH + coordinatorConfig.getCoordinatorName() + "_", coordinatorConfig.getCoordinatorName().getBytes("utf-8"));
 	}
 
 	@Override
