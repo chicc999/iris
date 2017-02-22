@@ -43,6 +43,8 @@ public class ClusterManager extends Service{
 		zkClient.start();
 		zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
 				.forPath(COORDINATOR_PATH + System.getProperty(COORDINATOR_NAME) + "_", System.getProperty(COORDINATOR_NAME).getBytes("utf-8"));
+
+
 	}
 
 	@Override
@@ -68,9 +70,19 @@ public class ClusterManager extends Service{
 		this.coordinatorConfig = coordinatorConfig;
 	}
 
+	private void updateTopic(){
 
-	private boolean addTopic(){
+	}
+
+
+	private boolean addTopic(String topic){
+		if(topics.containsKey(topic)){
+
+		}
 		return false;
 	}
 
+	private boolean getCluster(String topic){
+		return false;
+	}
 }
