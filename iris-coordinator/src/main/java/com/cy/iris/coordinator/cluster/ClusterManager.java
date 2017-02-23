@@ -4,6 +4,8 @@ import com.cy.iris.commons.service.Service;
 import com.cy.iris.commons.util.ArgumentUtil;
 import com.cy.iris.coordinator.CoordinatorConfig;
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.locks.InterProcessMutex;
+import org.apache.curator.framework.recipes.locks.InterProcessReadWriteLock;
 import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +33,12 @@ public class ClusterManager extends Service{
 	// 集群配置信息
 	private Map<String, TopicConfig> topics = new HashMap<String, TopicConfig>();
 
+
 	@Override
 	public void beforeStart() throws Exception {
 		ArgumentUtil.isNotNull("zkClient",zkClient);
 		ArgumentUtil.isNotNull("coordinatorConfig",coordinatorConfig);
+
 
 	}
 
