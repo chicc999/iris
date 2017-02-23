@@ -5,10 +5,6 @@ import com.cy.iris.commons.util.ArgumentUtil;
 import com.cy.iris.commons.util.lock.ZookeeperReadWriteLocks;
 import com.cy.iris.coordinator.CoordinatorConfig;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.locks.InterProcessMutex;
-import org.apache.curator.framework.recipes.locks.InterProcessReadWriteLock;
-import org.apache.curator.utils.PathUtils;
-import org.apache.curator.utils.ZKPaths;
 import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +83,10 @@ public class ClusterManager extends Service{
 
 	private boolean addTopic(String topic){
 		if(topics.containsKey(topic)){
-
+				return true;
+		}else{
+			TopicConfig topicConfig = new TopicConfig(topic);
+			topics.put(topic,topicConfig);
 		}
 		return false;
 	}
