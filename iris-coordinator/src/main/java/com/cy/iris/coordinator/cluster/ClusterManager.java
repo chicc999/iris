@@ -2,10 +2,13 @@ package com.cy.iris.coordinator.cluster;
 
 import com.cy.iris.commons.service.Service;
 import com.cy.iris.commons.util.ArgumentUtil;
+import com.cy.iris.commons.util.lock.ZookeeperReadWriteLocks;
 import com.cy.iris.coordinator.CoordinatorConfig;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.framework.recipes.locks.InterProcessReadWriteLock;
+import org.apache.curator.utils.PathUtils;
+import org.apache.curator.utils.ZKPaths;
 import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +27,7 @@ public class ClusterManager extends Service{
 
 	private static final String COORDINATOR_PATH = "/coordinator/live/";
 
-	private static final String TOPIC_PATH = "topic";
+	private static final String TOPIC_PATH = "/topic";
 
 	private CuratorFramework zkClient ;
 
@@ -33,12 +36,13 @@ public class ClusterManager extends Service{
 	// 集群配置信息
 	private Map<String, TopicConfig> topics = new HashMap<String, TopicConfig>();
 
+	private ZookeeperReadWriteLocks topicConfigLock;
 
 	@Override
 	public void beforeStart() throws Exception {
 		ArgumentUtil.isNotNull("zkClient",zkClient);
 		ArgumentUtil.isNotNull("coordinatorConfig",coordinatorConfig);
-
+		topicConfigLock = new ZookeeperReadWriteLocks(zkClient,TOPIC_PATH);
 
 	}
 
@@ -48,6 +52,8 @@ public class ClusterManager extends Service{
 		zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
 				.forPath(COORDINATOR_PATH + System.getProperty(COORDINATOR_NAME) + "_", System.getProperty(COORDINATOR_NAME).getBytes("utf-8"));
 
+
+		topicConfigLock.start();
 
 	}
 
