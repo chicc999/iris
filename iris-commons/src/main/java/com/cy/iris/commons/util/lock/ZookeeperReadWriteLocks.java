@@ -46,7 +46,7 @@ public class ZookeeperReadWriteLocks extends Service{
 	@Override
 	public void doStart() throws Exception {
 		if(null == this.client.checkExists().forPath(this.LOCK_PATH)) {
-			this.client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(this.LOCK_PATH);
+			this.client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(this.LOCK_PATH,"".getBytes("utf-8"));
 		}
 	}
 
