@@ -38,6 +38,7 @@ public class ClusterManager extends Service{
 	public void beforeStart() throws Exception {
 		ArgumentUtil.isNotNull("zkClient",zkClient);
 		ArgumentUtil.isNotNull("coordinatorConfig",coordinatorConfig);
+
 		topicConfigLock = new ZookeeperReadWriteLocks(zkClient,TOPIC_PATH);
 
 	}
@@ -48,8 +49,14 @@ public class ClusterManager extends Service{
 		zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
 				.forPath(COORDINATOR_PATH + System.getProperty(COORDINATOR_NAME) + "_", System.getProperty(COORDINATOR_NAME).getBytes("utf-8"));
 
+		if(null == this.zkClient.checkExists().forPath(this.TOPIC_PATH)) {
+			this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(this.TOPIC_PATH,"".getBytes("utf-8"));
+		}
 
 		topicConfigLock.start();
+
+		String topics1 =new String((byte[])topicConfigLock.get(TOPIC_PATH));
+		System.out.println(topics1.equals(""));
 
 	}
 
