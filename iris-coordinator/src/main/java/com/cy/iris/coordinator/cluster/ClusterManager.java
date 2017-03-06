@@ -15,7 +15,10 @@ import java.util.Map;
 import static com.cy.iris.coordinator.startup.Bootstrap.COORDINATOR_NAME;
 
 /**
- * Created by cy on 17/2/16.
+ * 集群信息管理类.
+ * /iris/coordinator/live 注册存活节点
+ * /iris/lock/topic 抢到此锁有权限更新/iris/topic
+ * /iris/topic 保存主题的配置信息
  */
 public class ClusterManager extends Service{
 
