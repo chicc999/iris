@@ -13,4 +13,12 @@ public class TopicConfig implements Serializable{
 	public TopicConfig(String topic) {
 		this.topic = topic;
 	}
+
+	public String getTopic() {
+		return topic;
+	}
+
+	public void setTopic(String topic) {
+		this.topic = topic;
+	}
 }

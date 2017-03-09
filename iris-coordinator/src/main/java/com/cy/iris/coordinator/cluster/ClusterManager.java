@@ -2,6 +2,7 @@ package com.cy.iris.coordinator.cluster;
 
 import com.cy.iris.commons.service.Service;
 import com.cy.iris.commons.util.ArgumentUtil;
+import com.cy.iris.commons.util.JsonUtil;
 import com.cy.iris.commons.util.lock.ZookeeperReadWriteLocks;
 import com.cy.iris.coordinator.CoordinatorConfig;
 import org.apache.curator.framework.CuratorFramework;
@@ -58,8 +59,8 @@ public class ClusterManager extends Service{
 
 		topicConfigLock.start();
 
-		String topics1 =new String((byte[])topicConfigLock.get(TOPIC_PATH));
-		System.out.println(topics1.equals(""));
+		//阻塞的从zk获取数据
+		topics = JsonUtil.readValue(new String(topicConfigLock.get(TOPIC_PATH)),topics.getClass());
 
 	}
 
