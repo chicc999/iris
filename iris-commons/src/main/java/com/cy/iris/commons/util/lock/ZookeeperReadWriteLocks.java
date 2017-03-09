@@ -34,6 +34,19 @@ public class ZookeeperReadWriteLocks extends Service{
 		}
 	}
 
+	public final void set(String dataPath,byte[] value) throws Exception {
+		this.writeLock.acquire();
+		try{
+			setDataByPath(dataPath,value);
+		}finally {
+			this.writeLock.release();
+		}
+	}
+
+	private void setDataByPath(String dataPath,byte[] value)throws Exception{
+		client.setData().forPath(dataPath,value);
+	}
+
 	private Object getDataByPath(String dataPath) throws Exception {
 		return client.getData().forPath(dataPath);
 	}
