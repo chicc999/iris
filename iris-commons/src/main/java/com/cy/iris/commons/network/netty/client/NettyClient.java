@@ -29,7 +29,7 @@ public class NettyClient extends NettyTransport {
 	private static final Logger logger = LoggerFactory.getLogger(NettyClient.class);
 
 	// Netty客户端启动器
-	protected Bootstrap bootstrap;
+	protected Bootstrap bootStrap;
 
 	/**
 	 * 构造函数
@@ -96,7 +96,7 @@ public class NettyClient extends NettyTransport {
 
 		ArgumentUtil.isNotNull("address", address);
 
-		ChannelFuture channelFuture = this.bootstrap.connect(address);
+		ChannelFuture channelFuture = this.bootStrap.connect(address);
 
 		return channelFuture;
 	}
@@ -110,7 +110,7 @@ public class NettyClient extends NettyTransport {
 	 */
 	public Channel createChannelSync(InetSocketAddress address) throws ConnectException {
 
-		ChannelFuture channelFuture = this.bootstrap.connect(address);
+		ChannelFuture channelFuture = this.bootStrap.connect(address);
 		try {
 			channelFuture.sync();
 
@@ -130,8 +130,8 @@ public class NettyClient extends NettyTransport {
 	public void doStart() throws Exception {
 		super.doStart();
 		// Netty客户端启动器
-		bootstrap = new Bootstrap();
-		bootstrap.group(ioLoopGroup).channel(config.isEpoll() ? EpollSocketChannel.class : NioSocketChannel.class)
+		bootStrap = new Bootstrap();
+		bootStrap.group(ioLoopGroup).channel(config.isEpoll() ? EpollSocketChannel.class : NioSocketChannel.class)
 				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, ((NettyClientConfig) config).getConnectionTimeout())
 				.option(ChannelOption.TCP_NODELAY, config.isTcpNoDelay())
 				.option(ChannelOption.SO_REUSEADDR, config.isReuseAddress())
@@ -140,17 +140,7 @@ public class NettyClient extends NettyTransport {
 				.option(ChannelOption.SO_RCVBUF, config.getSocketBufferSize())
 				.option(ChannelOption.SO_SNDBUF, config.getSocketBufferSize())
 				//初始化handler
-				.handler(new ChannelInitializer() {
-					@Override
-					protected void initChannel(Channel ch) throws Exception {
-						ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(config.getFrameMaxSize(), 0, 4, 0, 4));
-						ch.pipeline().addLast(new CommandDecoder());
-						ch.pipeline().addLast(new CommandEncoder());
-						ch.pipeline().addLast(new IdleStateHandler(0, 0, config.getChannelMaxIdleTime(), TimeUnit.MILLISECONDS));
-						ch.pipeline().addLast(connectionHandler);
-						ch.pipeline().addLast(dispatcherHandler);
-					}
-				});
+				.handler(handler());
 	}
 
 

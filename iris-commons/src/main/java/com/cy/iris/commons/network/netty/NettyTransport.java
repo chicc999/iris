@@ -11,15 +11,16 @@ import com.cy.iris.commons.network.handler.DefaultConnectionHandler;
 import com.cy.iris.commons.network.handler.DefaultDispatcherHandler;
 import com.cy.iris.commons.network.handler.DefaultHandlerFactory;
 import com.cy.iris.commons.network.protocol.Command;
+import com.cy.iris.commons.network.protocol.CommandDecoder;
+import com.cy.iris.commons.network.protocol.CommandEncoder;
 import com.cy.iris.commons.service.Service;
 import com.cy.iris.commons.util.ArgumentUtil;
 import com.cy.iris.commons.util.NamedThreadFactory;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -230,4 +231,19 @@ public abstract class NettyTransport extends Service implements Transport {
 	public void setConnectionHandler(DefaultConnectionHandler connectionHandler) {
 		this.connectionHandler = connectionHandler;
 	}
+
+	protected ChannelHandler handler(){
+		return new ChannelInitializer() {
+			@Override
+			protected void initChannel(Channel ch) throws Exception {
+				ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(config.getFrameMaxSize(), 0, 4, 0, 4));
+				ch.pipeline().addLast(new CommandDecoder());
+				ch.pipeline().addLast(new CommandEncoder());
+				ch.pipeline().addLast(new IdleStateHandler(0, 0, config.getChannelMaxIdleTime(), TimeUnit.MILLISECONDS));
+				ch.pipeline().addLast(connectionHandler);
+				ch.pipeline().addLast(dispatcherHandler);
+			}
+		};
+	}
+
 }

@@ -120,17 +120,7 @@ public class NettyServer extends NettyTransport {
 				.option(ChannelOption.SO_RCVBUF, serverConfig.getSocketBufferSize())
 				.option(ChannelOption.SO_SNDBUF, serverConfig.getSocketBufferSize())
 				.option(ChannelOption.SO_BACKLOG, serverConfig.getBacklog()).localAddress(address)
-				.childHandler(new ChannelInitializer() {
-					@Override
-					protected void initChannel(Channel ch) throws Exception {
-						ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(config.getFrameMaxSize(), 0, 4, 0, 4));
-						ch.pipeline().addLast(new CommandDecoder());
-						ch.pipeline().addLast(new CommandEncoder());
-						ch.pipeline().addLast(new IdleStateHandler(0, 0, config.getChannelMaxIdleTime(), TimeUnit.MILLISECONDS));
-						ch.pipeline().addLast(connectionHandler);
-						ch.pipeline().addLast(dispatcherHandler);
-					}
-				});
+				.childHandler(handler());
 	}
 
 	@Override
