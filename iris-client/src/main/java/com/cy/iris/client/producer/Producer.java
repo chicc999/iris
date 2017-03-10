@@ -5,5 +5,6 @@ import com.cy.iris.commons.service.LifeCycle;
 /**
  * Created by cy on 17/2/12.
  */
-public interface Producer extends LifeCycle{
+interface Producer extends LifeCycle{
+	void send();
 }
