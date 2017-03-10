@@ -240,8 +240,8 @@ public abstract class NettyTransport extends Service implements Transport {
 				ch.pipeline().addLast(new CommandDecoder());
 				ch.pipeline().addLast(new CommandEncoder());
 				ch.pipeline().addLast(new IdleStateHandler(0, 0, config.getChannelMaxIdleTime(), TimeUnit.MILLISECONDS));
-				ch.pipeline().addLast(connectionHandler);
 				ch.pipeline().addLast(dispatcherHandler);
+				ch.pipeline().addLast(connectionHandler);
 			}
 		};
 	}

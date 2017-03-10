@@ -52,4 +52,15 @@ public class DefaultConnectionHandler extends ChannelDuplexHandler {
 		super.userEventTriggered(ctx, evt);
 	}
 
+	/**
+	 * 仅为系统错误才在这里回复并关闭网络,正常业务错误不关闭网络
+	 * @param ctx
+	 * @param cause
+	 * @throws Exception
+	 */
+	@Override
+	public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
+		logger.error(cause.getMessage(), cause);
+		ctx.close();
+	}
 }
