@@ -120,7 +120,7 @@ public class Option implements Cloneable, Serializable
 	 * 选项的唯一标识符
 	 * @return
 	 */
-	String getKey()
+	public String getKey()
 	{
 		// if 'opt' is null, then it is a 'long' option
 		if (opt == null)
