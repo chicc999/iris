@@ -10,13 +10,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>iris-client</artifactId>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.cy.iris</groupId>
-            <artifactId>iris-commons</artifactId>
-        </dependency>
-    </dependencies>
+    <packaging>pom</packaging>
+    <modules>
+        <module>iris-client-core</module>
+        <module>iris-client-tool</module>
+    </modules>
 
 
 </project>
