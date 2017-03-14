@@ -1,6 +1,8 @@
 package com.cy.iris.client.cli.command;
 
 import com.cy.iris.client.cli.CliCommand;
+import com.cy.iris.client.cli.CommandLine;
+import com.cy.iris.client.cli.Options;
 import com.cy.iris.client.cli.exception.CliException;
 import com.cy.iris.client.cli.exception.CliParseException;
 
@@ -10,6 +12,12 @@ import com.cy.iris.client.cli.exception.CliParseException;
  * @Destription:
  */
 public class Create extends CliCommand {
+
+	private static Options options = new Options();
+	private String[] args;
+	private CommandLine cl;
+
+
 	/**
 	 * a CLI command with command string and options.
 	 * Using System.out and System.err for printing
