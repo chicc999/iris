@@ -5,6 +5,7 @@ import com.cy.iris.client.cli.CommandOptions;
 import com.cy.iris.client.cli.command.Create;
 import com.cy.iris.client.cli.exception.CliException;
 import com.cy.iris.client.cli.exception.CommandNotFoundException;
+import com.cy.iris.client.cli.zookeeper.ZookeeperService;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.imps.CuratorFrameworkImpl;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class Bootstrap {
 
 	private static final Logger logger = LoggerFactory.getLogger(Bootstrap.class);
 
-	private CuratorFramework zkClinet ;
+	private ZookeeperService zkClinet ;
 
 	private CommandOptions commandOptions = new CommandOptions();
 
@@ -105,7 +106,7 @@ public class Bootstrap {
 		}
 
 		if (cmd.equals("quit")) {
-			zkClinet.close();
+			zkClinet.stop();
 			System.exit(exitCode);
 		}else if(cmd.equals("history")){
 			for (int i = commandCount - 10; i <= commandCount; ++i) {

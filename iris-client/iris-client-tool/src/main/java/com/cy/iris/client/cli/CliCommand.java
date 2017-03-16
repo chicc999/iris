@@ -2,6 +2,7 @@ package com.cy.iris.client.cli;
 
 import com.cy.iris.client.cli.exception.CliException;
 import com.cy.iris.client.cli.exception.CliParseException;
+import com.cy.iris.client.cli.zookeeper.ZookeeperService;
 import org.apache.curator.framework.CuratorFramework;
 
 import java.io.PrintStream;
@@ -13,7 +14,7 @@ import java.util.Map;
  * @Date:Created in 16:28 17/3/13
  */
 abstract public class CliCommand {
-	protected CuratorFramework zk;
+	protected ZookeeperService zk;
 	protected PrintStream out;
 	protected PrintStream err;
 	private String cmdStr;
@@ -52,7 +53,7 @@ abstract public class CliCommand {
 	 * set the zookeper instance
 	 * @param zk the ZooKeeper instance.
 	 */
-	public void setZk(CuratorFramework zk) {
+	public void setZk(ZookeeperService zk) {
 		this.zk = zk;
 	}
 
