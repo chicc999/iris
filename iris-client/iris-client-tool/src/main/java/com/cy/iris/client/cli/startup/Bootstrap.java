@@ -61,6 +61,12 @@ public class Bootstrap {
 			commandMap.put(entry.getKey(), entry.getValue().getOptionStr());
 		}
 
+		try {
+			zkClinet.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		System.out.println("请输入指令:");
 		BufferedReader br =
 				new BufferedReader(new InputStreamReader(System.in));
