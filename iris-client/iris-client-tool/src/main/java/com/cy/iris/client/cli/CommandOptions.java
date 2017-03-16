@@ -1,8 +1,13 @@
 package com.cy.iris.client.cli;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -12,10 +17,15 @@ import java.util.regex.Pattern;
  */
 public class CommandOptions {
 
+	private static final Logger logger = LoggerFactory.getLogger(CommandOptions.class);
+
 	private Map<String,String> options = new HashMap<String,String>();
 	private List<String> cmdArgs = null;
 	private String command = null;
+
+	//将参数分隔
 	public static final Pattern ARGS_PATTERN = Pattern.compile("\\s*([^\"\']\\S*|\"[^\"]*\"|'[^']*')\\s*");
+	//匹配单、双引号中的内容
 	public static final Pattern QUOTED_PATTERN = Pattern.compile("^([\'\"])(.*)(\\1)$");
 
 	public CommandOptions() {
@@ -43,5 +53,31 @@ public class CommandOptions {
 		return cmdArgs.toArray(new String[0]);
 	}
 
+	/**
+	 * 将输入解析为命令+参数两部分
+	 * @param cmdstring "cmd arg1 arg2..etc"
+	 * @return true 转化成功
+	 */
+	public boolean parseCommand( String cmdstring ) {
+		Matcher matcher = ARGS_PATTERN.matcher(cmdstring);
 
+		List<String> args = new LinkedList<String>();
+		while (matcher.find()) {
+			String value = matcher.group(1);
+			if (QUOTED_PATTERN.matcher(value).matches()) {
+				// Strip off the surrounding quotes
+				value = value.substring(1, value.length() - 1);
+			}
+			args.add(value);
+		}
+		if (args.isEmpty()){
+			return false;
+		}
+		command = args.get(0);
+		cmdArgs = args;
+
+		logger.debug("解析成功,command:{} , args:{}",command,cmdArgs.toString());
+
+		return true;
+	}
 }

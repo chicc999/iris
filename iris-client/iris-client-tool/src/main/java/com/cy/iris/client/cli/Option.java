@@ -132,9 +132,9 @@ public class Option implements Cloneable, Serializable
 	}
 
 	/**
-	 * 选项检索名.
+	 * 获取选项检索名.
 	 *
-	 * @return The name of this option
+	 * @return
 	 */
 	public String getOpt()
 	{
@@ -142,9 +142,9 @@ public class Option implements Cloneable, Serializable
 	}
 
 	/**
-	 * 选项类型
+	 * 获取选项类型
 	 *
-	 * @return The type of this option
+	 * @return
 	 */
 	public Object getType()
 	{
@@ -152,9 +152,9 @@ public class Option implements Cloneable, Serializable
 	}
 
 	/**
-	 * Sets the type of this Option.
+	 * 设置选项类型
 	 *
-	 * @param type the type of this Option
+	 * @param type
 	 */
 	public void setType(Object type)
 	{
@@ -162,9 +162,9 @@ public class Option implements Cloneable, Serializable
 	}
 
 	/**
-	 * Retrieve the long name of this Option.
+	 * 获取选项完整名
 	 *
-	 * @return Long name of this option, or null, if there is no long name
+	 * @return
 	 */
 	public String getLongOpt()
 	{
@@ -172,9 +172,9 @@ public class Option implements Cloneable, Serializable
 	}
 
 	/**
-	 * Sets the long name of this Option.
+	 * 设置选项完整名
 	 *
-	 * @param longOpt the long name of this Option
+	 * @param longOpt
 	 */
 	public void setLongOpt(String longOpt)
 	{
@@ -182,7 +182,7 @@ public class Option implements Cloneable, Serializable
 	}
 
 	/**
-	 * Sets whether this Option can have an optional argument.
+	 * 设置选项是否有可选的参数
 	 *
 	 * @param optionalArg specifies whether the Option can have
 	 * an optional argument.
@@ -193,7 +193,7 @@ public class Option implements Cloneable, Serializable
 	}
 
 	/**
-	 * @return whether this Option can have an optional argument
+	 * @return 获取选项是否有可选的参数
 	 */
 	public boolean hasOptionalArg()
 	{
@@ -201,9 +201,9 @@ public class Option implements Cloneable, Serializable
 	}
 
 	/**
-	 * Query to see if this Option has a long name
+	 * 查询选项是否存在完整名
 	 *
-	 * @return boolean flag indicating existence of a long name
+	 * @return
 	 */
 	public boolean hasLongOpt()
 	{
@@ -211,7 +211,7 @@ public class Option implements Cloneable, Serializable
 	}
 
 	/**
-	 * Query to see if this Option requires an argument
+	 * 查询选项是否需要参数
 	 *
 	 * @return boolean flag indicating if an argument is required
 	 */
@@ -221,7 +221,7 @@ public class Option implements Cloneable, Serializable
 	}
 
 	/**
-	 * Retrieve the self-documenting description of this Option
+	 * 获取选项的描述
 	 *
 	 * @return The string description of this option
 	 */
@@ -304,9 +304,9 @@ public class Option implements Cloneable, Serializable
 	}
 
 	/**
-	 * Sets the number of argument values this Option can take.
+	 * 设置选项能带的参数个数
 	 *
-	 * @param num the number of argument values
+	 * @param num
 	 */
 	public void setArgs(int num)
 	{
@@ -360,7 +360,7 @@ public class Option implements Cloneable, Serializable
 	 *
 	 * @param value is a/the value of this Option
 	 */
-	void addValueForProcessing(String value)
+	public void addValueForProcessing(String value)
 	{
 		switch (numberOfArgs)
 		{
@@ -618,7 +618,7 @@ public class Option implements Cloneable, Serializable
 	 *
 	 * See: <a href="https://issues.apache.org/jira/browse/CLI-71">CLI-71</a>
 	 */
-	void clearValues()
+	public void clearValues()
 	{
 		values.clear();
 	}

@@ -12,16 +12,17 @@ public class Options implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	/** a map of the options with the character key */
-	private Map shortOpts = new HashMap();
+	/** 存储选项缩略名的map */
+	private Map<String,Option> shortOpts = new HashMap<String, Option>();
 
-	/** a map of the options with the long key */
-	private Map longOpts = new HashMap();
+	/** 存储选项完整名的map */
+	private Map<String,Option> longOpts = new HashMap<String, Option>();
 
-	/** a map of the required options */
+	//TODO FIX 强制类型
+	/** 存储必须的选项 */
 	private List requiredOpts = new ArrayList();
 
-	/** a map of the option groups */
+	/** 存储option groups的map */
 	private Map optionGroups = new HashMap();
 
 	/**
@@ -144,7 +145,7 @@ public class Options implements Serializable
 	 *
 	 * @return the List of Options
 	 */
-	List helpOptions()
+	public List helpOptions()
 	{
 		return new ArrayList(shortOpts.values());
 	}

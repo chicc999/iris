@@ -2,9 +2,15 @@ package com.cy.iris.client.cli.command;
 
 import com.cy.iris.client.cli.CliCommand;
 import com.cy.iris.client.cli.CommandLine;
+import com.cy.iris.client.cli.Option;
 import com.cy.iris.client.cli.Options;
 import com.cy.iris.client.cli.exception.CliException;
 import com.cy.iris.client.cli.exception.CliParseException;
+import com.cy.iris.client.cli.exception.ParseException;
+import com.cy.iris.client.cli.parser.Parser;
+import com.cy.iris.client.cli.parser.PosixParser;
+
+import static com.cy.iris.client.cli.Option.UNLIMITED_VALUES;
 
 /**
  * @Author:cy
@@ -27,15 +33,42 @@ public class Create extends CliCommand {
 	 */
 	public Create(String cmdStr, String optionStr) {
 		super(cmdStr, optionStr);
+
+		Option broker = new Option("b","broker_name", true, "broker的名称,由ip:prot指定");
+		options.addOption(broker);
+		Option group = new Option("g", "group_name",true, "分组名称");
+		group.setArgs(UNLIMITED_VALUES);
+		options.addOption(group);
+		Option topic = new Option("t", "topic_name",true, "主题名称");
+		options.addOption(topic);
+		Option app = new Option("app", "app_name",true, "应用名称");
+		options.addOption(topic);
 	}
 
 	@Override
 	public CliCommand parse(String[] cmdArgs) throws CliParseException {
-		return null;
+		Parser parser = new PosixParser();
+		try {
+			cl = parser.parse(options, cmdArgs);
+		} catch (ParseException ex) {
+			throw new CliParseException(ex);
+		}
+		args = cl.getArgs();
+/*		if(args.length < 2) {
+			throw new CliParseException(getUsageStr());
+		}*/
+		return this;
 	}
 
 	@Override
 	public boolean exec() throws CliException {
+		boolean hasB = cl.hasOption("b");
+		boolean hasG = cl.hasOption("g");
+		boolean hasT = cl.hasOption("t");
+		boolean hasApp = cl.hasOption("app");
+		if(!hasB && !hasG && !hasT && !hasApp){
+			throw new CliException("create命令后面至少是-b(broker),-g(group),-t(topic),-app(app_name)中的一种");
+		}
 		return false;
 	}
 }

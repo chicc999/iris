@@ -11,7 +11,7 @@ package com.cy.iris.client.cli;
  * @author John Keyes (john at integralsource.com)
  * @version $Revision: 680644 $, $Date: 2008-07-29 01:13:48 -0700 (Tue, 29 Jul 2008) $
  */
-class Util
+public class Util
 {
 	/**
 	 * Remove the hyphens from the begining of <code>str</code> and
@@ -21,7 +21,7 @@ class Util
 	 *
 	 * @return the new String.
 	 */
-	static String stripLeadingHyphens(String str)
+	public static String stripLeadingHyphens(String str)
 	{
 		if (str == null)
 		{
@@ -48,7 +48,7 @@ class Util
 	 *
 	 * @return The string without the leading and trailing quotes.
 	 */
-	static String stripLeadingAndTrailingQuotes(String str)
+	public static String stripLeadingAndTrailingQuotes(String str)
 	{
 		if (str.startsWith("\""))
 		{
