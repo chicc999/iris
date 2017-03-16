@@ -6,8 +6,6 @@ import com.cy.iris.client.cli.command.Create;
 import com.cy.iris.client.cli.exception.CliException;
 import com.cy.iris.client.cli.exception.CommandNotFoundException;
 import com.cy.iris.client.cli.zookeeper.ZookeeperService;
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.imps.CuratorFrameworkImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +23,7 @@ public class Bootstrap {
 
 	private static final Logger logger = LoggerFactory.getLogger(Bootstrap.class);
 
-	private ZookeeperService zkClinet ;
+	private ZookeeperService zookeeperService;
 
 	private CommandOptions commandOptions = new CommandOptions();
 
@@ -41,11 +39,11 @@ public class Bootstrap {
 	public static void main(String[] args) throws IOException, CliException {
 		Bootstrap bootstrap = new Bootstrap();
 
-		bootstrap.init();
+		bootstrap.init(args);
 
 	}
 
-	private void init() throws IOException {
+	private void init(String[] args) throws IOException {
 		logger.info("开始启动");
 
 		commandMap.put("connect", "host:port");
@@ -61,8 +59,9 @@ public class Bootstrap {
 			commandMap.put(entry.getKey(), entry.getValue().getOptionStr());
 		}
 
+		zookeeperService = new ZookeeperService(args[0]);
 		try {
-			zkClinet.start();
+			zookeeperService.start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -112,7 +111,7 @@ public class Bootstrap {
 		}
 
 		if (cmd.equals("quit")) {
-			zkClinet.stop();
+			zookeeperService.stop();
 			System.exit(exitCode);
 		}else if(cmd.equals("history")){
 			for (int i = commandCount - 10; i <= commandCount; ++i) {
@@ -123,7 +122,7 @@ public class Bootstrap {
 
 		CliCommand cliCmd = commandMapCli.get(cmd);
 		if(cliCmd != null) {
-			cliCmd.setZk(zkClinet);
+			cliCmd.setZk(zookeeperService);
 			cliCmd.parse(args).exec();
 		} else if (!commandMap.containsKey(cmd)) {
 			usage();
