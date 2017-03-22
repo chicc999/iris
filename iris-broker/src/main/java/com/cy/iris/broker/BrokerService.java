@@ -8,6 +8,8 @@ import com.cy.iris.commons.service.Service;
  * @Destription:
  */
 public class BrokerService extends Service{
+
+	private BrokerConfig brokerConfig;
 	@Override
 	public void beforeStart() throws Exception {
 
@@ -31,5 +33,13 @@ public class BrokerService extends Service{
 	@Override
 	public void doStop() {
 
+	}
+
+	public BrokerConfig getBrokerConfig() {
+		return brokerConfig;
+	}
+
+	public void setBrokerConfig(BrokerConfig brokerConfig) {
+		this.brokerConfig = brokerConfig;
 	}
 }
