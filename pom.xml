@@ -9,6 +9,7 @@
     <module>iris-commons</module>
     <module>iris-client</module>
     <module>iris-coordinator</module>
+    <module>iris-broker</module>
   </modules>
   <packaging>pom</packaging>
 
