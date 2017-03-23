@@ -7,10 +7,20 @@
 
     <bean id="brokerConfig" class="com.cy.iris.broker.BrokerConfig">
         <property name="nettyServerConfig" ref="nettyServerConfig"/>
+        <property name="metaConfig"  ref="metaConfig"/>
     </bean>
 
     <bean id="brokerService" class="com.cy.iris.broker.BrokerService" destroy-method="stop">
         <property name="brokerConfig" ref="brokerConfig"/>
+    </bean>
+
+    <bean id="metaConfig" class="com.cy.iris.broker.MetaManager.MetaConfig">
+        <property name="connectionString"  value="${meta.zookeeper.connectionString}"/>
+        <property name="connectionTimeout"  value="${meta.zookeeper.connectionTimeout}"/>
+        <property name="sessionTimeout"  value="${meta.zookeeper.sessionTimeout}"/>
+        <property name="nameSpace"  value="${meta.zookeeper.nameSpace}"/>
+        <property name="zookeeperBaseSleepTimeMs" value="${meta.zookeeper.retry.baseSleepTimeMs}"/>
+        <property name="zookeeperMaxRetries" value="${meta.zookeeper.retry.maxRetries}"/>
     </bean>
 
 

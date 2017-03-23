@@ -1,6 +1,9 @@
 package com.cy.iris.broker;
 
+import com.cy.iris.broker.MetaManager.MetaManager;
 import com.cy.iris.commons.service.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @Author:cy
@@ -9,15 +12,24 @@ import com.cy.iris.commons.service.Service;
  */
 public class BrokerService extends Service{
 
+	private static final Logger logger = LoggerFactory.getLogger(BrokerService.class);
+
 	private BrokerConfig brokerConfig;
+
+	private MetaManager metaManager;
+
 	@Override
 	public void beforeStart() throws Exception {
+		if(metaManager == null){
+			metaManager = new MetaManager();
+			metaManager.setMetaConfig(brokerConfig.getMetaConfig());
+		}
 
 	}
 
 	@Override
 	public void doStart() throws Exception {
-
+		metaManager.start();
 	}
 
 	@Override

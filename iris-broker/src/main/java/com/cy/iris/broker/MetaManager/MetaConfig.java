@@ -1,15 +1,12 @@
-package com.cy.iris.coordinator;
-
-import com.cy.iris.commons.network.netty.server.NettyServerConfig;
+package com.cy.iris.broker.MetaManager;
 
 /**
- * Created by cy on 17/2/14.
+ * @Author:cy
+ * @Date:Created in  17/3/23
+ * @Destription:
  */
-public class CoordinatorConfig {
-
-	private NettyServerConfig nettyServerConfig;
-
-	private String connectionString ;
+public class MetaConfig {
+	private String connectionString;
 
 	private int connectionTimeout = 15 * 1000;
 
@@ -17,13 +14,9 @@ public class CoordinatorConfig {
 
 	private String nameSpace = "iris";
 
-	public void setNettyServerConfig(NettyServerConfig nettyServerConfig) {
-		this.nettyServerConfig = nettyServerConfig;
-	}
+	private int zookeeperBaseSleepTimeMs = 1000;
 
-	public NettyServerConfig getNettyServerConfig() {
-		return nettyServerConfig;
-	}
+	private int zookeeperMaxRetries = 3;
 
 	public String getConnectionString() {
 		return connectionString;
@@ -55,5 +48,21 @@ public class CoordinatorConfig {
 
 	public void setNameSpace(String nameSpace) {
 		this.nameSpace = nameSpace;
+	}
+
+	public int getZookeeperBaseSleepTimeMs() {
+		return zookeeperBaseSleepTimeMs;
+	}
+
+	public void setZookeeperBaseSleepTimeMs(int zookeeperBaseSleepTimeMs) {
+		this.zookeeperBaseSleepTimeMs = zookeeperBaseSleepTimeMs;
+	}
+
+	public int getZookeeperMaxRetries() {
+		return zookeeperMaxRetries;
+	}
+
+	public void setZookeeperMaxRetries(int zookeeperMaxRetries) {
+		this.zookeeperMaxRetries = zookeeperMaxRetries;
 	}
 }
