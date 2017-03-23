@@ -1,12 +1,11 @@
 package com.cy.iris.broker.startup;
 
-import com.cy.iris.commons.network.netty.server.NettyServerConfig;
-import com.cy.iris.commons.util.properties.PropertiesConfigureUtil;
-import com.cy.iris.commons.util.properties.ServerType;
+import com.cy.iris.commons.service.Service;
+import com.cy.iris.commons.util.bootstrap.BootstrapUtil;
+import com.cy.iris.commons.util.bootstrap.PropertiesConfigureUtil;
+import com.cy.iris.commons.util.bootstrap.ServerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @Author:cy
@@ -21,35 +20,14 @@ public class Bootstrap {
 		//设置broker名称
 		PropertiesConfigureUtil.configureServerName(args, ServerType.Broker);
 
-		//加载spring配置,启动服务器
-		ApplicationContext ctx;
-		try {
-			logger.info("load spring xml...");
+		//加载配置文件 & 初始化类
+		Service brokerService = BootstrapUtil.loadClass("brokerService");
 
-			ctx = new ClassPathXmlApplicationContext("spring-*.xml");
-		} catch (Exception e) {
-			logger.error("load config error.", e);
-			return;
-		}
+		//启动服务
+		BootstrapUtil.start(brokerService);
 
-//		final CoordinatorService coordinatorService = (CoordinatorService)ctx.getBean("coordinatorService");
-//
-//		try {
-//			coordinatorService.start();
-//		} catch (Exception e) {
-//			logger.error("启动失败",e);
-//		}
-//
-//
-//		Runtime.getRuntime().addShutdownHook(new Thread() {
-//			@Override
-//			public void run() {
-//				logger.info("system is being shutdown.");
-//				if (coordinatorService.isStarted()) {
-//					coordinatorService.stop();
-//				}
-//			}
-//		});
+		//注册虚拟机关闭时的钩子
+		BootstrapUtil.addShutdownHook(brokerService);
 	}
 
 

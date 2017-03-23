@@ -9,7 +9,7 @@
         <property name="nettyServerConfig" ref="nettyServerConfig"/>
     </bean>
 
-    <bean id="coordinatorService" class="com.cy.iris.broker.BrokerService" destroy-method="stop">
+    <bean id="brokerService" class="com.cy.iris.broker.BrokerService" destroy-method="stop">
         <property name="brokerConfig" ref="brokerConfig"/>
     </bean>
 

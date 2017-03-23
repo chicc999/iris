@@ -1,4 +1,4 @@
-package com.cy.iris.commons.util.properties;
+package com.cy.iris.commons.util.bootstrap;
 
 import com.cy.iris.commons.network.netty.server.NettyServerConfig;
 import org.slf4j.Logger;

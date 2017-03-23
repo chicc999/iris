@@ -4,6 +4,7 @@ import com.cy.iris.commons.service.Service;
 import com.cy.iris.commons.util.ArgumentUtil;
 import com.cy.iris.commons.util.JsonUtil;
 import com.cy.iris.commons.util.lock.ZookeeperReadWriteLocks;
+import com.cy.iris.commons.util.bootstrap.ServerType;
 import com.cy.iris.coordinator.CoordinatorConfig;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.CreateMode;
@@ -13,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.cy.iris.coordinator.startup.Bootstrap.COORDINATOR_NAME;
 
 /**
  * 集群信息管理类.
@@ -51,7 +51,7 @@ public class ClusterManager extends Service{
 	public void doStart() throws Exception {
 		zkClient.start();
 		zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
-				.forPath(COORDINATOR_PATH + System.getProperty(COORDINATOR_NAME) + "_", System.getProperty(COORDINATOR_NAME).getBytes("utf-8"));
+				.forPath(COORDINATOR_PATH + System.getProperty(ServerType.Coordinator.nameKey()) + "_", System.getProperty(ServerType.Coordinator.nameKey()).getBytes("utf-8"));
 
 		if(null == this.zkClient.checkExists().forPath(this.TOPIC_PATH)) {
 			this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(this.TOPIC_PATH,"".getBytes("utf-8"));

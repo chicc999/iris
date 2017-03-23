@@ -1,4 +1,4 @@
-package com.cy.iris.commons.util.properties;
+package com.cy.iris.commons.util.bootstrap;
 
 /**
  * @Author:cy
