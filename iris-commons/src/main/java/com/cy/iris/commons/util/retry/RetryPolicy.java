@@ -49,14 +49,15 @@ public class RetryPolicy implements Serializable {
 	 * 获取重试时间
 	 *
 	 * @param now        当前时间
-	 * @param retryTimes 当前重试次数，从1开始计数
+	 * @param retryTimes 已经重试的次数,首次重试为0
 	 * @param startTime  初始化起始时间
 	 * @return <li><=0 过期</li>
 	 * <li>>0 下次重试时间</li>
 	 */
 	public long getTime(final long now, final int retryTimes, final long startTime) {
 		long time = 0;
-		int retrys = retryTimes < 1 ? 1 : retryTimes;
+
+		int retrys = retryTimes + 1;
 		int maxRetrys = this.maxRetrys == null ? MAX_RETRYS : this.maxRetrys;
 		int retryDelay = this.retryDelay == null ? RETRY_DELAY : this.retryDelay;
 		int maxRetryDelay = this.maxRetryDelay == null ? MAX_RETRY_DELAY : this.maxRetryDelay;
@@ -65,57 +66,84 @@ public class RetryPolicy implements Serializable {
 				(this.backOffMultiplier == null || this.backOffMultiplier < 1) ? BACKOFF_MULTIPLIER : this
 						.backOffMultiplier;
 		int expireTime = this.expireTime == null ? EXPIRE_TIME : this.expireTime;
+
 		// 判断是否超过最大重试次数
 		if (maxRetrys > 0 && retrys > maxRetrys) {
 			time = 0;
-		} else if (retryDelay <= 0) {
-			// 没有时间间隔
-			time = now;
-		} else {
-			long delay = 0;
-
-			// 判断是否使用指数函数
-			if (useExponentialBackOff) {
-				// 指数
-				int exponential = retrys - 1;
-				// 底数为1
-				if (backOffMultiplier == 1) {
-					delay = retryDelay;
-				} else if (maxRetryDelay > 0) {
-					// 获取最大的指数
-					Integer maxExp = maxExponential.get();
-					// 还没用计算过
-					if (maxExp == null) {
-						maxExp = (int) (Math.log(maxRetryDelay) / Math.log(backOffMultiplier));
-						if (!maxExponential.compareAndSet(null, maxExp)) {
-							maxExp = maxExponential.get();
-						}
-					}
-					// 超过了最大指数
-					if (exponential >= maxExp) {
-						delay = maxRetryDelay;
-					} else {
-						delay = Math.round(retryDelay * Math.pow(backOffMultiplier, exponential));
-					}
-				} else {
-					delay = Math.round(retryDelay * Math.pow(backOffMultiplier, exponential));
-				}
-			} else {
-				delay = retryDelay;
-			}
-			if (delay <= 0) {
-				time = now;
-			} else if (maxRetryDelay > 0 && delay >= maxRetryDelay) {
-				time = now + maxRetryDelay;
-			} else {
-				time = now + delay;
-			}
+		}  else {
+			time = now + getDelay(retrys,backOffMultiplier,retryDelay,maxRetryDelay,useExponentialBackOff);
 		}
 		// 有过期时间设置
 		if (expireTime > 0 && time > 0 && time >= (startTime + expireTime)) {
 			time = 0;
 		}
 		return time;
+	}
+
+	/**
+	 * 获取延迟
+	 * @param retrys 第几次重试
+	 * @param backOffMultiplier
+	 * @param retryDelay
+	 * @param maxRetryDelay
+	 * @param useExponentialBackOff
+	 * @return
+	 */
+	private long getDelay(int retrys, double backOffMultiplier, int retryDelay,
+						  int maxRetryDelay, boolean useExponentialBackOff){
+		long delay;
+		if(retryDelay<=0){//系数小于0,没有重试间隔
+			delay = 0;
+		} else if (useExponentialBackOff) {// 判断是否使用指数函数
+			delay = getExponentialDelay(retrys,backOffMultiplier,retryDelay,maxRetryDelay);
+		} else {
+			delay = retryDelay;
+		}
+
+		//再次校验delay,防止非指数函数下retryDelay>maxRetryDelay
+		if(delay > maxRetryDelay){
+			delay = maxRetryDelay;
+		}
+		return delay;
+	}
+
+	/**
+	 * 按指数计算结果
+	 * result = min{(quotient * backOffMultiplier ^ exponential),maxValue}
+	 *
+	 * @param exponential 指数
+	 * @param backOffMultiplier 底数
+	 * @param quotient 系数
+	 * @param maxValue 允许的最大值
+	 * @return 计算结果
+	 */
+	private long getExponentialDelay(int exponential,double backOffMultiplier,int quotient,
+									 int maxValue){
+		long result;
+		// 底数为1
+		if (backOffMultiplier == 1) {
+			result = quotient;
+		} else if (maxValue > 0) {//最大重试延迟有效
+			// 获取最大的指数,没有则计算
+			Integer maxExp = maxExponential.get();
+			// 还没用计算过
+			if (maxExp == null) {
+				maxExp = (int) (Math.log(maxValue/1000) / Math.log(backOffMultiplier));
+				if (!maxExponential.compareAndSet(null, maxExp)) {
+					maxExp = maxExponential.get();
+				}
+			}
+
+			// 如果所求指数高于最大延迟,直接返回最大延迟,减少逻辑运算
+			if (exponential >= maxExp) {
+				result = maxValue;
+			} else {
+				result = Math.round(quotient * Math.pow(backOffMultiplier, exponential));
+			}
+		} else {//没有设置最大重试延迟,按指数求延迟
+			result = Math.round(quotient * Math.pow(backOffMultiplier, exponential));
+		}
+		return result;
 	}
 
 	public Integer getMaxRetrys() {
