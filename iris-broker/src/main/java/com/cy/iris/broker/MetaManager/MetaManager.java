@@ -25,7 +25,7 @@ public class MetaManager extends Service{
 		if(zkClient == null){
 			ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(
 					metaConfig.getZookeeperBaseSleepTimeMs(), metaConfig.getZookeeperMaxRetries());
-			CuratorFramework zkClient = CuratorFrameworkFactory.builder()
+			zkClient = CuratorFrameworkFactory.builder()
 					.connectString(metaConfig.getConnectionString())
 					.retryPolicy(retryPolicy)
 					.connectionTimeoutMs(metaConfig.getConnectionTimeout())

@@ -54,7 +54,7 @@ public class ClusterManager extends Service{
 				.forPath(COORDINATOR_PATH + System.getProperty(ServerType.Coordinator.nameKey()) + "_", System.getProperty(ServerType.Coordinator.nameKey()).getBytes("utf-8"));
 
 		if(null == this.zkClient.checkExists().forPath(this.TOPIC_PATH)) {
-			this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(this.TOPIC_PATH,"".getBytes("utf-8"));
+			this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(this.TOPIC_PATH,"[]".getBytes("utf-8"));
 		}
 
 		topicConfigLock.start();
