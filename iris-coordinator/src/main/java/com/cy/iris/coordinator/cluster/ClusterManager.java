@@ -1,5 +1,6 @@
 package com.cy.iris.coordinator.cluster;
 
+import com.cy.iris.commons.model.TopicConfig;
 import com.cy.iris.commons.service.Service;
 import com.cy.iris.commons.util.ArgumentUtil;
 import com.cy.iris.commons.util.JsonUtil;
