@@ -1,6 +1,8 @@
 package com.cy.iris.broker;
 
 import com.cy.iris.broker.MetaManager.MetaManager;
+import com.cy.iris.commons.network.handler.DefaultHandlerFactory;
+import com.cy.iris.commons.network.netty.server.NettyServer;
 import com.cy.iris.commons.service.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,8 @@ public class BrokerService extends Service{
 
 	private MetaManager metaManager;
 
+	private NettyServer nettyServer;
+
 	@Override
 	public void beforeStart() throws Exception {
 		if(metaManager == null){
@@ -25,11 +29,16 @@ public class BrokerService extends Service{
 			metaManager.setMetaConfig(brokerConfig.getMetaConfig());
 		}
 
+		if(nettyServer == null) {
+			nettyServer = new NettyServer(brokerConfig.getNettyServerConfig(),null,null,null, new DefaultHandlerFactory());
+		}
+
 	}
 
 	@Override
 	public void doStart() throws Exception {
 		metaManager.start();
+		nettyServer.start();
 	}
 
 	@Override

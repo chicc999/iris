@@ -61,7 +61,9 @@ public class ClusterManager extends Service{
 		topicConfigLock.start();
 
 		//阻塞的从zk获取数据
-		topics = JsonUtil.readValue(new String(topicConfigLock.get(TOPIC_PATH)),topics.getClass());
+		topics = JsonUtil.readMapValue(new String(topicConfigLock.get(TOPIC_PATH)),String.class,TopicConfig.class);
+		topics.put("1",new TopicConfig("11",(short)5,false));
+		topics.put("2",new TopicConfig("22",(short)5,true));
 
 	}
 
@@ -88,16 +90,14 @@ public class ClusterManager extends Service{
 		this.coordinatorConfig = coordinatorConfig;
 	}
 
-	private void updateTopic(){
 
-	}
 
 
 	private boolean addTopic(String topic){
 		if(topics.containsKey(topic)){
 				return true;
 		}else{
-			TopicConfig topicConfig = new TopicConfig(topic);
+			TopicConfig topicConfig = new TopicConfig();
 			topics.put(topic,topicConfig);
 		}
 		return false;

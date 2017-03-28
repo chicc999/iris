@@ -86,5 +86,6 @@
     <!-- 下面配置一些第三方包的日志过滤级别，用于避免刷屏 -->
 
     <logger name="io.netty" level="WARN"/>
+    <logger name="org.apache.zookeeper" level="WARN"/>
 
 </configuration>

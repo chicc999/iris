@@ -2,14 +2,18 @@ package com.cy.iris.broker.MetaManager;
 
 import com.cy.iris.commons.model.TopicConfig;
 import com.cy.iris.commons.service.Service;
+import com.cy.iris.commons.util.JsonUtil;
 import com.cy.iris.commons.util.bootstrap.ServerType;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.cache.NodeCache;
+import org.apache.curator.framework.recipes.cache.NodeCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,9 +26,11 @@ public class MetaManager extends Service{
 
 	private static final Logger logger = LoggerFactory.getLogger(MetaManager.class);
 
-	private static final String BROKER_PATH = "/broker/live/";
+	private static final String BROKER_LIVE_PATH = "/broker/live/";
 
 	private static final String TOPIC_PATH = "/topic";
+
+	private static final String BROKER_PATH = "/broker";
 
 	private CuratorFramework zkClient ;
 
@@ -32,6 +38,8 @@ public class MetaManager extends Service{
 
 	// 主题配置信息
 	private Map<String, TopicConfig> topics = new HashMap<String, TopicConfig>();
+
+	private NodeCache topicCache;
 
 	@Override
 	public void beforeStart() throws Exception {
@@ -46,6 +54,9 @@ public class MetaManager extends Service{
 					.namespace(metaConfig.getNameSpace())
 					.build();
 		}
+
+
+
 	}
 
 	@Override
@@ -54,13 +65,25 @@ public class MetaManager extends Service{
 
 		//注册broker存活
 		zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
-				.forPath(BROKER_PATH + System.getProperty(ServerType.Broker.nameKey()) + "_", System.getProperty(ServerType.Broker.nameKey()).getBytes("utf-8"));
+				.forPath(BROKER_LIVE_PATH + System.getProperty(ServerType.Broker.nameKey()) + "_", System.getProperty(ServerType.Broker.nameKey()).getBytes("utf-8"));
 
 		//检测并初始化topic路径
 		if(null == this.zkClient.checkExists().forPath(this.TOPIC_PATH)) {
 			this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(this.TOPIC_PATH,"[]".getBytes("utf-8"));
 		}
 
+		//注册监听器
+		if(topicCache == null) {
+			topicCache = new NodeCache(this.zkClient, this.TOPIC_PATH, false);
+			topicCache.getListenable().addListener(new NodeCacheListener() {
+				@Override
+				public void nodeChanged() throws Exception {
+					updateTopic(topicCache.getCurrentData().getData());
+				}
+			});
+		}
+		//启动监听器
+		topicCache.start();
 
 	}
 
@@ -77,9 +100,26 @@ public class MetaManager extends Service{
 	@Override
 	public void doStop() {
 		zkClient.close();
+		try {
+			topicCache.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void setMetaConfig(MetaConfig metaConfig) {
 		this.metaConfig = metaConfig;
 	}
+
+
+	private void updateTopic(byte[] content) throws IOException {
+		if(content == null || content.length == 0){
+			return;
+		}
+		Map<String,TopicConfig> map = JsonUtil.readMapValue(new String(content),String.class,TopicConfig.class);
+		System.out.println(map.values());
+
+
+	}
+
 }
