@@ -1,9 +1,15 @@
 package com.cy.iris.broker.MetaManager;
 
+import com.cy.iris.commons.cluster.ClusterEvent;
+import com.cy.iris.commons.cluster.event.TopicUpdateEvent;
 import com.cy.iris.commons.model.TopicConfig;
 import com.cy.iris.commons.service.Service;
+import com.cy.iris.commons.util.ArgumentUtil;
 import com.cy.iris.commons.util.JsonUtil;
 import com.cy.iris.commons.util.bootstrap.ServerType;
+import com.cy.iris.commons.util.eventmanager.EventManager;
+import io.netty.util.internal.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.cache.NodeCache;
@@ -14,13 +20,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * @Author:cy
  * @Date:Created in  17/3/23
- * @Destription:
+ * @Destription: 集群信息管理
  */
 public class MetaManager extends Service{
 
@@ -32,12 +40,14 @@ public class MetaManager extends Service{
 
 	private static final String BROKER_PATH = "/broker";
 
+	private EventManager<ClusterEvent> clusterEventManager = new EventManager<ClusterEvent>("ClusterEventManager");
+
 	private CuratorFramework zkClient ;
 
 	private MetaConfig metaConfig;
 
 	// 主题配置信息
-	private Map<String, TopicConfig> topics = new HashMap<String, TopicConfig>();
+	private volatile Map<String, TopicConfig> topics = new HashMap<String, TopicConfig>();
 
 	private NodeCache topicCache;
 
@@ -85,6 +95,8 @@ public class MetaManager extends Service{
 		//启动监听器
 		topicCache.start();
 
+		clusterEventManager.start();
+
 	}
 
 	@Override
@@ -105,6 +117,8 @@ public class MetaManager extends Service{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		clusterEventManager.stop();
 	}
 
 	public void setMetaConfig(MetaConfig metaConfig) {
@@ -116,10 +130,18 @@ public class MetaManager extends Service{
 		if(content == null || content.length == 0){
 			return;
 		}
-		Map<String,TopicConfig> map = JsonUtil.readMapValue(new String(content),String.class,TopicConfig.class);
-		System.out.println(map.values());
+		Map<String,TopicConfig> current = new HashMap<String, TopicConfig>();
 
+		List<TopicConfig> topicConfigs = JsonUtil.readListValue(new String(content),TopicConfig.class);
 
+		for(TopicConfig topicConfig:topicConfigs){
+			if(topicConfig !=null && topicConfig.getTopic() != null && !StringUtils.isBlank(topicConfig.getTopic())){
+				current.put(topicConfig.getTopic(),topicConfig);
+			}
+		}
+		topics = current;
+		//添加topic更新事件
+		clusterEventManager.add(new TopicUpdateEvent());
 	}
 
 }

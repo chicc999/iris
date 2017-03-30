@@ -39,10 +39,11 @@ public class ArgumentUtil {
 	 *
 	 * @param arg
 	 */
-	public static void isNotBlank(String arg) {
+	public static boolean isNotBlank(String arg) {
 		if (StringUtils.isBlank(arg)) {
 			throw new IllegalArgumentException(arg + "is Illegal argument.");
 		}
+		return true;
 	}
 
 
