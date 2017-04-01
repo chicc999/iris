@@ -34,7 +34,11 @@ public abstract class ClusterEvent {
 		/**
 		 * 所有从消费全部更新
 		 */
-		ALL_SLAVECONSUME_UPDATE
+		ALL_SLAVECONSUME_UPDATE,
+		/**
+		 * 更新数据出现异常
+		 */
+		UPDATE_EXCEPTION
 	}
 
 }

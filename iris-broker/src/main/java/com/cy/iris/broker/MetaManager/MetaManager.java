@@ -1,7 +1,10 @@
 package com.cy.iris.broker.MetaManager;
 
+import com.cy.iris.commons.cluster.Broker;
+import com.cy.iris.commons.cluster.BrokerCluster;
 import com.cy.iris.commons.cluster.ClusterEvent;
 import com.cy.iris.commons.cluster.event.TopicUpdateEvent;
+import com.cy.iris.commons.cluster.event.UpdateExceptionEvent;
 import com.cy.iris.commons.model.TopicConfig;
 import com.cy.iris.commons.service.Service;
 import com.cy.iris.commons.util.ArgumentUtil;
@@ -24,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @Author:cy
@@ -36,9 +41,9 @@ public class MetaManager extends Service{
 
 	private static final String BROKER_LIVE_PATH = "/broker/live/";
 
-	private static final String TOPIC_PATH = "/topic";
+	private static final String TOPIC_PATH = "/topic_zip";
 
-	private static final String BROKER_PATH = "/broker";
+	private static final String BROKER_PATH = "/broker_zip";
 
 	private EventManager<ClusterEvent> clusterEventManager = new EventManager<ClusterEvent>("ClusterEventManager");
 
@@ -47,9 +52,14 @@ public class MetaManager extends Service{
 	private MetaConfig metaConfig;
 
 	// 主题配置信息
-	private volatile Map<String, TopicConfig> topics = new HashMap<String, TopicConfig>();
+	private volatile Map<String, TopicConfig> topics ;
+
+	// 集群
+	private ConcurrentMap<String, BrokerCluster> clusters ;
 
 	private NodeCache topicCache;
+
+	private NodeCache brokerCache;
 
 	@Override
 	public void beforeStart() throws Exception {
@@ -77,23 +87,49 @@ public class MetaManager extends Service{
 		zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
 				.forPath(BROKER_LIVE_PATH + System.getProperty(ServerType.Broker.nameKey()) + "_", System.getProperty(ServerType.Broker.nameKey()).getBytes("utf-8"));
 
+
 		//检测并初始化topic路径
 		if(null == this.zkClient.checkExists().forPath(this.TOPIC_PATH)) {
 			this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(this.TOPIC_PATH,"[]".getBytes("utf-8"));
 		}
-
 		//注册监听器
 		if(topicCache == null) {
 			topicCache = new NodeCache(this.zkClient, this.TOPIC_PATH, false);
 			topicCache.getListenable().addListener(new NodeCacheListener() {
 				@Override
-				public void nodeChanged() throws Exception {
-					updateTopic(topicCache.getCurrentData().getData());
+				public void nodeChanged()  {
+					try {
+						updateTopic(topicCache.getCurrentData().getData());
+					} catch (IOException e) {
+						clusterEventManager.add(new UpdateExceptionEvent(e));
+					}
 				}
 			});
 		}
 		//启动监听器
 		topicCache.start();
+
+
+		//检测并初始化broker路径
+		if(null == this.zkClient.checkExists().forPath(this.BROKER_PATH)) {
+			this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(this.BROKER_PATH,"[]".getBytes("utf-8"));
+		}
+		//注册监听器
+		if(brokerCache == null) {
+			brokerCache = new NodeCache(this.zkClient, this.BROKER_PATH, false);
+			brokerCache.getListenable().addListener(new NodeCacheListener() {
+				@Override
+				public void nodeChanged() {
+					try {
+						updateBroker(brokerCache.getCurrentData().getData());
+					} catch (IOException e) {
+						clusterEventManager.add(new UpdateExceptionEvent(e));
+					}
+				}
+			});
+		}
+		//启动监听器
+		brokerCache.start();
 
 		clusterEventManager.start();
 
@@ -101,7 +137,7 @@ public class MetaManager extends Service{
 
 	@Override
 	public void afterStart() throws Exception {
-
+		logger.info("MetaManager started successfully.");
 	}
 
 	@Override
@@ -144,4 +180,11 @@ public class MetaManager extends Service{
 		clusterEventManager.add(new TopicUpdateEvent());
 	}
 
+
+	private void updateBroker(byte[] content) throws IOException {
+		if(content == null || content.length == 0){
+			return;
+		}
+		List<Broker> brokers = JsonUtil.readListValue(new String(content),Broker.class);
+	}
 }
