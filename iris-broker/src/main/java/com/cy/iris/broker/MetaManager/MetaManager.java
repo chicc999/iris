@@ -2,7 +2,9 @@ package com.cy.iris.broker.MetaManager;
 
 import com.cy.iris.commons.cluster.Broker;
 import com.cy.iris.commons.cluster.BrokerCluster;
+import com.cy.iris.commons.cluster.BrokerGroup;
 import com.cy.iris.commons.cluster.ClusterEvent;
+import com.cy.iris.commons.cluster.event.AllBrokerUpdateEvent;
 import com.cy.iris.commons.cluster.event.TopicUpdateEvent;
 import com.cy.iris.commons.cluster.event.UpdateExceptionEvent;
 import com.cy.iris.commons.model.TopicConfig;
@@ -23,10 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -51,11 +50,21 @@ public class MetaManager extends Service{
 
 	private MetaConfig metaConfig;
 
+	// 当前Broker
+	private Broker broker;
+	// 当前分组
+	private BrokerGroup brokerGroup;
+
 	// 主题配置信息
 	private volatile Map<String, TopicConfig> topics ;
 
 	// 集群
 	private ConcurrentMap<String, BrokerCluster> clusters ;
+
+	// Group
+	private Map<String, BrokerGroup> groups = new HashMap<String, BrokerGroup>();
+	// Broker
+	private Map<String, Broker> brokers = new HashMap<String, Broker>();
 
 	private NodeCache topicCache;
 
@@ -74,6 +83,17 @@ public class MetaManager extends Service{
 					.namespace(metaConfig.getNameSpace())
 					.build();
 		}
+
+		//初始化本地broker
+		if(this.broker == null){
+			this.broker = new Broker(System.getProperty(ServerType.Broker.nameKey()));
+		}
+
+		//初始化本地所在brokerGroup
+		if(this.brokerGroup == null){
+			this.brokerGroup = new BrokerGroup();
+		}
+		this.brokerGroup.addBroker(this.broker);
 
 
 
@@ -150,6 +170,7 @@ public class MetaManager extends Service{
 		zkClient.close();
 		try {
 			topicCache.close();
+			brokerCache.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -186,5 +207,56 @@ public class MetaManager extends Service{
 			return;
 		}
 		List<Broker> brokers = JsonUtil.readListValue(new String(content),Broker.class);
+		updateCluster(brokers);
+	}
+
+	private void updateCluster(List<Broker> brokers){
+		Map<String,BrokerCluster> current = new HashMap<String, BrokerCluster>();
+		Broker source = this.broker;
+		Map<String, Broker> currentBrokers = new HashMap<String, Broker>(brokers.size());
+		Map<String, BrokerGroup> currentGroups = new HashMap<String, BrokerGroup>(brokers.size());
+		BrokerGroup group;
+		boolean isMatch = false;
+		// 遍历Broker
+		for (Broker broker : brokers) {
+			// 存放当前Broker
+			currentBrokers.put(broker.getName(), broker);
+			// 获取分组
+			group = currentGroups.get(broker.getGroup());
+			if (group == null) {
+				// 分组不存在，则创建
+				group = new BrokerGroup();
+				group.setGroup(broker.getGroup());
+				currentGroups.put(broker.getGroup(), group);
+			}
+			// 添加到分组中
+			group.addBroker(broker);
+
+			if (broker.equals(source)) {
+				// 等于当前Broker
+				source.setPermission(broker.getPermission());
+				source.setGroup(broker.getGroup());
+				source.setAlias(broker.getAlias());
+				source.setDataCenter(broker.getDataCenter());
+				source.setSyncMode(broker.getSyncMode());
+				source.setRetryType(broker.getRetryType());
+				//broker的角色会随着选举发生变化
+				//source.setRole(broker.getRole());
+				if (broker.getReplicationPort() > 0) {
+					source.setReplicationPort(broker.getReplicationPort());
+				}
+				this.brokerGroup = group;
+				isMatch = true;
+			}
+		}
+		if (!isMatch) {
+			logger.error(String.format("broker config maybe error,can not find %s", this.broker));
+		}
+
+		this.brokers = currentBrokers;
+		this.groups = currentGroups;
+
+		this.clusterEventManager.add(new AllBrokerUpdateEvent());
+
 	}
 }

@@ -81,7 +81,9 @@ public class BrokerGroup implements Serializable {
 			if ((broker.getGroup() == null || broker.getGroup().isEmpty()) && (group != null && !group.isEmpty())) {
 				broker.setGroup(group);
 			}
-			brokers.add(broker);
+			if(!brokers.contains(broker)) {
+				brokers.add(broker);
+			}
 		}
 	}
 
