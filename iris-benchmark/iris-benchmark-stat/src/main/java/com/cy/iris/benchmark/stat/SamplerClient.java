@@ -9,5 +9,17 @@ import com.cy.iris.commons.service.Service;
  */
 public abstract class SamplerClient extends Service{
 
-	abstract protected SampleResult doWork();
+	protected SampleResult work(){
+		SampleResult result = new SampleResult();
+		try{
+			boolean success = doWork();
+			result.done(success);
+		}catch (Exception e){
+			result.done(false);
+		}
+		return result;
+	}
+
+
+	abstract protected boolean doWork();
 }

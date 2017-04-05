@@ -1,14 +1,14 @@
 package com.cy.iris.benchmark.client;
 
-import com.cy.iris.benchmark.stat.SampleResult;
+import com.cy.iris.benchmark.stat.CollectJob;
 import com.cy.iris.benchmark.stat.SamplerClient;
-import com.cy.iris.commons.exception.RemotingIOException;
-import com.cy.iris.commons.exception.RequestTimeoutException;
 import com.cy.iris.commons.network.netty.client.NettyClient;
 import com.cy.iris.commons.network.netty.client.NettyClientConfig;
 import com.cy.iris.commons.network.protocol.Command;
 import com.cy.iris.commons.network.protocol.request.GetCluster;
 import io.netty.channel.Channel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
@@ -18,6 +18,8 @@ import java.net.InetSocketAddress;
  * @Destription:
  */
 public class ProducerStat extends SamplerClient{
+
+	private static Logger logger = LoggerFactory.getLogger(ProducerStat.class);
 
 	private NettyClient nettyClient;
 	private Channel channel;
@@ -53,13 +55,26 @@ public class ProducerStat extends SamplerClient{
 	}
 
 	@Override
-	protected SampleResult doWork() {
-		SampleResult result = new SampleResult();
+	protected boolean doWork() {
+		// TODO 不对报文内容做判断,意味着如果服务端返回响应但执行失败,按照执行成功计算
 		try {
-			Command response =	nettyClient.sync(channel,command,10000);
+			nettyClient.sync(channel,command,10000);
+			return true;
 		} catch (Exception e) {
-
+			return false;
 		}
-		return null;
+	}
+
+	public static void main(String[] args){
+		CollectJob job = new CollectJob();
+		try {
+			job.stat(ProducerStat.class.getName(),1);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 }

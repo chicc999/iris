@@ -39,4 +39,8 @@ public class SampleResult {
 		this.success = success;
 		this.endTime = System.nanoTime();
 	}
+
+	public long getTime(){
+		return endTime-startTime;
+	}
 }
