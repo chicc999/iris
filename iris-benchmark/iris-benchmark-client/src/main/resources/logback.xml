@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Reference Manual http://logback.qos.ch/manual/index.html -->
+
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <!-- 定义log 文件的 home 目录  -->
+    <property name="LOG_HOME" value="logs"></property>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder charset="UTF-8"> <!-- encoder 可以指定字符集，对于中文输出有意义 -->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] [%file:%line] %-5level %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--<appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+
+    <!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+    <!--<level>TRACE</level>-->
+    <!--</filter>-->
+
+    <!--&lt;!&ndash; 可让每天产生一个日志文件，最多 10 个，自动回滚 &ndash;&gt;-->
+    <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+    <!--<fileNamePattern>d:/log/Unmi-%d{yyyy-MM-dd}.log</fileNamePattern>-->
+    <!--<maxHistory>10</maxHistory>-->
+    <!--</rollingPolicy>-->
+
+    <!--&lt;!&ndash; 下面这段注释的代码可以在日志文件超过 5MB 时进行归档，并且归档文件后缀只要是 .zip 或 .gz 就会自动压缩日志归档 &ndash;&gt;-->
+    <!--&lt;!&ndash;file>d:/log/Unmi.log</file>-->
+
+    <!--<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">-->
+    <!--<fileNamePattern>d:/log/Unmi.%i.log.zip</fileNamePattern>-->
+    <!--<minIndex>1</minIndex>-->
+    <!--<maxIndex>10</maxIndex>-->
+    <!--</rollingPolicy>-->
+
+    <!--<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">-->
+    <!--<maxFileSize>5MB</maxFileSize>-->
+    <!--</triggeringPolicy&ndash;&gt;-->
+
+    <!--<encoder>-->
+    <!--<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>-->
+    <!--</encoder>-->
+    <!--</appender>-->
+
+    <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoding>UTF-8</encoding>
+        <file>${LOG_HOME}/debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>logs/debug.%d{yyyy-MM-dd}.log</FileNamePattern>
+        </rollingPolicy>
+        <layout>
+            <pattern>[%date{yyyy-MM-dd HH:mm:ss}] [%file:%line] [%-5level] [%logger:%line] --%mdc{client} %msg%n</pattern>
+        </layout>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoding>UTF-8</encoding>
+        <file>${LOG_HOME}/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>logs/error.%d{yyyy-MM-dd}.log</FileNamePattern>
+        </rollingPolicy>
+        <layout>
+            <pattern>[%date{yyyy-MM-dd HH:mm:ss}] [%file:%line] [%-5level] [%logger:%line] --%mdc{client} %msg%n</pattern>
+        </layout>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 输出到控制台和文件，可定义更多的 Appender -->
+
+    <root level="DEBUG">
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="DEBUG_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </root>
+
+    <!-- 下面配置一些第三方包的日志过滤级别，用于避免刷屏 -->
+
+    <logger name="io.netty" level="WARN"/>
+
+</configuration>
