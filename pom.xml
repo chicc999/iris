@@ -10,6 +10,7 @@
     <module>iris-client</module>
     <module>iris-coordinator</module>
     <module>iris-broker</module>
+    <module>iris-benchmark</module>
   </modules>
   <packaging>pom</packaging>
 
