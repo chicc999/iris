@@ -77,7 +77,7 @@
 
     <!-- 输出到控制台和文件，可定义更多的 Appender -->
 
-    <root level="DEBUG">
+    <root level="ERROR">
         <appender-ref ref="stdout"/>
         <appender-ref ref="DEBUG_FILE"/>
         <appender-ref ref="ERROR_FILE"/>

@@ -67,10 +67,14 @@ public class CollectJob extends Service{
 		this.executor = Executors.newFixedThreadPool(threadNum);
 		CyclicBarrier cyclicBarriers = new CyclicBarrier(threadNum);
 
+		this.statExecutor = Executors.newSingleThreadExecutor();
+		this.statExecutor.submit(new CollectTask(threadNum));
+
 		for(int i=0;i< threadNum;i++){
 			executor.submit(new StatTask(getInstance(SamplerClient),cyclicBarriers));
 		}
 		executor.shutdown();
+		statExecutor.shutdown();
 	}
 
 	class StatTask implements Runnable{
@@ -112,6 +116,41 @@ public class CollectJob extends Service{
 			client.stop();
 		}
 	}
+
+	class CollectTask implements Runnable{
+		private  Logger logger = LoggerFactory.getLogger(StatTask.class);
+		private int threadNum;
+
+		public CollectTask(int threadNum) {
+			this.threadNum = threadNum;
+		}
+
+		@Override
+		public void run() {
+			while(!Thread.interrupted()) {
+				long interval = 4000;
+				try {
+					Thread.sleep(interval);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				long curNum = num.get();
+				long curTime = time.get();
+				long count = curNum - lastNum.get();
+				long totalTime = curTime - lastTime.get();
+
+				lastNum.set(curNum);
+				lastTime.set(curTime);
+
+
+				String info = String.format("total num:%d, tps:%f - tps2:%f err:%d", curNum, totalTime == 0 ? 0 : count * 1000.0 * 1000 * 1000 * threadNum / totalTime, count * 1000.0 / interval, errs.get());
+				logger.info(info);
+				System.out.println(info);
+			}
+
+		}
+	}
+
 
 }
 
