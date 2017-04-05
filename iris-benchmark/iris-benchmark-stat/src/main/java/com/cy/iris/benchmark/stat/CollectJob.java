@@ -70,6 +70,7 @@ public class CollectJob extends Service{
 		for(int i=0;i< threadNum;i++){
 			executor.submit(new StatTask(getInstance(SamplerClient),cyclicBarriers));
 		}
+		executor.shutdown();
 	}
 
 	class StatTask implements Runnable{
