@@ -63,18 +63,41 @@ public class CollectJob extends Service{
 		return (SamplerClient)clazz.newInstance();
 	}
 
-	public void stat(String SamplerClient,int threadNum) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+	/**
+	 * 进行性能测试
+	 * @param SamplerClient 实现的SamplerClient的客户端
+	 * @param threadNum 启用的线程
+	 * @param maxReqCount 最大请求数量,为0则一直发送
+	 * @param interval 性能统计间隔
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
+	 */
+	public void stat(String SamplerClient,int threadNum,int maxReqCount,long interval) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+		this.maxMsgCount = maxReqCount;
 		this.executor = Executors.newFixedThreadPool(threadNum);
 		CyclicBarrier cyclicBarriers = new CyclicBarrier(threadNum);
 
 		this.statExecutor = Executors.newSingleThreadExecutor();
-		this.statExecutor.submit(new CollectTask(threadNum));
+		this.statExecutor.submit(new CollectTask(threadNum,interval));
 
 		for(int i=0;i< threadNum;i++){
 			executor.submit(new StatTask(getInstance(SamplerClient),cyclicBarriers));
 		}
 		executor.shutdown();
 		statExecutor.shutdown();
+	}
+
+	/**
+	 * 进行性能测试
+	 * @param SamplerClient 实现的SamplerClient的客户端
+	 * @param threadNum 启用的线程
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
+	 */
+	public void stat(String SamplerClient,int threadNum) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+		stat(SamplerClient,threadNum,0,4000);
 	}
 
 	class StatTask implements Runnable{
@@ -120,20 +143,22 @@ public class CollectJob extends Service{
 	class CollectTask implements Runnable{
 		private  Logger logger = LoggerFactory.getLogger(StatTask.class);
 		private int threadNum;
+		private long interval;
 
-		public CollectTask(int threadNum) {
+		public CollectTask(int threadNum, long interval) {
 			this.threadNum = threadNum;
+			this.interval = interval;
 		}
 
 		@Override
 		public void run() {
 			while(!Thread.interrupted()) {
-				long interval = 4000;
 				try {
 					Thread.sleep(interval);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+
 				long curNum = num.get();
 				long curTime = time.get();
 				long count = curNum - lastNum.get();
@@ -143,7 +168,7 @@ public class CollectJob extends Service{
 				lastTime.set(curTime);
 
 
-				String info = String.format("total num:%d, tps:%f - tps2:%f err:%d", curNum, totalTime == 0 ? 0 : count * 1000.0 * 1000 * 1000 * threadNum / totalTime, count * 1000.0 / interval, errs.get());
+				String info = String.format("请求总数:%d , %ds 平均tps:%.0f , 最近%ds tps:%.0f , err:%d", curNum,(int)(lastTime.get()/threadNum/1000/1000/1000), curTime == 0 ? 0 : curNum * 1000.0 * 1000 * 1000 * threadNum / curTime,interval/1000, totalTime == 0 ? 0 : count * 1000.0 * 1000 * 1000 * threadNum / totalTime , errs.get());
 				logger.info(info);
 				System.out.println(info);
 			}

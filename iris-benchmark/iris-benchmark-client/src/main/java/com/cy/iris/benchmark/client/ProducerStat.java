@@ -68,7 +68,7 @@ public class ProducerStat extends SamplerClient{
 	public static void main(String[] args){
 		CollectJob job = new CollectJob();
 		try {
-			job.stat(ProducerStat.class.getName(),8);
+			job.stat(ProducerStat.class.getName(),8,1000000,10000);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
