@@ -3,7 +3,6 @@ package pers.cy.iris.client.cli;
 import pers.cy.iris.client.cli.exception.CliException;
 import pers.cy.iris.client.cli.exception.CliParseException;
 import pers.cy.iris.client.cli.zookeeper.ZookeeperService;
-import org.apache.curator.framework.CuratorFramework;
 
 import java.io.PrintStream;
 import java.util.Map;
