@@ -211,8 +211,8 @@ public class ResponseFuture {
 			return false;
 		}
 		isDone = true;
-		latch.countDown();
 		onSuccess();
+		latch.countDown();
 		return true;
 	}
 
