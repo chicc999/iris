@@ -9,11 +9,9 @@ import pers.cy.iris.commons.cluster.event.TopicUpdateEvent;
 import pers.cy.iris.commons.cluster.event.UpdateExceptionEvent;
 import pers.cy.iris.commons.model.TopicConfig;
 import pers.cy.iris.commons.service.Service;
-import pers.cy.iris.commons.util.ArgumentUtil;
 import pers.cy.iris.commons.util.JsonUtil;
 import pers.cy.iris.commons.util.bootstrap.ServerType;
 import pers.cy.iris.commons.util.eventmanager.EventManager;
-import io.netty.util.internal.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -26,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**

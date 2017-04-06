@@ -5,12 +5,8 @@ import pers.cy.iris.commons.exception.RemotingIOException;
 import pers.cy.iris.commons.exception.RequestTimeoutException;
 import pers.cy.iris.commons.network.netty.client.NettyClient;
 import pers.cy.iris.commons.network.netty.client.NettyClientConfig;
-import pers.cy.iris.commons.network.protocol.Command;
-import pers.cy.iris.commons.network.protocol.Header;
 import pers.cy.iris.commons.network.protocol.request.GetCluster;
-import pers.cy.iris.commons.network.protocol.request.HeartBeat;
 import io.netty.channel.Channel;
-import io.netty.channel.ConnectTimeoutException;
 
 import java.net.InetSocketAddress;
 

@@ -3,7 +3,6 @@ package pers.cy.iris.commons.network.protocol;
 import pers.cy.iris.commons.network.CommandCallback;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 
 /**

@@ -6,7 +6,6 @@ import pers.cy.iris.commons.network.protocol.HeaderType;
 import pers.cy.iris.commons.util.Serializer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.Unpooled;
 
 /**
  * Created by cy on 16/12/29.

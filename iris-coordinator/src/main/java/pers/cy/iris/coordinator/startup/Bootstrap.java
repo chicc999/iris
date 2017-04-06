@@ -4,11 +4,8 @@ import pers.cy.iris.commons.service.Service;
 import pers.cy.iris.commons.util.bootstrap.BootstrapUtil;
 import pers.cy.iris.commons.util.bootstrap.PropertiesConfigureUtil;
 import pers.cy.iris.commons.util.bootstrap.ServerType;
-import pers.cy.iris.coordinator.CoordinatorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
 /**
