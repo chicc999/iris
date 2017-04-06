@@ -17,19 +17,24 @@ public class CommandEncoder extends MessageToByteEncoder {
 	protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
 
 		Command command = (Command) msg;
-		ByteBuf header = command.encodeHeader();
+		ByteBuf header = null;
+		ByteBuf body = null;
+		try {
+			header = command.encodeHeader();
+			logger.debug("encode : header len {}", header.readableBytes());
 
-		logger.debug("encode : header len {}", header.readableBytes());
-
-		ByteBuf body = command.encodeBody();
-
-		logger.debug("encode : body len {}", body.readableBytes());
-		//header,body长度以及描述他们所用的长度
-		out.writeInt(header.readableBytes() + body.readableBytes() + 4 + 4);
-		out.writeInt(header.readableBytes());
-		out.writeBytes(header);
-		out.writeInt(body.readableBytes());
-		out.writeBytes(body);
+			body = command.encodeBody();
+			logger.debug("encode : body len {}", body.readableBytes());
+			//header,body长度以及描述他们所用的长度
+			out.writeInt(header.readableBytes() + body.readableBytes() + 4 + 4);
+			out.writeInt(header.readableBytes());
+			out.writeBytes(header);
+			out.writeInt(body.readableBytes());
+			out.writeBytes(body);
+		} finally {
+			header.release();
+			body.release();
+		}
 
 	}
 
