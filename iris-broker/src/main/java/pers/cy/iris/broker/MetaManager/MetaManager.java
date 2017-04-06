@@ -53,15 +53,15 @@ public class MetaManager extends Service{
 	private BrokerGroup brokerGroup;
 
 	// 主题配置信息
-	private volatile Map<String, TopicConfig> topics ;
+	private volatile Map<String/*topic name*/, TopicConfig> topics ;
 
 	// 集群
-	private ConcurrentMap<String, BrokerCluster> clusters ;
+	private volatile ConcurrentMap<String/*topic name*/, BrokerCluster> clusters ;
 
 	// Group
-	private Map<String, BrokerGroup> groups = new HashMap<String, BrokerGroup>();
+	private volatile Map<String/*group name*/, BrokerGroup> groups = new HashMap<String, BrokerGroup>();
 	// Broker
-	private Map<String, Broker> brokers = new HashMap<String, Broker>();
+	private volatile Map<String/*broker name*/, Broker> brokers = new HashMap<String, Broker>();
 
 	private NodeCache topicCache;
 
@@ -92,8 +92,6 @@ public class MetaManager extends Service{
 		}
 		this.brokerGroup.addBroker(this.broker);
 
-
-
 	}
 
 	@Override
@@ -117,6 +115,8 @@ public class MetaManager extends Service{
 				public void nodeChanged()  {
 					try {
 						updateTopic(topicCache.getCurrentData().getData());
+						//添加topic更新事件
+						clusterEventManager.add(new TopicUpdateEvent());
 					} catch (IOException e) {
 						clusterEventManager.add(new UpdateExceptionEvent(e));
 					}
@@ -139,6 +139,8 @@ public class MetaManager extends Service{
 				public void nodeChanged() {
 					try {
 						updateBroker(brokerCache.getCurrentData().getData());
+						//集群事件管理器添加broker更新事件
+						clusterEventManager.add(new AllBrokerUpdateEvent());
 					} catch (IOException e) {
 						clusterEventManager.add(new UpdateExceptionEvent(e));
 					}
@@ -194,8 +196,6 @@ public class MetaManager extends Service{
 			}
 		}
 		topics = current;
-		//添加topic更新事件
-		clusterEventManager.add(new TopicUpdateEvent());
 	}
 
 
@@ -253,7 +253,6 @@ public class MetaManager extends Service{
 		this.brokers = currentBrokers;
 		this.groups = currentGroups;
 
-		this.clusterEventManager.add(new AllBrokerUpdateEvent());
-
+		clusters.clear();
 	}
 }
