@@ -1,4 +1,4 @@
-package com.cy.iris.commons.service;
+package pers.cy.iris.commons.service;
 
 /**
  * 生命周期管理

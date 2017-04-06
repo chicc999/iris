@@ -1,6 +1,6 @@
-package com.cy.iris.client.cli.exception;
+package pers.cy.iris.client.cli.exception;
 
-import com.cy.iris.client.cli.Option;
+import pers.cy.iris.client.cli.Option;
 
 /**
  * @Author:cy

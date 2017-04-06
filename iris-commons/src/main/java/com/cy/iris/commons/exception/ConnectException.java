@@ -1,4 +1,4 @@
-package com.cy.iris.commons.exception;
+package pers.cy.iris.commons.exception;
 
 import java.io.IOException;
 

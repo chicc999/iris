@@ -1,8 +1,8 @@
-package com.cy.iris.client.cli;
+package pers.cy.iris.client.cli;
 
-import com.cy.iris.client.cli.exception.CliException;
-import com.cy.iris.client.cli.exception.CliParseException;
-import com.cy.iris.client.cli.zookeeper.ZookeeperService;
+import pers.cy.iris.client.cli.exception.CliException;
+import pers.cy.iris.client.cli.exception.CliParseException;
+import pers.cy.iris.client.cli.zookeeper.ZookeeperService;
 import org.apache.curator.framework.CuratorFramework;
 
 import java.io.PrintStream;

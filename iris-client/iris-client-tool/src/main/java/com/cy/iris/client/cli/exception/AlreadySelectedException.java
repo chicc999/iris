@@ -1,4 +1,4 @@
-package com.cy.iris.client.cli.exception;
+package pers.cy.iris.client.cli.exception;
 
 /**
  * @Author:cy
@@ -6,8 +6,8 @@ package com.cy.iris.client.cli.exception;
  * @Destription:
  */
 
-import com.cy.iris.client.cli.Option;
-import com.cy.iris.client.cli.OptionGroup;
+import pers.cy.iris.client.cli.Option;
+import pers.cy.iris.client.cli.OptionGroup;
 
 /**
  * Thrown when more than one option in an option group

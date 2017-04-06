@@ -1,4 +1,4 @@
-package com.cy.iris.client.cli;
+package pers.cy.iris.client.cli;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,6 @@
-package com.cy.iris.commons.cluster.event;
+package pers.cy.iris.commons.cluster.event;
 
-import com.cy.iris.commons.cluster.ClusterEvent;
+import pers.cy.iris.commons.cluster.ClusterEvent;
 
 /**
  * @Author:cy

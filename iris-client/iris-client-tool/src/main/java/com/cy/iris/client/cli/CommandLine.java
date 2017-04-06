@@ -1,4 +1,4 @@
-package com.cy.iris.client.cli;
+package pers.cy.iris.client.cli;
 
 /**
  * @Author:cy
@@ -6,7 +6,7 @@ package com.cy.iris.client.cli;
  * @Destription:
  */
 
-import com.cy.iris.client.cli.exception.ParseException;
+import pers.cy.iris.client.cli.exception.ParseException;
 
 import java.io.Serializable;
 import java.util.*;

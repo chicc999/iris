@@ -1,6 +1,6 @@
-package com.cy.iris.client.cli;
+package pers.cy.iris.client.cli;
 
-import com.cy.iris.client.cli.exception.AlreadySelectedException;
+import pers.cy.iris.client.cli.exception.AlreadySelectedException;
 
 import java.io.Serializable;
 import java.util.Collection;

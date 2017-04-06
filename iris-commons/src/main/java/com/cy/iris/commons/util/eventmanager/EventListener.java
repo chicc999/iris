@@ -1,4 +1,4 @@
-package com.cy.iris.commons.util.eventmanager;
+package pers.cy.iris.commons.util.eventmanager;
 
 /**
  * 事件监听器

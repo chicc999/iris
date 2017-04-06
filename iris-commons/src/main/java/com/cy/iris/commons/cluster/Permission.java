@@ -1,4 +1,4 @@
-package com.cy.iris.commons.cluster;
+package pers.cy.iris.commons.cluster;
 
 /**
  * @Author:cy

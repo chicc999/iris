@@ -1,6 +1,6 @@
-package com.cy.iris.commons.network.handler;
+package pers.cy.iris.commons.network.handler;
 
-import com.cy.iris.commons.network.protocol.request.HeartBeat;
+import pers.cy.iris.commons.network.protocol.request.HeartBeat;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;

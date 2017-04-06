@@ -1,4 +1,4 @@
-package com.cy.iris.commons.model;
+package pers.cy.iris.commons.model;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;

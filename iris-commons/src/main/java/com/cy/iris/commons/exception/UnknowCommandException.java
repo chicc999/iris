@@ -1,4 +1,4 @@
-package com.cy.iris.commons.exception;
+package pers.cy.iris.commons.exception;
 
 /**
  * Created by cy on 16/12/29.

@@ -1,4 +1,4 @@
-package com.cy.iris.commons.network.protocol;
+package pers.cy.iris.commons.network.protocol;
 
 /**
  * Created by cy on 16/12/27.

@@ -1,6 +1,6 @@
-package com.cy.iris.benchmark.stat;
+package pers.cy.iris.benchmark.stat;
 
-import com.cy.iris.commons.service.Service;
+import pers.cy.iris.commons.service.Service;
 
 /**
  * @Author:cy

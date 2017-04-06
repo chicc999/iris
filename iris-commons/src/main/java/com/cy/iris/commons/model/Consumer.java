@@ -1,6 +1,6 @@
-package com.cy.iris.commons.model;
+package pers.cy.iris.commons.model;
 
-import com.cy.iris.commons.cluster.ClusterRole;
+import pers.cy.iris.commons.cluster.ClusterRole;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;

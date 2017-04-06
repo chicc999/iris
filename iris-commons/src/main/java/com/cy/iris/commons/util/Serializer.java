@@ -1,4 +1,4 @@
-package com.cy.iris.commons.util;
+package pers.cy.iris.commons.util;
 
 import io.netty.buffer.ByteBuf;
 

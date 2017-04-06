@@ -1,6 +1,6 @@
-package com.cy.iris.commons.network.netty.server;
+package pers.cy.iris.commons.network.netty.server;
 
-import com.cy.iris.commons.network.netty.NettyConfig;
+import pers.cy.iris.commons.network.netty.NettyConfig;
 
 /**
  * 服务端网络配置

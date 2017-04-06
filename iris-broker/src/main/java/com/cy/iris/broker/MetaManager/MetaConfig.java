@@ -1,4 +1,4 @@
-package com.cy.iris.broker.MetaManager;
+package pers.cy.iris.broker.MetaManager;
 
 /**
  * @Author:cy

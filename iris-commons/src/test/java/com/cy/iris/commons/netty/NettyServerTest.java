@@ -1,7 +1,7 @@
-package com.cy.iris.commons.netty;
+package pers.cy.iris.commons.netty;
 
-import com.cy.iris.commons.network.netty.server.NettyServer;
-import com.cy.iris.commons.network.netty.server.NettyServerConfig;
+import pers.cy.iris.commons.network.netty.server.NettyServer;
+import pers.cy.iris.commons.network.netty.server.NettyServerConfig;
 
 /**
  * Created by cy on 16/12/26.

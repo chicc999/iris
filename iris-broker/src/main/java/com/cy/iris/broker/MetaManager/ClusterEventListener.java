@@ -1,7 +1,7 @@
-package com.cy.iris.broker.MetaManager;
+package pers.cy.iris.broker.MetaManager;
 
-import com.cy.iris.commons.cluster.ClusterEvent;
-import com.cy.iris.commons.util.eventmanager.EventListener;
+import pers.cy.iris.commons.cluster.ClusterEvent;
+import pers.cy.iris.commons.util.eventmanager.EventListener;
 
 /**
  * @Author:cy

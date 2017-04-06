@@ -1,10 +1,10 @@
-package com.cy.iris.coordinator.startup;
+package pers.cy.iris.coordinator.startup;
 
-import com.cy.iris.commons.service.Service;
-import com.cy.iris.commons.util.bootstrap.BootstrapUtil;
-import com.cy.iris.commons.util.bootstrap.PropertiesConfigureUtil;
-import com.cy.iris.commons.util.bootstrap.ServerType;
-import com.cy.iris.coordinator.CoordinatorService;
+import pers.cy.iris.commons.service.Service;
+import pers.cy.iris.commons.util.bootstrap.BootstrapUtil;
+import pers.cy.iris.commons.util.bootstrap.PropertiesConfigureUtil;
+import pers.cy.iris.commons.util.bootstrap.ServerType;
+import pers.cy.iris.coordinator.CoordinatorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;

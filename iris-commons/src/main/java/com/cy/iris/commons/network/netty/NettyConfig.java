@@ -1,4 +1,4 @@
-package com.cy.iris.commons.network.netty;
+package pers.cy.iris.commons.network.netty;
 
 /**
  * Netty的通用配置,以及网络的配置.

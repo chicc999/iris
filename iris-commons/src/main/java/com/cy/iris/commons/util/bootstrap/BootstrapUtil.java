@@ -1,6 +1,6 @@
-package com.cy.iris.commons.util.bootstrap;
+package pers.cy.iris.commons.util.bootstrap;
 
-import com.cy.iris.commons.service.Service;
+import pers.cy.iris.commons.service.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;

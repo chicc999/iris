@@ -1,6 +1,6 @@
-package com.cy.iris.client.cli.zookeeper;
+package pers.cy.iris.client.cli.zookeeper;
 
-import com.cy.iris.commons.service.Service;
+import pers.cy.iris.commons.service.Service;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;

@@ -1,4 +1,4 @@
-package com.cy.iris.commons.util.eventmanager.disruptor.test;
+package pers.cy.iris.commons.util.eventmanager.disruptor.test;
 
 import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.Disruptor;

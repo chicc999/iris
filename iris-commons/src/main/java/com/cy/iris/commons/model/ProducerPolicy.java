@@ -1,4 +1,4 @@
-package com.cy.iris.commons.model;
+package pers.cy.iris.commons.model;
 
 import java.io.Serializable;
 import java.util.Map;

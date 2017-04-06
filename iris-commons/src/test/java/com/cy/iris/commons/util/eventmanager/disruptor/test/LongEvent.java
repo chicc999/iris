@@ -1,4 +1,4 @@
-package com.cy.iris.commons.util.eventmanager.disruptor.test;
+package pers.cy.iris.commons.util.eventmanager.disruptor.test;
 
 public class LongEvent
 {

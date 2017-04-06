@@ -1,4 +1,4 @@
-package com.cy.iris.commons.cluster;
+package pers.cy.iris.commons.cluster;
 
 import java.io.Serializable;
 import java.util.StringTokenizer;

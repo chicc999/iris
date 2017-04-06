@@ -1,6 +1,6 @@
-package com.cy.iris.coordinator;
+package pers.cy.iris.coordinator;
 
-import com.cy.iris.commons.network.netty.server.NettyServerConfig;
+import pers.cy.iris.commons.network.netty.server.NettyServerConfig;
 
 /**
  * Created by cy on 17/2/14.

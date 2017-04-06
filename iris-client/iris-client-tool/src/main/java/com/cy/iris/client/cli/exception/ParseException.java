@@ -1,4 +1,4 @@
-package com.cy.iris.client.cli.exception;
+package pers.cy.iris.client.cli.exception;
 
 /**
  * @Author:cy

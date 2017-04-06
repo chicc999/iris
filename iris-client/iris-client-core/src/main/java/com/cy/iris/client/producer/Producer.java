@@ -1,6 +1,6 @@
-package com.cy.iris.client.producer;
+package pers.cy.iris.client.producer;
 
-import com.cy.iris.commons.service.LifeCycle;
+import pers.cy.iris.commons.service.LifeCycle;
 
 /**
  * Created by cy on 17/2/12.

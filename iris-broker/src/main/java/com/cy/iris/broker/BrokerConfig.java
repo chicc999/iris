@@ -1,7 +1,7 @@
-package com.cy.iris.broker;
+package pers.cy.iris.broker;
 
-import com.cy.iris.broker.MetaManager.MetaConfig;
-import com.cy.iris.commons.network.netty.server.NettyServerConfig;
+import pers.cy.iris.broker.MetaManager.MetaConfig;
+import pers.cy.iris.commons.network.netty.server.NettyServerConfig;
 
 /**
  * @Author:cy

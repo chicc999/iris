@@ -5,12 +5,12 @@
 	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 
-    <bean id="coordinatorConfig" class="com.cy.iris.coordinator.CoordinatorConfig">
+    <bean id="coordinatorConfig" class="pers.cy.iris.coordinator.CoordinatorConfig">
         <property name="nettyServerConfig" ref="nettyServerConfig"/>
         <property name="connectionString"  value="localhost:2181"/>
     </bean>
 
-    <bean id="coordinatorService" class="com.cy.iris.coordinator.CoordinatorService" destroy-method="stop">
+    <bean id="coordinatorService" class="pers.cy.iris.coordinator.CoordinatorService" destroy-method="stop">
         <property name="coordinatorConfig" ref="coordinatorConfig"/>
     </bean>
 

@@ -1,4 +1,4 @@
-package com.cy.iris.coordinator;
+package pers.cy.iris.coordinator;
 
 import org.apache.curator.test.TestingServer;
 

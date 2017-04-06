@@ -1,7 +1,7 @@
-package com.cy.iris.commons.model;
+package pers.cy.iris.commons.model;
 
-import com.cy.iris.commons.cluster.ClusterRole;
-import com.cy.iris.commons.util.retry.RetryPolicy;
+import pers.cy.iris.commons.cluster.ClusterRole;
+import pers.cy.iris.commons.util.retry.RetryPolicy;
 
 import java.io.Serializable;
 import java.util.*;

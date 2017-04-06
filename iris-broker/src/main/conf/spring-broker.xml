@@ -5,16 +5,16 @@
 	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 
-    <bean id="brokerConfig" class="com.cy.iris.broker.BrokerConfig">
+    <bean id="brokerConfig" class="pers.cy.iris.broker.BrokerConfig">
         <property name="nettyServerConfig" ref="nettyServerConfig"/>
         <property name="metaConfig"  ref="metaConfig"/>
     </bean>
 
-    <bean id="brokerService" class="com.cy.iris.broker.BrokerService" destroy-method="stop">
+    <bean id="brokerService" class="pers.cy.iris.broker.BrokerService" destroy-method="stop">
         <property name="brokerConfig" ref="brokerConfig"/>
     </bean>
 
-    <bean id="metaConfig" class="com.cy.iris.broker.MetaManager.MetaConfig">
+    <bean id="metaConfig" class="pers.cy.iris.broker.MetaManager.MetaConfig">
         <property name="connectionString"  value="${meta.zookeeper.connectionString}"/>
         <property name="connectionTimeout"  value="${meta.zookeeper.connectionTimeout}"/>
         <property name="sessionTimeout"  value="${meta.zookeeper.sessionTimeout}"/>

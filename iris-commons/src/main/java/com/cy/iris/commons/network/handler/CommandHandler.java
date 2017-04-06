@@ -1,6 +1,6 @@
-package com.cy.iris.commons.network.handler;
+package pers.cy.iris.commons.network.handler;
 
-import com.cy.iris.commons.network.protocol.Command;
+import pers.cy.iris.commons.network.protocol.Command;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.concurrent.ExecutorService;

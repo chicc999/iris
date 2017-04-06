@@ -1,7 +1,7 @@
-package com.cy.iris.commons.util.lock;
+package pers.cy.iris.commons.util.lock;
 
-import com.cy.iris.commons.exception.LockTimeoutException;
-import com.cy.iris.commons.service.Service;
+import pers.cy.iris.commons.exception.LockTimeoutException;
+import pers.cy.iris.commons.service.Service;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.framework.recipes.locks.InterProcessReadWriteLock;

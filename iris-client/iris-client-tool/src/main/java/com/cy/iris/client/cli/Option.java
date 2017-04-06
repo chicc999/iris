@@ -1,4 +1,4 @@
-package com.cy.iris.client.cli;
+package pers.cy.iris.client.cli;
 
 import java.io.Serializable;
 import java.util.ArrayList;

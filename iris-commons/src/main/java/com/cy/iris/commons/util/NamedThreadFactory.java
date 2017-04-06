@@ -1,4 +1,4 @@
-package com.cy.iris.commons.util;
+package pers.cy.iris.commons.util;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;

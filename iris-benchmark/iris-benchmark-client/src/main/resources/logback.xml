@@ -86,6 +86,6 @@
     <!-- 下面配置一些第三方包的日志过滤级别，用于避免刷屏 -->
 
     <logger name="io.netty" level="WARN"/>
-    <logger name="com.cy.iris.commons.network" level="INFO"/>
+    <logger name="pers.cy.iris.commons.network" level="INFO"/>
 
 </configuration>
