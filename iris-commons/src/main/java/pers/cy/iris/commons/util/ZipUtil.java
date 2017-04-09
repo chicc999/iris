@@ -9,7 +9,7 @@ import java.util.zip.*;
 /**
  * @Author:cy
  * @Date:Created in  17/4/9
- * @Destription:
+ * @Destription: 压缩解压辅助类
  */
 public class ZipUtil {
 
