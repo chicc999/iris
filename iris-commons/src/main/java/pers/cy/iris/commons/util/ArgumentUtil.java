@@ -41,7 +41,7 @@ public class ArgumentUtil {
 	 */
 	public static boolean isNotBlank(String arg) {
 		if (StringUtils.isBlank(arg)) {
-			throw new IllegalArgumentException(arg + "is Illegal argument.");
+			throw new IllegalArgumentException("blank is Illegal value.");
 		}
 		return true;
 	}
