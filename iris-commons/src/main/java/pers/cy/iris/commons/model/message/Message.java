@@ -1,5 +1,7 @@
 package pers.cy.iris.commons.model.message;
 
+import io.netty.buffer.ByteBuf;
+import pers.cy.iris.commons.util.Serializer;
 import pers.cy.iris.commons.util.ZipUtil;
 
 import java.io.IOException;
@@ -45,6 +47,10 @@ public class Message implements Serializable {
 	protected Map<String, String> attributes;
 	// 发送时间
 	protected long sendTime;
+
+
+	public static final char[] hexDigit =
+			{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
 	public Message() {
 	}
@@ -355,4 +361,139 @@ public class Message implements Serializable {
 		result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
 		return result;
 	}
+
+	/**
+	 * 消息序列化方法
+	 * @param out 序列化到此buf中
+	 */
+	public void encode(final ByteBuf out){
+		if (out == null ) {
+			return;
+		}
+
+		// 1字节系统字段 1-1:消息体压缩标识 2-2:顺序消息 3-3:属性压缩标示 4-8:其它
+		short sysCode = (short) (this.isCompressed() ? 1 : 0);
+		sysCode |= ((this.isOrdered() ? 1 : 0) << 1) & 0x3;
+		out.writeByte(sysCode);
+
+		// 2字节业务标签
+		out.writeShort(this.getFlag());
+		// 1字节优先级
+		out.writeByte(this.getPriority());
+		// 4字节消息体CRC
+		out.writeLong(this.getBodyCRC());
+		// 发送时间
+		out.writeLong(this.getSendTime());
+		// 4字节消息体大小
+		// 消息体
+		out.writeInt(body.length);
+		out.writeBytes(body);
+		// 1字节主题长度
+		// 主题
+		Serializer.writeByteString(this.getTopic(), out);
+		// 1字节应用长度
+		// 应用
+		Serializer.writeByteString(this.getApp(), out);
+
+		// 1字节业务ID长度
+		// 业务ID
+		Serializer.writeByteString(this.getBusinessId(), out);
+		// 4字节属性长度
+		// 属性 （以属性文件格式存储）
+		Serializer.writeIntString(toProperties(this.getAttributes()), out);
+	}
+
+	/**
+	 * 把Map转换成Properties字符串
+	 *
+	 * @param attributes 散列
+	 * @return 字符串
+	 */
+	protected static String toProperties(final Map<String, String> attributes) {
+		if (attributes == null) {
+			return "";
+		}
+		int count = 0;
+		StringBuilder builder = new StringBuilder(100);
+		for (Map.Entry<String, String> entry : attributes.entrySet()) {
+			if (count > 0) {
+				builder.append('\n');
+			}
+			append(builder, entry.getKey(), true, true);
+			builder.append('=');
+			append(builder, entry.getValue(), false, true);
+			count++;
+		}
+		return builder.toString();
+	}
+
+	/**
+	 * 添加字符串
+	 *
+	 * @param builder       缓冲区
+	 * @param value         字符串
+	 * @param escapeSpace   转移空格标示
+	 * @param escapeUnicode 转移Unicode标示
+	 */
+	private static void append(final StringBuilder builder, final String value, final boolean escapeSpace,
+							   final boolean escapeUnicode) {
+		int len = value.length();
+		for (int x = 0; x < len; x++) {
+			char aChar = value.charAt(x);
+			// Handle common case first, selecting largest block that
+			// avoids the specials below
+			if ((aChar > 61) && (aChar < 127)) {
+				if (aChar == '\\') {
+					builder.append('\\');
+					builder.append('\\');
+					continue;
+				}
+				builder.append(aChar);
+				continue;
+			}
+			switch (aChar) {
+				case ' ':
+					if (x == 0 || escapeSpace) {
+						builder.append('\\');
+					}
+					builder.append(' ');
+					break;
+				case '\t':
+					builder.append('\\');
+					builder.append('t');
+					break;
+				case '\n':
+					builder.append('\\');
+					builder.append('n');
+					break;
+				case '\r':
+					builder.append('\\');
+					builder.append('r');
+					break;
+				case '\f':
+					builder.append('\\');
+					builder.append('f');
+					break;
+				case '=': // Fall through
+				case ':': // Fall through
+				case '#': // Fall through
+				case '!':
+					builder.append('\\');
+					builder.append(aChar);
+					break;
+				default:
+					if (((aChar < 0x0020) || (aChar > 0x007e)) & escapeUnicode) {
+						builder.append('\\');
+						builder.append('u');
+						builder.append(hexDigit[((aChar >> 12) & 0xF)]);
+						builder.append(hexDigit[((aChar >> 8) & 0xF)]);
+						builder.append(hexDigit[((aChar >> 4) & 0xF)]);
+						builder.append(hexDigit[(aChar & 0xF)]);
+					} else {
+						builder.append(aChar);
+					}
+			}
+		}
+	}
+
 }

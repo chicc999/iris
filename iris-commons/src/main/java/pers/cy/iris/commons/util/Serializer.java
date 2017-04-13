@@ -1,13 +1,16 @@
 package pers.cy.iris.commons.util;
 
 import io.netty.buffer.ByteBuf;
+import pers.cy.iris.commons.model.message.Message;
 
 import java.nio.charset.Charset;
+import java.util.Map;
 
 /**
  * 序列化辅助工具
  */
 public class Serializer {
+
 	/**
 	 * 写长度小于等于Integer.MAX_VALUE的字符串
 	 *
@@ -147,4 +150,7 @@ public class Serializer {
 		return value;
 
 	}
+
+
+
 }
