@@ -11,7 +11,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Header {
 
-	public static final int HEADER_SIZE = 4 + 1 + 1 + 4 + 1 + 8;//wyzhangpeng1:length(4) + version(1) + 标识字段(1字节) + requestId(4) + type(1) + time(8)
 	private static final AtomicInteger REQUEST_ID = new AtomicInteger(0);
 	// 头类型, 可用的类型包括请求和响应
 	private HeaderType headerType;
@@ -94,9 +93,11 @@ public class Header {
 		if (headerType == HeaderType.RESPONSE) {
 			// 1个字节的状态码
 			out.writeByte(status);
-			// 2个字节的异常长度
-			// 异常信息
-			Serializer.write(error, out);
+			// 写长度小于2个字节的异常信息,超过则截断
+			if(error.length()>Short.MAX_VALUE){
+				error = error.substring(0,Short.MAX_VALUE);
+			}
+			Serializer.writeShortString(error, out);
 		}
 
 		return out;
@@ -125,7 +126,7 @@ public class Header {
 			status = in.readByte();
 			// 2个字节的异常长度
 			// 异常信息
-			error = Serializer.read(in);
+			error = Serializer.readShortString(in);
 		}
 
 		return this;
