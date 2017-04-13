@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 /**
  * @Author:cy
  * @Date:Created in  17/4/6
- * @Destription: 客户端ID
+ * @Destription: 客户端ID ([version]-[ip]-[time]-[pid])
  */
 public class ClientId {
 	//客户端版本
