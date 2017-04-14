@@ -85,4 +85,29 @@ public class NetUtil {
 
 	}
 
+	/**
+	 * 把16进制地址字符串转化成字节数组
+	 *
+	 * @param address 地址
+	 * @return 字节数组
+	 */
+	public static byte[] toByteByHex(String address) {
+		if (address == null) {
+			throw new IllegalArgumentException("address is invalid");
+		}
+		int len = address.length();
+		if (len != 8) {
+			throw new IllegalArgumentException("address is invalid");
+		}
+		byte[] buf= new byte[4];
+
+		int pos = 0;
+
+		buf[pos++] = (byte) Integer.parseInt(address.substring(0, 2), 16);
+		buf[pos++] = (byte) Integer.parseInt(address.substring(2, 4), 16);
+		buf[pos++] = (byte) Integer.parseInt(address.substring(4, 6), 16);
+		buf[pos++] = (byte) Integer.parseInt(address.substring(6, 8), 16);
+		return buf;
+	}
+
 }
