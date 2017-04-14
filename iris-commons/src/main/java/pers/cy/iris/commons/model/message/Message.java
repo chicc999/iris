@@ -1,6 +1,8 @@
 package pers.cy.iris.commons.model.message;
 
 import io.netty.buffer.ByteBuf;
+import pers.cy.iris.commons.util.ArgumentUtil;
+import pers.cy.iris.commons.util.CharacterSetUtil;
 import pers.cy.iris.commons.util.Serializer;
 import pers.cy.iris.commons.util.ZipUtil;
 
@@ -47,10 +49,6 @@ public class Message implements Serializable {
 	protected Map<String, String> attributes;
 	// 发送时间
 	protected long sendTime;
-
-
-	public static final char[] hexDigit =
-			{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
 	public Message() {
 	}
@@ -367,11 +365,10 @@ public class Message implements Serializable {
 	 * @param out 序列化到此buf中
 	 */
 	public void encode(final ByteBuf out){
-		if (out == null ) {
-			return;
-		}
 
-		// 1字节系统字段 1-1:消息体压缩标识 2-2:顺序消息 3-3:属性压缩标示 4-8:其它
+		ArgumentUtil.isNotNull("encode byteBuf",out);
+
+		// 1字节系统字段,由低位起 1-1:消息体压缩标识 2-2:顺序消息 3-8:其它
 		short sysCode = (short) (this.isCompressed() ? 1 : 0);
 		sysCode |= ((this.isOrdered() ? 1 : 0) << 1) & 0x3;
 		out.writeByte(sysCode);
@@ -419,81 +416,12 @@ public class Message implements Serializable {
 			if (count > 0) {
 				builder.append('\n');
 			}
-			append(builder, entry.getKey(), true, true);
+			CharacterSetUtil.appendUnicode(builder,entry.getKey(),true);
 			builder.append('=');
-			append(builder, entry.getValue(), false, true);
+			CharacterSetUtil.appendUnicode(builder,entry.getKey(),false);
 			count++;
 		}
 		return builder.toString();
-	}
-
-	/**
-	 * 添加字符串
-	 *
-	 * @param builder       缓冲区
-	 * @param value         字符串
-	 * @param escapeSpace   转移空格标示
-	 * @param escapeUnicode 转移Unicode标示
-	 */
-	private static void append(final StringBuilder builder, final String value, final boolean escapeSpace,
-							   final boolean escapeUnicode) {
-		int len = value.length();
-		for (int x = 0; x < len; x++) {
-			char aChar = value.charAt(x);
-			// Handle common case first, selecting largest block that
-			// avoids the specials below
-			if ((aChar > 61) && (aChar < 127)) {
-				if (aChar == '\\') {
-					builder.append('\\');
-					builder.append('\\');
-					continue;
-				}
-				builder.append(aChar);
-				continue;
-			}
-			switch (aChar) {
-				case ' ':
-					if (x == 0 || escapeSpace) {
-						builder.append('\\');
-					}
-					builder.append(' ');
-					break;
-				case '\t':
-					builder.append('\\');
-					builder.append('t');
-					break;
-				case '\n':
-					builder.append('\\');
-					builder.append('n');
-					break;
-				case '\r':
-					builder.append('\\');
-					builder.append('r');
-					break;
-				case '\f':
-					builder.append('\\');
-					builder.append('f');
-					break;
-				case '=': // Fall through
-				case ':': // Fall through
-				case '#': // Fall through
-				case '!':
-					builder.append('\\');
-					builder.append(aChar);
-					break;
-				default:
-					if (((aChar < 0x0020) || (aChar > 0x007e)) & escapeUnicode) {
-						builder.append('\\');
-						builder.append('u');
-						builder.append(hexDigit[((aChar >> 12) & 0xF)]);
-						builder.append(hexDigit[((aChar >> 8) & 0xF)]);
-						builder.append(hexDigit[((aChar >> 4) & 0xF)]);
-						builder.append(hexDigit[(aChar & 0xF)]);
-					} else {
-						builder.append(aChar);
-					}
-			}
-		}
 	}
 
 }
