@@ -3,6 +3,7 @@ package pers.cy.iris.commons.network.protocol;
 import pers.cy.iris.commons.exception.UnknowCommandException;
 import pers.cy.iris.commons.network.protocol.request.GetCluster;
 import pers.cy.iris.commons.network.protocol.request.HeartBeat;
+import pers.cy.iris.commons.network.protocol.request.PutMessage;
 import pers.cy.iris.commons.network.protocol.response.ErrorResponse;
 
 /**
@@ -21,6 +22,8 @@ public class CommandFactory {
 				return new GetCluster(header);
 			case Command.BOOLEAN_ACK:
 				return new ErrorResponse(header);
+			case Command.PUT_MESSAGE:
+				return new PutMessage(header);
 		}
 		throw new UnknowCommandException("未定义的协议" + header.getType());
 	}

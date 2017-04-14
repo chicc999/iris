@@ -19,7 +19,7 @@ public class Serializer {
 	 */
 	public static void writeIntString(final String value, final ByteBuf out) {
 
-		ArgumentUtil.isNotBlank(value);
+		ArgumentUtil.isNotNull("value",value);
 		ArgumentUtil.isNotNull("out", out);
 
 		byte[] bytes = value.getBytes(Charset.forName("UTF-8"));

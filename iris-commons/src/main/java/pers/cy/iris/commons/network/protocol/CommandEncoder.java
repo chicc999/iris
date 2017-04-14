@@ -1,6 +1,7 @@
 package pers.cy.iris.commons.network.protocol;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import org.slf4j.Logger;
@@ -20,10 +21,12 @@ public class CommandEncoder extends MessageToByteEncoder {
 		ByteBuf header = null;
 		ByteBuf body = null;
 		try {
-			header = command.encodeHeader();
+			header = PooledByteBufAllocator.DEFAULT.buffer();
+			header = command.encodeHeader(header);
 			logger.debug("encode : header len {}", header.readableBytes());
 
-			body = command.encodeBody();
+			body = PooledByteBufAllocator.DEFAULT.buffer();
+			body = command.encodeBody(body);
 			logger.debug("encode : body len {}", body.readableBytes());
 			//header,body长度以及描述他们所用的长度
 			out.writeInt(header.readableBytes() + body.readableBytes() + 4 + 4);

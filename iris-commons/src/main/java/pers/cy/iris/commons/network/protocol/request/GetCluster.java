@@ -67,8 +67,7 @@ public class GetCluster extends Command{
 	}
 
 	@Override
-	protected ByteBuf encodeBody() {
-		ByteBuf body = PooledByteBufAllocator.DEFAULT.buffer();
+	protected ByteBuf encodeBody(ByteBuf body) {
 		Serializer.writeByteString(app,body);
 		Serializer.writeByteString(clientId,body);
 		body.writeByte(dataCenter);

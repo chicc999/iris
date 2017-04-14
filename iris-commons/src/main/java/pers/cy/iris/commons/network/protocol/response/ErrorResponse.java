@@ -32,8 +32,7 @@ public class ErrorResponse extends Command {
 	}
 
 	@Override
-	protected ByteBuf encodeBody() {
-		ByteBuf body = PooledByteBufAllocator.DEFAULT.buffer();
+	protected ByteBuf encodeBody(ByteBuf body) {
 		return body;
 	}
 

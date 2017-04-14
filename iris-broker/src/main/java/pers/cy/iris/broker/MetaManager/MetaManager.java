@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -56,7 +57,7 @@ public class MetaManager extends Service{
 	private volatile Map<String/*topic name*/, TopicConfig> topics ;
 
 	// 集群
-	private volatile ConcurrentMap<String/*topic name*/, BrokerCluster> clusters ;
+	private volatile ConcurrentMap<String/*topic name*/, BrokerCluster> clusters = new ConcurrentHashMap<String, BrokerCluster>();
 
 	// Group
 	private volatile Map<String/*group name*/, BrokerGroup> groups = new HashMap<String, BrokerGroup>();

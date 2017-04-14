@@ -28,6 +28,11 @@ public class PutMessage extends Command{
 		super(new Header(HeaderType.REQUEST,PUT_MESSAGE).typeString("PUT_MESSAGE"));
 	}
 
+	public PutMessage(Header header) {
+		super(header);
+		this.header.typeString("PUT_MESSAGE");
+	}
+
 	public ProducerId getProducerId() {
 		return producerId;
 	}
@@ -53,8 +58,7 @@ public class PutMessage extends Command{
 	}
 
 	@Override
-	protected ByteBuf encodeBody() {
-		ByteBuf body = PooledByteBufAllocator.DEFAULT.buffer();
+	protected ByteBuf encodeBody(ByteBuf body) {
 		Serializer.writeByteString(producerId.getProducerId(),body);
 
 		body.writeInt(messages.length);

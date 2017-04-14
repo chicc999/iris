@@ -130,8 +130,7 @@ public abstract class Command {
 		this.header = header;
 	}
 
-	public ByteBuf encodeHeader() throws Exception {
-		ByteBuf out = PooledByteBufAllocator.DEFAULT.buffer();
+	public ByteBuf encodeHeader(ByteBuf out) throws Exception {
 
 		//header序列化
 		return header.encode(out);
@@ -162,7 +161,7 @@ public abstract class Command {
 		this.listenner = listenner;
 	}
 
-	protected abstract ByteBuf encodeBody() throws Exception;
+	protected abstract ByteBuf encodeBody(ByteBuf out) throws Exception;
 
 	protected abstract void decodeBody(ByteBuf in) throws Exception;
 

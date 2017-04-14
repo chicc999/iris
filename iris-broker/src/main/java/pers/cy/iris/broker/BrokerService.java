@@ -1,6 +1,7 @@
 package pers.cy.iris.broker;
 
 import pers.cy.iris.broker.MetaManager.MetaManager;
+import pers.cy.iris.broker.handler.BrokerHandlerFactory;
 import pers.cy.iris.commons.network.handler.DefaultHandlerFactory;
 import pers.cy.iris.commons.network.netty.server.NettyServer;
 import pers.cy.iris.commons.service.Service;
@@ -30,7 +31,7 @@ public class BrokerService extends Service{
 		}
 
 		if(nettyServer == null) {
-			nettyServer = new NettyServer(brokerConfig.getNettyServerConfig(),null,null,null, new DefaultHandlerFactory());
+			nettyServer = new NettyServer(brokerConfig.getNettyServerConfig(),null,null,null, new BrokerHandlerFactory());
 		}
 
 	}
