@@ -162,9 +162,9 @@ public abstract class Command {
 		this.listenner = listenner;
 	}
 
-	protected abstract ByteBuf encodeBody() ;
+	protected abstract ByteBuf encodeBody() throws Exception;
 
-	protected abstract void decodeBody(ByteBuf in) ;
+	protected abstract void decodeBody(ByteBuf in) throws Exception;
 
 	@Override
 	public String toString() {

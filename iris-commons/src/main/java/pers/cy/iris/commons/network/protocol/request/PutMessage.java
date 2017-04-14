@@ -13,7 +13,7 @@ import pers.cy.iris.commons.util.Serializer;
 /**
  * @Author:cy
  * @Date:Created in  17/4/6
- * @Destription:
+ * @Destription: 生产消息请求
  */
 public class PutMessage extends Command{
 
@@ -67,7 +67,19 @@ public class PutMessage extends Command{
 	}
 
 	@Override
-	protected void decodeBody(ByteBuf in) {
+	protected void decodeBody(ByteBuf in) throws Exception{
+		producerId = new ProducerId(Serializer.readByteString(in));
+
+		//读取消息条数
+		int count = in.readInt();
+		// 需要解码为BrokerMessage类型
+		messages = new Message[count];
+		for(int i=0;i<count;i++){
+			Message message = new Message();
+			messages[i] = message.decode(in);
+		}
+		// 队列ID
+		queueId = in.readShort();
 
 	}
 }

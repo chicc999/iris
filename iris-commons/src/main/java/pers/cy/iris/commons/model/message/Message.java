@@ -8,9 +8,11 @@ import pers.cy.iris.commons.util.ZipUtil;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 
@@ -424,4 +426,66 @@ public class Message implements Serializable {
 		return builder.toString();
 	}
 
+	/**
+	 * 消息反序列化
+	 * @param in
+	 * @return
+	 * @throws IOException
+	 */
+	public Message decode(final ByteBuf in) throws IOException {
+		ArgumentUtil.isNotNull("decode byteBuf",in);
+
+		// 1字节系统字段 1-1:压缩标识 2-2:顺序消息 3-8:其它
+		short sysCode = in.readUnsignedByte();
+		this.setCompressed((sysCode & 0x1) == 1);
+		this.setOrdered(((sysCode >> 1) & 0x1) == 1);
+		this.setFlag(in.readShort());
+		// 1字节优先级
+		this.setPriority(in.readByte());
+		// 4字节消息体CRC
+		this.setBodyCRC(in.readLong());
+		// 发送时间。
+		this.setSendTime(in.readLong());
+
+		// 4字节消息体大小
+		// 消息体
+		int length = in.readInt();
+		if (length > 0) {
+			// 消息体（字节数组）
+			body = new byte[length];
+			in.readBytes(body);
+		}
+
+		// 1字节主题长度
+		// 主题
+		this.setTopic(Serializer.readByteString(in));
+		// 1字节应用长度
+		// 应用
+		this.setApp(Serializer.readByteString(in));
+		// 1字节业务ID长度
+		// 业务ID
+		this.setBusinessId(Serializer.readByteString(in));
+		// 2字节属性长度
+		// 属性 （以属性文件格式存储）
+		this.setAttributes(toMap(Serializer.readIntString(in)));
+
+		return this;
+	}
+
+	/**
+	 * 把Properties字符串转换成Map
+	 *
+	 * @param text 字符串
+	 * @return 散列对象
+	 * @throws IOException
+	 */
+	protected static Map<String, String> toMap(final String text) throws IOException {
+		if (text == null || text.isEmpty()) {
+			return null;
+		}
+		Properties properties = new Properties();
+		properties.load(new StringReader(text));
+
+		return (Map<String, String>) new HashMap(properties);
+	}
 }
