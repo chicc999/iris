@@ -12,6 +12,7 @@
 
     <bean id="brokerService" class="pers.cy.iris.broker.BrokerService" destroy-method="stop">
         <property name="brokerConfig" ref="brokerConfig"/>
+        <property name="store" ref="store"/>
     </bean>
 
     <bean id="metaConfig" class="pers.cy.iris.broker.MetaManager.MetaConfig">
@@ -22,6 +23,7 @@
         <property name="zookeeperBaseSleepTimeMs" value="${meta.zookeeper.retry.baseSleepTimeMs}"/>
         <property name="zookeeperMaxRetries" value="${meta.zookeeper.retry.maxRetries}"/>
     </bean>
+
 
 
 </beans>

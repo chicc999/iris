@@ -2,6 +2,9 @@ package pers.cy.iris.broker;
 
 import pers.cy.iris.broker.MetaManager.MetaManager;
 import pers.cy.iris.broker.handler.BrokerHandlerFactory;
+import pers.cy.iris.broker.store.DiskFileStore;
+import pers.cy.iris.broker.store.DiskFileStoreConfig;
+import pers.cy.iris.broker.store.Store;
 import pers.cy.iris.commons.network.handler.DefaultHandlerFactory;
 import pers.cy.iris.commons.network.netty.server.NettyServer;
 import pers.cy.iris.commons.service.Service;
@@ -23,6 +26,8 @@ public class BrokerService extends Service{
 
 	private NettyServer nettyServer;
 
+	private Store store;
+
 	@Override
 	public void beforeStart() throws Exception {
 		if(metaManager == null){
@@ -32,6 +37,10 @@ public class BrokerService extends Service{
 
 		if(nettyServer == null) {
 			nettyServer = new NettyServer(brokerConfig.getNettyServerConfig(),null,null,null, new BrokerHandlerFactory());
+		}
+
+		if(store == null){
+			store = new DiskFileStore(new DiskFileStoreConfig());
 		}
 
 	}
@@ -63,5 +72,9 @@ public class BrokerService extends Service{
 
 	public void setBrokerConfig(BrokerConfig brokerConfig) {
 		this.brokerConfig = brokerConfig;
+	}
+
+	public void setStore(Store store) {
+		this.store = store;
 	}
 }
