@@ -34,7 +34,7 @@ public class HandlerTask implements Runnable {
 			//如果请求需要答复
 			if (request.getHeader().getAcknowledge() != Acknowledge.ACK_NO) {
 				//写出响应,如果出现异常则调用exceptionCaught打印异常关闭连接
-				ctx.writeAndFlush(new ErrorResponse(-1, e.toString(), request.getRequestId()))
+				ctx.writeAndFlush(new ErrorResponse(-1, e.getMessage(), request.getRequestId()))
 						.addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
 			}
 		}
