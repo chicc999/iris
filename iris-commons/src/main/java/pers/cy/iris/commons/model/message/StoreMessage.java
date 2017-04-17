@@ -9,7 +9,7 @@ import java.util.Map;
  * @Date:Created in  17/4/14
  * @Destription: 存储到硬盘的消息对象
  */
-public class BrokerMessage extends Message implements Serializable {
+public class StoreMessage extends Message implements Serializable {
 	public static final short MAGIC_CODE = 0x1234;
 
 	// 大小
@@ -32,84 +32,84 @@ public class BrokerMessage extends Message implements Serializable {
 	private MessageId messageId;
 
 	@Override
-	public BrokerMessage topic(final String topic) {
+	public StoreMessage topic(final String topic) {
 		setTopic(topic);
 		return this;
 	}
 
 	@Override
-	public BrokerMessage flag(final short flag) {
+	public StoreMessage flag(final short flag) {
 		setFlag(flag);
 		return this;
 	}
 
 	@Override
-	public BrokerMessage app(final String app) {
+	public StoreMessage app(final String app) {
 		setApp(app);
 		return this;
 	}
 
 	@Override
-	public BrokerMessage businessId(final String businessId) {
+	public StoreMessage businessId(final String businessId) {
 		setBusinessId(businessId);
 		return this;
 	}
 
 	@Override
-	public BrokerMessage priority(final byte priority) {
+	public StoreMessage priority(final byte priority) {
 		setPriority(priority);
 		return this;
 	}
 
 	@Override
-	public BrokerMessage ordered(final boolean ordered) {
+	public StoreMessage ordered(final boolean ordered) {
 		setOrdered(ordered);
 		return this;
 	}
 
 	@Override
-	public BrokerMessage attribute(final String key, final String value) {
+	public StoreMessage attribute(final String key, final String value) {
 		setAttribute(key, value);
 		return this;
 	}
 
 	@Override
-	public BrokerMessage attributes(final Map<String, String> attributes) {
+	public StoreMessage attributes(final Map<String, String> attributes) {
 		setAttributes(attributes);
 		return this;
 	}
 
-	public BrokerMessage size(final int size) {
+	public StoreMessage size(final int size) {
 		setSize(size);
 		return this;
 	}
 
-	public BrokerMessage compressed(final boolean compressed) {
+	public StoreMessage compressed(final boolean compressed) {
 		setCompressed(compressed);
 		return this;
 	}
 
-	public BrokerMessage journalOffset(final long journalOffset) {
+	public StoreMessage journalOffset(final long journalOffset) {
 		setJournalOffset(journalOffset);
 		return this;
 	}
 
-	public BrokerMessage queueId(final short queueId) {
+	public StoreMessage queueId(final short queueId) {
 		setQueueId(queueId);
 		return this;
 	}
 
-	public BrokerMessage queueOffset(final long queueOffset) {
+	public StoreMessage queueOffset(final long queueOffset) {
 		setQueueOffset(queueOffset);
 		return this;
 	}
 
-	public BrokerMessage clientAddress(final byte[] clientAddress) {
+	public StoreMessage clientAddress(final byte[] clientAddress) {
 		setClientAddress(clientAddress);
 		return this;
 	}
 
-	public BrokerMessage serverAddress(final byte[] serverAddress) {
+	public StoreMessage serverAddress(final byte[] serverAddress) {
 		setServerAddress(serverAddress);
 		return this;
 	}
@@ -119,22 +119,22 @@ public class BrokerMessage extends Message implements Serializable {
 //        return this;
 //    }
 
-	public BrokerMessage receiveTime(final long receiveTime) {
+	public StoreMessage receiveTime(final long receiveTime) {
 		setReceiveTime(receiveTime);
 		return this;
 	}
 
-	public BrokerMessage storeTime(final long storeTime) {
+	public StoreMessage storeTime(final long storeTime) {
 		setStoreTime(storeTime);
 		return this;
 	}
 
-	public BrokerMessage bodyCRC(final int bodyCRC) {
+	public StoreMessage bodyCRC(final int bodyCRC) {
 		setBodyCRC(bodyCRC);
 		return this;
 	}
 
-	public BrokerMessage redelivery(final int redelivery) {
+	public StoreMessage redelivery(final int redelivery) {
 		setRedelivery(redelivery);
 		return this;
 	}
@@ -226,7 +226,7 @@ public class BrokerMessage extends Message implements Serializable {
 			return false;
 		}
 
-		BrokerMessage message = (BrokerMessage) o;
+		StoreMessage message = (StoreMessage) o;
 
 		if (journalOffset != message.journalOffset) {
 			return false;

@@ -1,6 +1,7 @@
 package pers.cy.iris.broker.handler;
 
 import io.netty.channel.ChannelHandlerContext;
+import pers.cy.iris.broker.store.Store;
 import pers.cy.iris.commons.network.handler.CommandHandler;
 import pers.cy.iris.commons.network.protocol.Command;
 import pers.cy.iris.commons.network.protocol.request.PutMessage;
@@ -14,6 +15,7 @@ import java.util.concurrent.ExecutorService;
  * @Destription:
  */
 public class PutMessageHandler implements CommandHandler{
+	protected Store store;
 	@Override
 	public Command process(ChannelHandlerContext ctx, Command command) throws Exception {
 		PutMessage putMessage = (PutMessage)command;
