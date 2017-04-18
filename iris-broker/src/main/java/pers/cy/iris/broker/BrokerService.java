@@ -1,5 +1,6 @@
 package pers.cy.iris.broker;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import pers.cy.iris.broker.MetaManager.MetaManager;
 import pers.cy.iris.broker.handler.BrokerHandlerFactory;
 import pers.cy.iris.broker.store.DiskFileStore;
@@ -20,12 +21,15 @@ public class BrokerService extends Service{
 
 	private static final Logger logger = LoggerFactory.getLogger(BrokerService.class);
 
+	@Autowired
 	private BrokerConfig brokerConfig;
 
 	private MetaManager metaManager;
 
+	@Autowired
 	private NettyServer nettyServer;
 
+	@Autowired
 	private Store store;
 
 	@Override
@@ -49,6 +53,8 @@ public class BrokerService extends Service{
 	public void doStart() throws Exception {
 		metaManager.start();
 		nettyServer.start();
+
+		store.start();
 	}
 
 	@Override
@@ -76,5 +82,9 @@ public class BrokerService extends Service{
 
 	public void setStore(Store store) {
 		this.store = store;
+	}
+
+	public void setNettyServer(NettyServer nettyServer) {
+		this.nettyServer = nettyServer;
 	}
 }

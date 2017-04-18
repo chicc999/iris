@@ -15,5 +15,7 @@
         <property name="journalFileSize" value="${store.journalFileSize}"/>
     </bean>
 
+    <bean id="diskFileStore" class="pers.cy.iris.broker.store.DiskFileStore"/>
+
 
 </beans>

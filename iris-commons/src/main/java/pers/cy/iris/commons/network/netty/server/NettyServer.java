@@ -1,5 +1,6 @@
 package pers.cy.iris.commons.network.netty.server;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import pers.cy.iris.commons.network.handler.CommandHandlerFactory;
 import pers.cy.iris.commons.network.handler.DefaultConnectionHandler;
 import pers.cy.iris.commons.network.handler.DefaultDispatcherHandler;

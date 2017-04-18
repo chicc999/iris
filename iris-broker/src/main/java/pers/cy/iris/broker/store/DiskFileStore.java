@@ -2,6 +2,7 @@ package pers.cy.iris.broker.store;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import pers.cy.iris.commons.model.message.StoreMessage;
 import pers.cy.iris.commons.service.Service;
 
@@ -14,6 +15,7 @@ public class DiskFileStore extends Service implements Store {
 
 	private static Logger logger = LoggerFactory.getLogger(DiskFileStore.class);
 
+	@Autowired
 	private DiskFileStoreConfig  storeConfig ;
 
 	public DiskFileStore() {
@@ -58,6 +60,7 @@ public class DiskFileStore extends Service implements Store {
 
 	@Override
 	public PutResult putMessage(StoreMessage message) {
+		System.out.println("put message");
 		return null;
 	}
 }

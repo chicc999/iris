@@ -1,5 +1,6 @@
 package pers.cy.iris.broker.handler;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import pers.cy.iris.commons.network.handler.CommandHandler;
 import pers.cy.iris.commons.network.handler.CommandHandlerFactory;
 import pers.cy.iris.commons.network.protocol.Command;
@@ -11,7 +12,9 @@ import pers.cy.iris.commons.network.protocol.Command;
  */
 public class BrokerHandlerFactory implements CommandHandlerFactory{
 
-	private PutMessageHandler putMessageHandler = new PutMessageHandler();
+	@Autowired
+	private PutMessageHandler putMessageHandler ;
+
 	@Override
 	public CommandHandler getHandler(int type) {
 		switch (type){

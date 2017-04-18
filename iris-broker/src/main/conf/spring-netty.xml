@@ -25,7 +25,16 @@
         <property name="ip" value="${netty.server.ip}"/>
     </bean>
 
-    <bean id="defaultHandlerFactory" class="pers.cy.iris.commons.network.handler.DefaultHandlerFactory"/>
+    <bean id="brokerHandlerFactory" class="pers.cy.iris.broker.handler.BrokerHandlerFactory"/>
 
+    <bean id="putMessageHandler" class="pers.cy.iris.broker.handler.PutMessageHandler"/>
 
-</beans>
+    <bean id="nettyServer" class="pers.cy.iris.commons.network.netty.server.NettyServer">
+        <constructor-arg name="config" ref="nettyServerConfig"></constructor-arg>
+        <constructor-arg name="bossLoopGroup" ><null/></constructor-arg>
+        <constructor-arg name="ioLoopGroup"><null/></constructor-arg>
+        <constructor-arg name="workerGroup"><null/></constructor-arg>
+        <constructor-arg name="factory" ref="brokerHandlerFactory"></constructor-arg>
+    </bean>
+    
+    </beans>

@@ -12,6 +12,7 @@
 
     <bean id="brokerService" class="pers.cy.iris.broker.BrokerService" destroy-method="stop">
         <property name="brokerConfig" ref="brokerConfig"/>
+        <property name="nettyServer" ref="nettyServer"/>
         <property name="store" ref="store"/>
     </bean>
 
