@@ -3,6 +3,7 @@ package pers.cy.iris.broker.store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import pers.cy.iris.commons.exception.ServiceNotAvailableException;
 import pers.cy.iris.commons.model.message.StoreMessage;
 import pers.cy.iris.commons.service.Service;
 
@@ -59,8 +60,15 @@ public class DiskFileStore extends Service implements Store {
 	}
 
 	@Override
-	public PutResult putMessage(StoreMessage message) {
+	public PutResult putMessage(StoreMessage message) throws ServiceNotAvailableException {
 		System.out.println("put message");
+		if (message == null) {
+			return null;
+		}
+		if (!isStarted() ) {
+			throw new ServiceNotAvailableException();
+		}
+
 		return null;
 	}
 }

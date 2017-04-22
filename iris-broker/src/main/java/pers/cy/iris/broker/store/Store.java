@@ -1,5 +1,6 @@
 package pers.cy.iris.broker.store;
 
+import pers.cy.iris.commons.exception.ServiceNotAvailableException;
 import pers.cy.iris.commons.model.message.StoreMessage;
 import pers.cy.iris.commons.service.LifeCycle;
 
@@ -16,7 +17,7 @@ public interface Store extends LifeCycle {
 	 *
 	 * @param message 消息
 	 */
-	PutResult putMessage(StoreMessage message) ;
+	PutResult putMessage(StoreMessage message) throws ServiceNotAvailableException;
 
 
 }
