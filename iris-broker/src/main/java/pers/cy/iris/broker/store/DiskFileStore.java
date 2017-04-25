@@ -66,8 +66,10 @@ public class DiskFileStore extends Service implements Store {
 			return null;
 		}
 		if (!isStarted() ) {
-			throw new ServiceNotAvailableException();
+			throw new ServiceNotAvailableException("DiskFileStore state: " + this.serviceState.get());
 		}
+
+		PutResult result = new PutResult();
 
 		return null;
 	}
