@@ -1,7 +1,13 @@
 package pers.cy.iris.broker.store;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pers.cy.iris.commons.exception.QueueNotExistException;
 import pers.cy.iris.commons.service.Service;
+
+import java.io.File;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @Author:cy
@@ -9,6 +15,23 @@ import pers.cy.iris.commons.service.Service;
  * @Destription: 服务端偏移量管理
  */
 public class OffsetManager extends Service{
+
+	private static Logger logger = LoggerFactory.getLogger(OffsetManager.class);
+
+	// 偏移量文件
+	private File offsetFile;
+	// 队列文件
+	private File queueFile;
+	// 偏移量文件备份(双写)
+	private File offsetFileBack;
+	// 队列文件备份(双写)
+	private File queueFileBack;
+
+	// 消费者偏移量
+	//private ConcurrentMap<String/*consumer*/, TopicOffset> offsets = new ConcurrentHashMap<String, TopicOffset>();
+	// 队列
+	private ConcurrentMap<String/*topic*/, Short> queues = new ConcurrentHashMap<String, Short>();
+
 	@Override
 	public void beforeStart() throws Exception {
 

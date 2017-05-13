@@ -21,6 +21,8 @@ public class DiskFileStore extends Service implements Store {
 
 	private OffsetManager offsetManager;
 
+	private FileManager fileManager;
+
 	public DiskFileStore() {
 	}
 
@@ -31,11 +33,20 @@ public class DiskFileStore extends Service implements Store {
 	@Override
 	public void beforeStart() throws Exception {
 
+		if(storeConfig == null){
+			storeConfig = new DiskFileStoreConfig();
+		}
+
+		if(fileManager == null){
+			fileManager = new FileManager();
+			fileManager.setStoreConfig(storeConfig);
+		}
+
 	}
 
 	@Override
 	public void doStart() throws Exception {
-
+		fileManager.start();
 	}
 
 	@Override
@@ -50,7 +61,7 @@ public class DiskFileStore extends Service implements Store {
 
 	@Override
 	public void doStop() {
-
+		fileManager.stop();
 	}
 
 	public DiskFileStoreConfig getStoreConfig() {
