@@ -2,7 +2,8 @@ package pers.cy.iris.broker.store;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import pers.cy.iris.commons.exception.IrisException;
+import pers.cy.iris.commons.exception.QueueNotExistException;
 import pers.cy.iris.commons.exception.ServiceNotAvailableException;
 import pers.cy.iris.commons.model.message.StoreMessage;
 import pers.cy.iris.commons.service.Service;
@@ -16,8 +17,9 @@ public class DiskFileStore extends Service implements Store {
 
 	private static Logger logger = LoggerFactory.getLogger(DiskFileStore.class);
 
-	@Autowired
 	private DiskFileStoreConfig  storeConfig ;
+
+	private OffsetManager offsetManager;
 
 	public DiskFileStore() {
 	}
@@ -59,9 +61,13 @@ public class DiskFileStore extends Service implements Store {
 		this.storeConfig = storeConfig;
 	}
 
+	public void setOffsetManager(OffsetManager offsetManager) {
+		this.offsetManager = offsetManager;
+	}
+
 	@Override
 	public PutResult putMessage(StoreMessage message) throws ServiceNotAvailableException {
-		System.out.println("put message");
+		logger.debug("put message {}",message.getMessageId());
 		if (message == null) {
 			return null;
 		}
@@ -71,6 +77,36 @@ public class DiskFileStore extends Service implements Store {
 
 		PutResult result = new PutResult();
 
+		try{
+			short queueId = getQueueId(message);
+		}catch (Exception e){
+
+		}
+
 		return null;
+	}
+
+	/**
+	 * 获取待存储的队列ID.
+	 * @param message
+	 * @return
+	 */
+	private short getQueueId(StoreMessage message) throws IrisException{
+		short count = getQueueCount(message.getTopic());
+		if (count <= 0) {
+			// 消费队列不存在
+			throw new QueueNotExistException("topic : " + message.getTopic());
+		}
+		return 0;
+	}
+
+	/**
+	 * 获取topic在本broker的队列数量
+	 * @param topic 主题名称
+	 * @return queueId
+	 * @throws QueueNotExistException
+	 */
+	private short getQueueCount(String topic)throws QueueNotExistException{
+		return offsetManager.getQueueCount(topic);
 	}
 }
