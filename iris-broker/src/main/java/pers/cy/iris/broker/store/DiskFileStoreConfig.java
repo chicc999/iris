@@ -16,9 +16,15 @@ public class DiskFileStoreConfig {
 
 
 	//数据目录
-	private File dataDirectory;
-	//日志目录
-	private File journalDirectory;
+	private String dataDirectory;
+
+	public String getDataDirectory() {
+		return dataDirectory;
+	}
+
+	public void setDataDirectory(String dataDirectory) {
+		this.dataDirectory = dataDirectory;
+	}
 
 	public void setJournalFileSize(int journalFileSize) {
 		this.journalFileSize = journalFileSize;
