@@ -8,15 +8,14 @@ import java.io.File;
  * @Destription:
  */
 public class DiskFileStoreConfig {
-	//日志文件大小
-	public static final int JOURNAL_FILE_LENGTH = 1024 * 1024 * 128;
-	//日志文件大小
-	private int journalFileSize = JOURNAL_FILE_LENGTH;
 
-
+	//日志文件大小,默认128M
+	private int journalFileSize = 1024 * 1024 * 128;
+	//备份文件后缀
+	public static String BACK_SUFFIX = ".1";
 
 	//数据目录
-	private String dataDirectory;
+	private String dataDirectory = "/export/data";
 
 	public String getDataDirectory() {
 		return dataDirectory;
@@ -30,7 +29,7 @@ public class DiskFileStoreConfig {
 		this.journalFileSize = journalFileSize;
 	}
 
-	public static int getJournalFileLength() {
-		return JOURNAL_FILE_LENGTH;
+	public int getJournalFileLength() {
+		return this.journalFileSize;
 	}
 }

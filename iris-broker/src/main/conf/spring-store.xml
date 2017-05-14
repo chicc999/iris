@@ -13,6 +13,7 @@
 
     <bean id="diskFileStoreConfig" class="pers.cy.iris.broker.store.DiskFileStoreConfig">
         <property name="journalFileSize" value="${store.journalFileSize}"/>
+        <property name="dataDirectory" value="${store.dataDirectory}"/>
     </bean>
 
     <bean id="diskFileStore" class="pers.cy.iris.broker.store.DiskFileStore"/>

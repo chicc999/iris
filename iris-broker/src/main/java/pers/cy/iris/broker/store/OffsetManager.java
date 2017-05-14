@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.cy.iris.commons.exception.QueueNotExistException;
 import pers.cy.iris.commons.service.Service;
+import pers.cy.iris.commons.util.ArgumentUtil;
 
 import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,6 +18,8 @@ import java.util.concurrent.ConcurrentMap;
 public class OffsetManager extends Service{
 
 	private static Logger logger = LoggerFactory.getLogger(OffsetManager.class);
+
+	private FileManager fileManager;
 
 	// 偏移量文件
 	private File offsetFile;
@@ -34,6 +37,16 @@ public class OffsetManager extends Service{
 
 	@Override
 	public void beforeStart() throws Exception {
+
+		if(ArgumentUtil.isNotNull("fileManager",fileManager) && fileManager.isStarted()) {
+			this.offsetFile = fileManager.getOffsetFile();
+			this.queueFile = fileManager.getTopicQueueFile();
+			this.offsetFileBack =
+					new File(this.offsetFile.getParentFile(), this.offsetFile.getName() + DiskFileStoreConfig.BACK_SUFFIX);
+			this.queueFileBack = new File(this.queueFile.getParentFile(), this.queueFile.getName() + DiskFileStoreConfig.BACK_SUFFIX);
+		}else{
+			logger.error("启动offsetManager之前请先初始化并启动fileManager");
+		}
 
 	}
 
@@ -57,7 +70,19 @@ public class OffsetManager extends Service{
 
 	}
 
+	public void setFileManager(FileManager fileManager) {
+		this.fileManager = fileManager;
+	}
+
 	public short getQueueCount(String topic)throws QueueNotExistException {
 		return 0;
+	}
+
+	public void setOffsetFile(File offsetFile) {
+		this.offsetFile = offsetFile;
+	}
+
+	public void setQueueFile(File queueFile) {
+		this.queueFile = queueFile;
 	}
 }
