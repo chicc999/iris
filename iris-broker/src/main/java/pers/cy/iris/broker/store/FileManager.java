@@ -10,7 +10,7 @@ import java.io.File;
 /**
  * @Author:cy
  * @Date:Created in  17/5/13
- * @Destription:
+ * @Destription: 文件管理器
  */
 public class FileManager extends Service {
 
