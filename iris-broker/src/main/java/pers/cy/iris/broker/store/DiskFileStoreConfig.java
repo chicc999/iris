@@ -1,11 +1,9 @@
 package pers.cy.iris.broker.store;
 
-import java.io.File;
-
 /**
  * @Author:cy
  * @Date:Created in  17/4/17
- * @Destription:
+ * @Destription: 存储文件的配置
  */
 public class DiskFileStoreConfig {
 
