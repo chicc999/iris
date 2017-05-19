@@ -15,10 +15,10 @@ public class IrisException extends Exception{
 	}
 
 	public IrisException(String description, String detail) {
-		super(description + detail);
+		super(description + "，detail：" +detail);
 	}
 
 	public IrisException(String description, String detail, Throwable cause) {
-		super(description + detail, cause);
+		super(description + "，detail：" +detail, cause);
 	}
 }
