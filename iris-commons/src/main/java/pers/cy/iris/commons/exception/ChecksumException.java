@@ -11,7 +11,7 @@ public class ChecksumException extends IrisException {
 	public ChecksumException() {
 	}
 
-	public ChecksumException(String detail, Throwable cause) {
-		super(description, detail, cause);
+	public ChecksumException(String detail) {
+		super(description, detail);
 	}
 }
