@@ -35,6 +35,8 @@ public class DiskFileStore extends Service implements Store {
 	// 文件锁
 	protected FileLock fileLock;
 
+	private CheckPoint checkPoint;
+
 	public static int restartTimes = 0;
 
 	public DiskFileStore() {
@@ -61,6 +63,10 @@ public class DiskFileStore extends Service implements Store {
 			offsetManager.setFileManager(fileManager);
 		}
 
+		if(checkPoint == null) {
+			checkPoint = new CheckPoint(fileManager.getCheckPointFile());
+		}
+
 	}
 
 	@Override
@@ -69,6 +75,8 @@ public class DiskFileStore extends Service implements Store {
 		restartTimes++;
 		// 独占文件锁，确保只有一个实例启动
 		lockFile();
+
+		checkPoint.start();
 
 		fileManager.start();
 
