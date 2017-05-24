@@ -133,6 +133,6 @@ public abstract class Service implements LifeCycle {
 	/**
 	 * 停止
 	 */
-	public abstract void doStop();
+	public abstract void doStop()throws Exception;
 
 }

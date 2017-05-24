@@ -7,6 +7,12 @@ import pers.cy.iris.commons.exception.QueueNotExistException;
 import pers.cy.iris.commons.exception.ServiceNotAvailableException;
 import pers.cy.iris.commons.model.message.StoreMessage;
 import pers.cy.iris.commons.service.Service;
+import pers.cy.iris.commons.util.FileUtil;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileLock;
 
 /**
  * @Author:cy
@@ -22,6 +28,14 @@ public class DiskFileStore extends Service implements Store {
 	private OffsetManager offsetManager;
 
 	private FileManager fileManager;
+
+	// 随机访问锁文件
+	protected RandomAccessFile lockRaf;
+
+	// 文件锁
+	protected FileLock fileLock;
+
+	public static int restartTimes = 0;
 
 	public DiskFileStore() {
 	}
@@ -51,6 +65,11 @@ public class DiskFileStore extends Service implements Store {
 
 	@Override
 	public void doStart() throws Exception {
+		//尝试重启次数增加
+		restartTimes++;
+		// 独占文件锁，确保只有一个实例启动
+		lockFile();
+
 		fileManager.start();
 
 		offsetManager.start();
@@ -58,7 +77,6 @@ public class DiskFileStore extends Service implements Store {
 
 	@Override
 	public void afterStart() throws Exception {
-
 	}
 
 	@Override
@@ -67,8 +85,12 @@ public class DiskFileStore extends Service implements Store {
 	}
 
 	@Override
-	public void doStop() {
+	public void doStop() throws Exception{
 		fileManager.stop();
+
+		//释放锁文件
+		fileLock.release();
+		lockRaf.close();
 	}
 
 	public DiskFileStoreConfig getStoreConfig() {
@@ -81,6 +103,24 @@ public class DiskFileStore extends Service implements Store {
 
 	public void setOffsetManager(OffsetManager offsetManager) {
 		this.offsetManager = offsetManager;
+	}
+
+
+
+	/**
+	 * 独占文件锁，确保只有一个Store实例启动
+	 *
+	 * @throws Exception
+	 */
+	protected void lockFile() throws Exception {
+		File lockFile = fileManager.getLockFile();
+		FileUtil.createFile(lockFile);
+		// 加文件锁
+		lockRaf = new RandomAccessFile(lockFile, "rw");
+		fileLock = lockRaf.getChannel().tryLock();
+		if (fileLock == null) {
+			throw new IOException(String.format("lock file error,%s", lockFile.getPath()));
+		}
 	}
 
 	@Override
