@@ -10,7 +10,7 @@ import java.util.NoSuchElementException;
 /**
  * @Author:cy
  * @Date:Created in  17/5/26
- * @Destription:
+ * @Destription: 顺序集合
  */
 public class SequenceSet extends LinkedNodeList<Sequence> implements Iterable<Long> {
 
