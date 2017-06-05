@@ -1,5 +1,6 @@
 package pers.cy.iris.broker.store.offset;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import pers.cy.iris.broker.store.QueueItem;
 import pers.cy.iris.broker.store.sequence.Sequence;
 import pers.cy.iris.broker.store.sequence.SequenceSet;
@@ -12,7 +13,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * @Author:cy
  * @Date:Created in  17/5/25
- * @Destription:
+ * @Destription: 队列偏移量管理
  */
 public class QueueOffset {
 	// 主题
@@ -20,7 +21,7 @@ public class QueueOffset {
 	// 主题
 	private transient short queueId;
 	// 消费者偏移量
-	private ConcurrentMap<String, UnSequenceOffset> offsets = new ConcurrentHashMap<String, UnSequenceOffset>();
+	private ConcurrentMap<String/*consumer*/, UnSequenceOffset> offsets = new ConcurrentHashMap<String, UnSequenceOffset>();
 	private ReentrantReadWriteLock mutex = new ReentrantReadWriteLock();
 
 	public QueueOffset() {
@@ -57,7 +58,7 @@ public class QueueOffset {
 	}
 
 	/**
-	 * 获取偏移量
+	 * 获取指定消费者的偏移量
 	 *
 	 * @param consumer 消费者
 	 */
@@ -66,7 +67,7 @@ public class QueueOffset {
 	}
 
 	/**
-	 * 获取偏移量，不存在则创建
+	 * 获取指定消费者偏移量，不存在则创建
 	 *
 	 * @param consumer 消费者
 	 * @return 偏移量
