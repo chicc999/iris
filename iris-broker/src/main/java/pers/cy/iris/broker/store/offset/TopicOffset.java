@@ -15,9 +15,9 @@ public class TopicOffset {
 	// 主题
 	private transient String topic;
 	// 队列偏移量
-	private ConcurrentMap<Short, QueueOffset> offsets = new ConcurrentHashMap<Short, QueueOffset>();
+	private ConcurrentMap<Short/*queue id*/, QueueOffset> offsets = new ConcurrentHashMap<Short, QueueOffset>();
 	// 消费者订阅时间
-	private ConcurrentMap<String, Long> consumers = new ConcurrentHashMap<String, Long>();
+	private ConcurrentMap<String/*consumerName*/, Long/*add consumer time*/> consumers = new ConcurrentHashMap<String, Long>();
 
 	public TopicOffset() {
 	}
