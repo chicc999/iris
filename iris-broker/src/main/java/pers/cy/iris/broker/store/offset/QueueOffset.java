@@ -1,6 +1,5 @@
 package pers.cy.iris.broker.store.offset;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import pers.cy.iris.broker.store.QueueItem;
 import pers.cy.iris.broker.store.sequence.Sequence;
 import pers.cy.iris.broker.store.sequence.SequenceSet;
@@ -22,7 +21,7 @@ public class QueueOffset {
 	private transient short queueId;
 	// 消费者偏移量
 	private ConcurrentMap<String/*consumer*/, UnSequenceOffset> offsets = new ConcurrentHashMap<String, UnSequenceOffset>();
-	private ReentrantReadWriteLock mutex = new ReentrantReadWriteLock();
+	private ReentrantReadWriteLock.WriteLock writeLock = new ReentrantReadWriteLock().writeLock();
 
 	public QueueOffset() {
 
@@ -92,26 +91,28 @@ public class QueueOffset {
 	 */
 	public void acknowledge(String consumer, long offset) {
 
-		mutex.writeLock().lock();
+		writeLock.lock();
 
 		try {
 
 			UnSequenceOffset target = getAndCreateOffset(consumer);
 			SequenceSet acks = target.getAcks();
 			acks.add(offset);
-			//正常逻辑，第一个sequence应该包含旧的ackOffset
+			//更新ackOffset
 			Sequence headSequence = acks.getHead();
 			if (target.getAckOffset().get() > target.getSubscribeOffset().get() || headSequence.contains(target.getSubscribeOffset().get() + QueueItem.CONSUMER_QUEUE_ITEM_SIZE)) {
 				//只有第一个序列从订阅位置开始才表示第一段确认已经返回，否则不能设置ack值,否则会跳过第一个区间
 				//兼容旧数据：ackOffset位置大于subscribeOffset(如果已经有值说明)已经开始消费过了
 				if (headSequence.contains(target.getAckOffset().get() + QueueItem.CONSUMER_QUEUE_ITEM_SIZE)) {
+					//headSequence包含(ackOffset+CONSUMER_QUEUE_ITEM_SIZE),可以增长ackOffset到headSequence结尾
 					target.compareGreaterAndSet(target.getAckOffset(), headSequence.getLast());
 				} else if (headSequence.getFirst() > target.getAckOffset().get()) {
+					//异常情况，本不该发生，(ackOffset+CONSUMER_QUEUE_ITEM_SIZE)小于headSequence first直接更新到last
 					target.compareGreaterAndSet(target.getAckOffset(), headSequence.getLast());
 				}
 			}
 		} finally {
-			mutex.writeLock().unlock();
+			writeLock.unlock();
 		}
 	}
 
@@ -123,7 +124,7 @@ public class QueueOffset {
 	 */
 	public void resetAckOffset(String consumer, long offset) {
 		UnSequenceOffset target = getAndCreateOffset(consumer);
-		mutex.writeLock().lock();
+		writeLock.lock();
 		try {
 
 			long subOffset = target.getSubscribeOffset().get();
@@ -151,7 +152,7 @@ public class QueueOffset {
 			target.setAcks(ss);
 			target.resetAckOffset(offset);
 		} finally {
-			mutex.writeLock().unlock();
+			writeLock.unlock();
 		}
 	}
 
