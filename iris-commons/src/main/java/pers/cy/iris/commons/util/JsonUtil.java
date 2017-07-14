@@ -1,14 +1,15 @@
 package pers.cy.iris.commons.util;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.ReferenceType;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,4 +100,23 @@ public class JsonUtil {
 	private static JavaType getCollectionType(Class<?> collectionClass, Class<?>... elementClasses) {
 		return mapper.getTypeFactory().constructParametricType(collectionClass, elementClasses);
 	}
+
+
+	public static void writeTOStream(OutputStream outputStream,Object o) throws IOException {
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		try {
+			 mapper.writeValue(outputStream,o);
+		} catch (JsonProcessingException e) {
+			throw new IOException("序列化失败",e);
+		}
+	}
+
+	public static void readFromStream(InputStream inputStream,TypeReference valueTypeRef) throws IOException {
+		try {
+			mapper.readValue(inputStream,valueTypeRef);
+		} catch (JsonProcessingException e) {
+			throw new IOException("序列化失败",e);
+		}
+	}
+
 }
