@@ -100,6 +100,9 @@ public class CollectJob extends Service{
 		stat(SamplerClient,threadNum,0,4000);
 	}
 
+	/**
+	 * 执行请求、统计每次请求结果
+	 */
 	class StatTask implements Runnable{
 		private  Logger logger = LoggerFactory.getLogger(StatTask.class);
 		private SamplerClient client;
@@ -140,6 +143,9 @@ public class CollectJob extends Service{
 		}
 	}
 
+	/**
+	 * 汇总任务
+	 */
 	class CollectTask implements Runnable{
 		private  Logger logger = LoggerFactory.getLogger(StatTask.class);
 		private int threadNum;
