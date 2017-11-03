@@ -1,110 +1,34 @@
-package pers.cy.iris.commons.cache.impl;
+package pers.cy.iris.commons.cache.impl.jedis;
 
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.core.io.Resource;
 import pers.cy.iris.commons.cache.CacheService;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  * @Author:cy
- * @Date:Created in  17/10/27
- * @Destription: redis集群缓存的实现
+ * @Date:Created in  17/11/2
+ * @Destription:
  */
-public class RedisCacheService implements CacheService , FactoryBean<JedisCluster>, InitializingBean {
-	private Resource addressConfig;
-	private String addressKeyPrefix ;
-	private JedisCluster jedisCluster;
+public class JedisCacheService implements CacheService{
 
-	private Integer timeout;
-	private Integer maxRedirections;
-	private GenericObjectPoolConfig genericObjectPoolConfig;
+	private JedisPool jedisPool;
 
-	private Pattern p = Pattern.compile("^.+[:]\\d{1,5}\\s*$");
+	private Jedis jedis;
 
-	@Override
-	public JedisCluster getObject() throws Exception {
-		return jedisCluster;
-	}
-
-	@Override
-	public Class<? extends JedisCluster> getObjectType() {
-		return (this.jedisCluster != null ? this.jedisCluster.getClass() : JedisCluster.class);
-	}
-
-	@Override
-	public boolean isSingleton() {
-		return true;
+	public void setJedisPool(JedisPool jedisPool) {
+		this.jedisPool = jedisPool;
 	}
 
 
-
-	private Set<HostAndPort> parseHostAndPort() throws Exception {
-		try {
-			Properties prop = new Properties();
-			prop.load(this.addressConfig.getInputStream());
-
-			Set<HostAndPort> haps = new HashSet<HostAndPort>();
-			for (Object key : prop.keySet()) {
-
-				if (!((String) key).startsWith(addressKeyPrefix)) {
-					continue;
-				}
-
-				String val = (String) prop.get(key);
-
-				boolean isIpPort = p.matcher(val).matches();
-
-				if (!isIpPort) {
-					throw new IllegalArgumentException("ip 或 port 不合法");
-				}
-				String[] ipAndPort = val.split(":");
-
-				HostAndPort hap = new HostAndPort(ipAndPort[0], Integer.parseInt(ipAndPort[1]));
-				haps.add(hap);
-			}
-
-			return haps;
-		} catch (IllegalArgumentException ex) {
-			throw ex;
-		} catch (Exception ex) {
-			throw new Exception("解析 jedis 配置文件失败", ex);
-		}
+	public void setJedis() {
+		this.jedis = jedisPool.getResource();
 	}
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		Set<HostAndPort> haps = this.parseHostAndPort();
-
-		jedisCluster = new JedisCluster(haps, timeout, maxRedirections,genericObjectPoolConfig);
-
-	}
-	public void setAddressConfig(Resource addressConfig) {
-		this.addressConfig = addressConfig;
-	}
-
-	public void setTimeout(int timeout) {
-		this.timeout = timeout;
-	}
-
-	public void setMaxRedirections(int maxRedirections) {
-		this.maxRedirections = maxRedirections;
-	}
-
-	public void setAddressKeyPrefix(String addressKeyPrefix) {
-		this.addressKeyPrefix = addressKeyPrefix;
-	}
-
-	public void setGenericObjectPoolConfig(GenericObjectPoolConfig genericObjectPoolConfig) {
-		this.genericObjectPoolConfig = genericObjectPoolConfig;
+	public void close(){
+		jedis.close();
 	}
 
 	/**
@@ -116,10 +40,10 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public void rpush(String key, String value, int maxCount) {
-		if (jedisCluster.llen(key) >= maxCount) {
-			jedisCluster.lpop(key);
+		if (jedis.llen(key) >= maxCount) {
+			jedis.lpop(key);
 		}
-		jedisCluster.rpush(key, value);
+		jedis.rpush(key, value);
 	}
 
 	/**
@@ -131,10 +55,10 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public void rpush(byte[] key, byte[] value, int maxCount) {
-		if (jedisCluster.llen(key) >= maxCount) {
-			jedisCluster.lpop(key);
+		if (jedis.llen(key) >= maxCount) {
+			jedis.lpop(key);
 		}
-		jedisCluster.rpush(key, value);
+		jedis.rpush(key, value);
 	}
 
 	/**
@@ -147,7 +71,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public List<String> range(String key, int from, int to) {
-		return jedisCluster.lrange(key, from, to);
+		return jedis.lrange(key, from, to);
 	}
 
 	/**
@@ -160,7 +84,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public List<byte[]> range(byte[] key, int from, int to) {
-		return jedisCluster.lrange(key, from, to);
+		return jedis.lrange(key, from, to);
 	}
 
 	/**
@@ -171,7 +95,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public void put(String key, String value) {
-		jedisCluster.set(key,value);
+		jedis.set(key,value);
 	}
 
 	/**
@@ -182,7 +106,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public String get(String key) {
-		return jedisCluster.get(key);
+		return jedis.get(key);
 	}
 
 	/**
@@ -193,7 +117,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public byte[] get(byte[] key) {
-		return jedisCluster.get(key);
+		return jedis.get(key);
 	}
 
 	/**
@@ -204,7 +128,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Long incr(String key) {
-		return jedisCluster.incr(key);
+		return jedis.incr(key);
 	}
 
 	/**
@@ -216,7 +140,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Long incrBy(String key, long count) {
-		return jedisCluster.incrBy(key,count);
+		return jedis.incrBy(key,count);
 	}
 
 	/**
@@ -227,7 +151,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Long decr(String key) {
-		return jedisCluster.decr(key);
+		return jedis.decr(key);
 	}
 
 	/**
@@ -239,7 +163,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Long decrBy(String key, long count) {
-		return jedisCluster.decrBy(key,count);
+		return jedis.decrBy(key,count);
 	}
 
 	/**
@@ -249,7 +173,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public void delete(String key) {
-		jedisCluster.del(key);
+		jedis.del(key);
 	}
 
 	/**
@@ -261,7 +185,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public void set(String key, String value) {
-		jedisCluster.set(key,value);
+		jedis.set(key,value);
 	}
 
 	/**
@@ -274,7 +198,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public void setex(byte[] key, int seconds, byte[] value) {
-		jedisCluster.setex(key,seconds,value);
+		jedis.setex(key,seconds,value);
 	}
 
 	/**
@@ -287,7 +211,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public void setex(String key, int seconds, String value) {
-		jedisCluster.setex(key, seconds, value);
+		jedis.setex(key, seconds, value);
 	}
 
 	/**
@@ -299,7 +223,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public void zadd(String key, double score, String member) {
-		jedisCluster.zadd(key, score, member);
+		jedis.zadd(key, score, member);
 	}
 
 	/**
@@ -312,7 +236,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Set<String> zrange(String key, long start, long end) {
-		return jedisCluster.zrange(key, start, end);
+		return jedis.zrange(key, start, end);
 	}
 
 	/**
@@ -325,7 +249,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Set<String> zrangeByScore(String key, double min, double max) {
-		return jedisCluster.zrangeByScore(key, min, max);
+		return jedis.zrangeByScore(key, min, max);
 	}
 
 	/**
@@ -340,7 +264,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Set<String> zrangeByScore(String key, double min, double max, long offset, long count) {
-		return jedisCluster.zrangeByScore(key, min, max,(int)offset,(int)count);
+		return jedis.zrangeByScore(key, min, max,(int)offset,(int)count);
 	}
 
 	/**
@@ -353,7 +277,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Long zcount(String key, double min, double max) {
-		return jedisCluster.zcount(key, min, max);
+		return jedis.zcount(key, min, max);
 	}
 
 	/**
@@ -364,7 +288,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Long zcard(String key) {
-		return jedisCluster.zcard(key);
+		return jedis.zcard(key);
 	}
 
 	/**
@@ -376,7 +300,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Long zrem(String key, String... member) {
-		return jedisCluster.zrem(key, member);
+		return jedis.zrem(key, member);
 	}
 
 	/**
@@ -388,7 +312,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Double zscore(String key, String member) {
-		return jedisCluster.zscore(key, member);
+		return jedis.zscore(key, member);
 	}
 
 	/**
@@ -400,7 +324,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Boolean setnx(String key, String value) {
-		return Boolean.valueOf(jedisCluster.setnx(key, value).longValue()==1L);
+		return Boolean.valueOf(jedis.setnx(key, value).longValue()==1L);
 	}
 
 	/**
@@ -412,7 +336,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Boolean expire(String key, int seconds) {
-		return Boolean.valueOf(jedisCluster.expire(key, seconds).longValue()==1L);
+		return Boolean.valueOf(jedis.expire(key, seconds).longValue()==1L);
 	}
 
 	/**
@@ -425,7 +349,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Long ttl(String key) {
-		return jedisCluster.ttl(key);
+		return jedis.ttl(key);
 	}
 
 	/**
@@ -436,7 +360,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public String lpop(String key) {
-		return jedisCluster.lpop(key);
+		return jedis.lpop(key);
 	}
 
 	/**
@@ -448,7 +372,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Long rpush(String key, String... value) {
-		return jedisCluster.rpush(key,value);
+		return jedis.rpush(key,value);
 	}
 
 	/**
@@ -459,7 +383,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Long llen(String key) {
-		return jedisCluster.llen(key);
+		return jedis.llen(key);
 	}
 
 	/**
@@ -474,7 +398,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Long lrem(String key, long count, String value) {
-		return jedisCluster.lrem(key, count, value);
+		return jedis.lrem(key, count, value);
 	}
 
 	/**
@@ -485,7 +409,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public String spop(String key) {
-		return jedisCluster.spop(key);
+		return jedis.spop(key);
 	}
 
 	/**
@@ -497,8 +421,9 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 * @return 被添加到集合中的新元素的数量，不包括被忽略的元素
 	 */
 	@Override
-	public Long sadd(String key, String... values) {
-		return jedisCluster.sadd(key, values);
+	public void sadd(String key, String... values) {
+		jedis = jedisPool.getResource();
+		jedis.sadd(key, values);
 	}
 
 	/**
@@ -509,7 +434,8 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Long scard(String key) {
-		return jedisCluster.scard(key);
+		jedis = jedisPool.getResource();
+		return jedis.scard(key);
 	}
 
 	/**
@@ -522,7 +448,7 @@ public class RedisCacheService implements CacheService , FactoryBean<JedisCluste
 	 */
 	@Override
 	public Long srem(String key, String... values) {
-		return jedisCluster.srem(key, values);
+		return jedis.srem(key, values);
 	}
 
 	/**
