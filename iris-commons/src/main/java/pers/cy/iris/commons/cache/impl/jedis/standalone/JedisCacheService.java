@@ -421,9 +421,8 @@ public class JedisCacheService implements CacheService{
 	 * @return 被添加到集合中的新元素的数量，不包括被忽略的元素
 	 */
 	@Override
-	public void sadd(String key, String... values) {
-		jedis = jedisPool.getResource();
-		jedis.sadd(key, values);
+	public Long sadd(String key, String... values) {
+		return jedis.sadd(key, values);
 	}
 
 	/**
@@ -434,7 +433,6 @@ public class JedisCacheService implements CacheService{
 	 */
 	@Override
 	public Long scard(String key) {
-		jedis = jedisPool.getResource();
 		return jedis.scard(key);
 	}
 

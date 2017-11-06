@@ -8,7 +8,15 @@ import java.util.Set;
  * @Date:Created in  17/10/27
  * @Destription: 操作缓存的接口
  */
- public interface CacheService {
+public interface CacheService {
+	/**
+	 * 追加到现有键对应列表中
+	 *
+	 * @param key      键
+	 * @param value    值
+	 * @param maxCount 列表最大长度，如超过最大长度，将移除最早的元素
+	 */
+	void rpush(String key, String value, int maxCount);
 
 	/**
 	 * 追加到现有键对应列表中
@@ -17,16 +25,7 @@ import java.util.Set;
 	 * @param value    值
 	 * @param maxCount 列表最大长度，如超过最大长度，将移除最早的元素
 	 */
-	 void rpush(String key, String value, int maxCount);
-
-	/**
-	 * 追加到现有键对应列表中
-	 *
-	 * @param key      键
-	 * @param value    值
-	 * @param maxCount 列表最大长度，如超过最大长度，将移除最早的元素
-	 */
-	 void rpush(byte[] key, byte[] value, int maxCount);
+	void rpush(byte[] key, byte[] value, int maxCount);
 
 	/**
 	 * 取出对应键中相应范围内的值
@@ -36,7 +35,7 @@ import java.util.Set;
 	 * @param to   结束索引
 	 * @return 值的列表
 	 */
-	 List<String> range(String key, int from, int to);
+	List<String> range(String key, int from, int to);
 
 	/**
 	 * 取出对应键中相应范围内的值
@@ -46,7 +45,7 @@ import java.util.Set;
 	 * @param to   结束索引
 	 * @return 值的列表
 	 */
-	 List<byte[]> range(byte[] key, int from, int to);
+	List<byte[]> range(byte[] key, int from, int to);
 
 	/**
 	 * 增加键值对
@@ -54,7 +53,7 @@ import java.util.Set;
 	 * @param key   键
 	 * @param value 值
 	 */
-	 void put(String key, String value);
+	void put(String key, String value);
 
 	/**
 	 * 获取对应键的值
@@ -62,7 +61,7 @@ import java.util.Set;
 	 * @param key 键
 	 * @return 值
 	 */
-	 String get(String key);
+	String get(String key);
 
 	/**
 	 * 获取对应键的值
@@ -70,7 +69,7 @@ import java.util.Set;
 	 * @param key 键
 	 * @return 值
 	 */
-	 byte[] get(byte[] key);
+	byte[] get(byte[] key);
 
 	/**
 	 * 原子性的将对应键的值增加1
@@ -78,7 +77,7 @@ import java.util.Set;
 	 * @param key 键
 	 * @return 自增完成的值
 	 */
-	 Long incr(String key);
+	Long incr(String key);
 
 	/**
 	 * 原子性的将对应键的值增加指定值
@@ -87,7 +86,7 @@ import java.util.Set;
 	 * @param count 值
 	 * @return 自增完成的值
 	 */
-	 Long incrBy(String key, long count);
+	Long incrBy(String key, long count);
 
 	/**
 	 * 原子性的将对应键的值减去1
@@ -95,7 +94,7 @@ import java.util.Set;
 	 * @param key 键
 	 * @return 自增完成的值
 	 */
-	 Long decr(String key);
+	Long decr(String key);
 
 	/**
 	 * 原子性的将对应键的值减去指定值
@@ -104,14 +103,14 @@ import java.util.Set;
 	 * @param count 值
 	 * @return 自增完成的值
 	 */
-	 Long decrBy(String key, long count);
+	Long decrBy(String key, long count);
 
 	/**
 	 * 删除对应的键值对
 	 *
 	 * @param key 键
 	 */
-	 void delete(String key);
+	void delete(String key);
 
 	/**
 	 * 设置
@@ -130,7 +129,7 @@ import java.util.Set;
 	 * @param value  值
 	 * @return
 	 */
-	 void setex(byte[] key, int seconds, byte[] value);
+	void setex(byte[] key, int seconds, byte[] value);
 
 	/**
 	 * 设置有效期键值
@@ -140,7 +139,7 @@ import java.util.Set;
 	 * @param value   值
 	 * @return
 	 */
-	 void setex(String key, int seconds, String value);
+	void setex(String key, int seconds, String value);
 
 	/**
 	 * 添加sorted set
@@ -149,7 +148,7 @@ import java.util.Set;
 	 * @param score  分数
 	 * @param member 值
 	 */
-	 void zadd(String key, double score, String member);
+	void zadd(String key, double score, String member);
 
 	/**
 	 * 通过位置返回sorted set指定区间内的成员
@@ -159,7 +158,7 @@ import java.util.Set;
 	 * @param end   结束位置
 	 * @return 返回所有符合条件的成员
 	 */
-	 Set<String> zrange(String key, long start, long end);
+	Set<String> zrange(String key, long start, long end);
 
 	/**
 	 * 通过分数返回sorted set指定区间内的成员
@@ -169,7 +168,7 @@ import java.util.Set;
 	 * @param max 最大评分
 	 * @return 返回所有符合条件的成员
 	 */
-	 Set<String> zrangeByScore(String key, double min, double max);
+	Set<String> zrangeByScore(String key, double min, double max);
 
 	/**
 	 * 通过分数返回sorted set指定区间内的成员
@@ -181,7 +180,7 @@ import java.util.Set;
 	 * @param count  返回数量
 	 * @return 返回所有符合条件的成员
 	 */
-	 Set<String> zrangeByScore(String key, double min, double max, long offset, long count);
+	Set<String> zrangeByScore(String key, double min, double max, long offset, long count);
 
 	/**
 	 * 统计score在min和max之间的成员数
@@ -191,14 +190,14 @@ import java.util.Set;
 	 * @param max 最大score
 	 * @return 符合条件的成员数
 	 */
-	 Long zcount(String key, double min, double max);
+	Long zcount(String key, double min, double max);
 
 	/**
 	 * 统计成员数量
 	 * @param key
 	 * @return
 	 */
-	 Long zcard(String key);
+	Long zcard(String key);
 
 	/**
 	 * 移除sorted set中的一个或多个成员
@@ -207,7 +206,7 @@ import java.util.Set;
 	 * @param member 值
 	 * @return 被成功移除的成员的数量，不包括被忽略的成员
 	 */
-	 Long zrem(String key, String... member);
+	Long zrem(String key, String... member);
 
 	/**
 	 * 获取指定成员的评分
@@ -215,7 +214,7 @@ import java.util.Set;
 	 * @param member 值
 	 * @return 评分，不存在则返回null
 	 */
-	 Double zscore(String key, String member);
+	Double zscore(String key, String member);
 
 	/**
 	 * 如果不存在则设置
@@ -224,7 +223,7 @@ import java.util.Set;
 	 * @param value
 	 * @return 是否成功
 	 */
-	 Boolean setnx(String key, String value);
+	Boolean setnx(String key, String value);
 
 	/**
 	 * 设置过期时间
@@ -233,7 +232,7 @@ import java.util.Set;
 	 * @param seconds 毫秒
 	 * @return 是否成功
 	 */
-	 Boolean expire(String key, int seconds);
+	Boolean expire(String key, int seconds);
 
 	/**
 	 * 获取key的剩余生存时间
@@ -243,7 +242,7 @@ import java.util.Set;
 	 * 当 key 存在但没有设置剩余生存时间时，返回 -1
 	 * 否则，以秒为单位，返回 key 的剩余生存时间
 	 */
-	 Long ttl(String key);
+	Long ttl(String key);
 
 	/**
 	 * 移出并获取列表的第一个元素
@@ -251,7 +250,7 @@ import java.util.Set;
 	 * @param key 键
 	 * @return 第一个元素
 	 */
-	 String lpop(String key);
+	String lpop(String key);
 
 	/**
 	 * 在列表中添加一个或多个值
@@ -260,7 +259,7 @@ import java.util.Set;
 	 * @param value 值
 	 * @return 最新列表长度
 	 */
-	 Long rpush(String key, String... value);
+	Long rpush(String key, String... value);
 
 	/**
 	 * 获取列表长度
@@ -268,7 +267,7 @@ import java.util.Set;
 	 * @param key 键
 	 * @return 长度
 	 */
-	 Long llen(String key);
+	Long llen(String key);
 
 	/**
 	 * 从key对应list中删除count个和value相同的元素
@@ -281,7 +280,7 @@ import java.util.Set;
 	 * @param value
 	 * @return 被移除的个数
 	 */
-	 Long lrem(String key, final long count, String value);
+	Long lrem(String key, final long count, String value);
 
 	/**
 	 * 移除并返回集合中的一个随机元素
@@ -289,7 +288,7 @@ import java.util.Set;
 	 * @param key
 	 * @return
 	 */
-	 String spop(String key);
+	String spop(String key);
 
 	/**
 	 * 将一个或多个 member 元素加入到集合 key 当中，已经存在于集合的 member 元素将被忽略。
@@ -299,7 +298,7 @@ import java.util.Set;
 	 * @param values
 	 * @return 被添加到集合中的新元素的数量，不包括被忽略的元素
 	 */
-	 void sadd(String key, String... values);
+	Long sadd(String key, String... values);
 
 	/**
 	 * 返回集合 key 的基数(集合中元素的数量)。
@@ -307,7 +306,7 @@ import java.util.Set;
 	 * @param key
 	 * @return 当 key 不存在时，返回 0
 	 */
-	 Long scard(String key);
+	Long scard(String key);
 
 	/**
 	 * 移除集合 key 中的一个或多个 member 元素，不存在的 member 元素会被忽略。
@@ -317,7 +316,7 @@ import java.util.Set;
 	 * @param values
 	 * @return 被成功移除的元素的数量，不包括被忽略的元素。
 	 */
-	 Long srem(String key, String... values);
+	Long srem(String key, String... values);
 
 	/**
 	 * 获取委托的缓存

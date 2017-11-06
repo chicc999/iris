@@ -409,8 +409,8 @@ public class JedisClusterCacheService implements CacheService {
 	 * @return 被添加到集合中的新元素的数量，不包括被忽略的元素
 	 */
 	@Override
-	public void sadd(String key, String... values) {
-		jedisCluster.sadd(key, values);
+	public Long sadd(String key, String... values) {
+		return jedisCluster.sadd(key, values);
 	}
 
 	/**
