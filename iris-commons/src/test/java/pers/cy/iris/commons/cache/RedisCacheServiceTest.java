@@ -5,13 +5,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import pers.cy.iris.commons.cache.impl.jedis.JedisCacheService;
-import pers.cy.iris.commons.cache.impl.jedis.JedisProxy;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import pers.cy.iris.commons.cache.impl.jedis.standalone.JedisProxy;
 
 import static org.testng.Assert.assertEquals;
 

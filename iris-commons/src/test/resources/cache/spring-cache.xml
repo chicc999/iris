@@ -41,7 +41,7 @@
         <constructor-arg index="3" value="${redis.timeout}" type="int"/>
     </bean>
 
-    <bean id="redisCacheService" class="pers.cy.iris.commons.cache.impl.jedis.JedisCacheService">
+    <bean id="redisCacheService" class="pers.cy.iris.commons.cache.impl.jedis.standalone.JedisCacheService">
         <property name="jedisPool" ref="jedisPool"/>
     </bean>
 

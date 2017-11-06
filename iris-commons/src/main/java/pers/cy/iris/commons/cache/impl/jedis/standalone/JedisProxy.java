@@ -1,6 +1,6 @@
-package pers.cy.iris.commons.cache.impl.jedis;
+package pers.cy.iris.commons.cache.impl.jedis.standalone;
 
-import pers.cy.iris.commons.cache.CacheService;
+import pers.cy.iris.commons.cache.impl.jedis.standalone.JedisCacheService;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
