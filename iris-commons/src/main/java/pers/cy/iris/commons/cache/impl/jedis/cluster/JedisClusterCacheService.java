@@ -1,4 +1,4 @@
-package pers.cy.iris.commons.cache.impl.jedis;
+package pers.cy.iris.commons.cache.impl.jedis.cluster;
 
 import pers.cy.iris.commons.cache.CacheService;
 import redis.clients.jedis.JedisCluster;

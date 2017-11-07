@@ -1,10 +1,9 @@
-package pers.cy.iris.commons.cache.impl.jedis;
+package pers.cy.iris.commons.cache.impl.jedis.cluster;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
-import pers.cy.iris.commons.cache.CacheService;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
 
