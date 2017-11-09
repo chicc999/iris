@@ -18,16 +18,6 @@ public class JedisProxyFactory implements InvocationHandler,FactoryBean<CacheSer
 
 	private JedisCacheService service;
 
-//	//绑定委托对象，并返回代理类
-//	public Object bind(Object service)
-//	{
-//		this.service = (JedisCacheService)service;
-//		//绑定该类实现的所有接口，取得代理类
-//		return Proxy.newProxyInstance(service.getClass().getClassLoader(),
-//				service.getClass().getInterfaces(),
-//				this);
-//	}
-
 	public void setService(JedisCacheService service) {
 		this.service = service;
 	}
