@@ -19,11 +19,14 @@
         <property name="minIdle" value="${redis.minIdle}" />
     </bean >
 
-    <bean id="jedisCluster"  class="pers.cy.iris.commons.cache.impl.jedis.cluster.JedisClusterFactory" >
+
+        <!--################################redis集群配置################################-->
+
+<!--    <bean id="jedisCluster"  class="pers.cy.iris.commons.cache.impl.jedis.cluster.JedisClusterFactory" >
         <property name="addressConfig">
             <value>classpath:cache/redis.properties</value>
         </property>
-        <property name="addressKeyPrefix" value="cluster" />   <!--  属性文件里  key的前缀 -->
+        <property name="addressKeyPrefix" value="cluster" />   &lt;!&ndash;  属性文件里  key的前缀 &ndash;&gt;
         <property name="timeout" value="300000" />
         <property name="maxRedirections" value="6" />
         <property name="genericObjectPoolConfig" ref="poolConfig" />
@@ -31,19 +34,22 @@
 
     <bean id="redisCacheService" class="pers.cy.iris.commons.cache.impl.jedis.cluster.JedisClusterCacheService">
         <property name="jedisCluster" ref="jedisCluster"></property>
-    </bean>
+    </bean>-->
 
-
-<!--    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+    !--################################redis单机配置################################-->
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
         <constructor-arg index="0" ref="poolConfig"/>
         <constructor-arg index="1" value="${redis.host}"/>
         <constructor-arg index="2" value="${redis.port}" type="int"/>
         <constructor-arg index="3" value="${redis.timeout}" type="int"/>
     </bean>
 
-    <bean id="redisCacheService" class="pers.cy.iris.commons.cache.impl.jedis.standalone.JedisCacheService">
+    <bean id="redisService" class="pers.cy.iris.commons.cache.impl.jedis.standalone.JedisCacheService">
         <property name="jedisPool" ref="jedisPool"/>
-    </bean>-->
+    </bean>
 
+    <bean id="redisCacheService" class="pers.cy.iris.commons.cache.impl.jedis.standalone.JedisProxyFactory">
+        <property name="service" ref="redisService"/>
+    </bean>
 
 </beans>

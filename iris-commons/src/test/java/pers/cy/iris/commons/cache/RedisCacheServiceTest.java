@@ -5,7 +5,6 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import pers.cy.iris.commons.cache.impl.jedis.standalone.JedisProxy;
 
 import static org.testng.Assert.assertEquals;
 
@@ -23,15 +22,22 @@ public class RedisCacheServiceTest {
 	{
 		ApplicationContext ac = new FileSystemXmlApplicationContext("classpath:cache/spring-cache.xml");
 		jedis = (CacheService)ac.getBean("redisCacheService");
-
-		//测试单机redis打开下面一行
-		jedis = (CacheService)new JedisProxy().bind(jedis);
 	}
 
 	@Test
 	public void rpush() {
-		long size = jedis.rpush("rpush", "bar", "rpush");
+		String key = "rpush";
+
+		long size = jedis.llen(key);
+		for(int i=0;i<size;i++){
+			jedis.lpop(key);
+		}
+
+		size = jedis.rpush(key, "bar", "rpush");
 		Assert.assertEquals(2, size);
+		for(int i=0;i<size;i++){
+			jedis.lpop(key);
+		}
 	}
 
 	@Test
