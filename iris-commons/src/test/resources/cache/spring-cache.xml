@@ -36,7 +36,7 @@
         <property name="jedisCluster" ref="jedisCluster"></property>
     </bean>-->
 
-    !--################################redis单机配置################################-->
+    <!--################################redis单机配置################################-->
     <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
         <constructor-arg index="0" ref="poolConfig"/>
         <constructor-arg index="1" value="${redis.host}"/>
