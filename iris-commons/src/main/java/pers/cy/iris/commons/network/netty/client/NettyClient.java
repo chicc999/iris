@@ -103,18 +103,39 @@ public class NettyClient extends NettyTransport {
 	 * @throws ConnectException
 	 */
 	public Channel createChannelSync(InetSocketAddress address) throws ConnectException {
+		return createChannelSync(address,0);
+	}
 
-		ChannelFuture channelFuture = this.bootStrap.connect(address);
+	/**
+	 * 同步创建连接
+	 *
+	 * @param address 目标地址
+	 * @param connectionTimeout 等待连接建立的最大超时
+	 * @return
+	 * @throws ConnectException
+	 */
+	public Channel createChannelSync(InetSocketAddress address, long connectionTimeout) throws ConnectException {
+
+		if (connectionTimeout <= 0) {
+			connectionTimeout = ((NettyClientConfig) config).getConnectionTimeout();
+		}
+
+		ChannelFuture channelFuture ;
 		try {
-			channelFuture.await();
+			channelFuture = this.bootStrap.connect(address);
+
+			channelFuture.await(connectionTimeout);
+			if(!channelFuture.await(connectionTimeout)){
+				throw new ConnectException("连接超时,"+address.getAddress().getHostAddress()+":"+address.getPort());
+			}
+
+			if (!channelFuture.isSuccess() || channelFuture.channel() == null || !channelFuture.channel().isActive()) {
+				throw new ConnectException(channelFuture.cause(), "向address:" + address + "创建连接失败");
+			}
+
 		} catch (InterruptedException e) {
-			throw new ConnectException(e, "连接远程服务器:" + address + "时，线程 "+Thread.currentThread().getName()+" 被被中断");
+			throw new ConnectException(e, "连接远程服务器:" + address + "时，线程 " + Thread.currentThread().getName() + " 被被中断");
 		}
-
-		if (!channelFuture.isSuccess() || channelFuture.channel() == null || !channelFuture.channel().isActive()) {
-			throw new ConnectException(channelFuture.cause(), "向address:" + address + "创建连接失败");
-		}
-
 		return channelFuture.channel();
 	}
 

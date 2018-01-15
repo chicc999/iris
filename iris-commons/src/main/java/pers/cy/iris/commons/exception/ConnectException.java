@@ -13,4 +13,8 @@ public class ConnectException extends IOException {
 
 	public ConnectException() {
 	}
+
+	public ConnectException(String message) {
+		super(message);
+	}
 }
