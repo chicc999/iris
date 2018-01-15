@@ -106,11 +106,9 @@ public class NettyClient extends NettyTransport {
 
 		ChannelFuture channelFuture = this.bootStrap.connect(address);
 		try {
-			channelFuture.sync();
-
+			channelFuture.await();
 		} catch (InterruptedException e) {
-			logger.error("连接远程服务器被终止,逻辑上不应该发生此错误", e);
-			throw new ConnectException(e, "连接远程服务器:" + address + "终止,逻辑上不应该发生此错误");
+			throw new ConnectException(e, "连接远程服务器:" + address + "时被中断");
 		}
 
 		if (!channelFuture.isSuccess() || channelFuture.channel() == null || !channelFuture.channel().isActive()) {
