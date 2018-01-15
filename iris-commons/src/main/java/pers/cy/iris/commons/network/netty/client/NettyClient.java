@@ -108,7 +108,7 @@ public class NettyClient extends NettyTransport {
 		try {
 			channelFuture.await();
 		} catch (InterruptedException e) {
-			throw new ConnectException(e, "连接远程服务器:" + address + "时被中断");
+			throw new ConnectException(e, "连接远程服务器:" + address + "时，线程 "+Thread.currentThread().getName()+" 被被中断");
 		}
 
 		if (!channelFuture.isSuccess() || channelFuture.channel() == null || !channelFuture.channel().isActive()) {
