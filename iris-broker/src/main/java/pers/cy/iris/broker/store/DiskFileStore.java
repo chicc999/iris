@@ -132,6 +132,26 @@ public class DiskFileStore extends Service implements Store {
 	}
 
 	@Override
+	public long getQueueMaxOffset(String topic, short queueId) {
+		return 0;
+	}
+
+	@Override
+	public long getQueueMinOffset(String topic, short queueId) {
+		return 0;
+	}
+
+	@Override
+	public long getJournalMaxOffset() {
+		return 0;
+	}
+
+	@Override
+	public long getJournalMinOffset() {
+		return 0;
+	}
+
+	@Override
 	public PutResult putMessage(StoreMessage message) throws ServiceNotAvailableException {
 		logger.debug("put message {}",message.getMessageId());
 		if (message == null) {
