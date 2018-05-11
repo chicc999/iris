@@ -10,9 +10,9 @@ import java.nio.channels.FileChannel;
 /**
  * @Author:cy
  * @Date:Created in  18/5/10
- * @Destription: channel 文件读写类，不支持2G以上文件
+ * @Destription: 已固定大小的channel文件读写类，不支持2G以上文件
  */
-public class ChannelFile implements FileStream{
+public class ChannelFile implements FileStream {
 
 	private static Logger logger = LoggerFactory.getLogger(ChannelFile.class);
 
@@ -29,17 +29,26 @@ public class ChannelFile implements FileStream{
 	private int length;
 
 	//文件头大小，默认为0即不存在文件头
-	private int headSize ;
+	private int headSize;
 
 	public ChannelFile(File file) {
+
+		if (file == null || !file.exists()) {
+			throw new IllegalArgumentException("file" + file.getName() + "is null or not found.");
+		}
+
+		if (file.length() > Integer.MAX_VALUE) {
+			throw new IllegalArgumentException("file" + file.getName() + "is too large.");
+		}
+
 		this.file = file;
 		this.position = 0;
 		initHeader();
-		this.length = (int)file.length() - headSize;
+		this.length = (int) file.length() - headSize;
 		try {
-			this.channel = new RandomAccessFile(file,"rw").getChannel();
+			this.channel = new RandomAccessFile(file, "rw").getChannel();
 		} catch (FileNotFoundException e) {
-			logger.error("file {} is not found.",file.getName());
+			logger.error("file {} is not found.", file.getName());
 		}
 	}
 
@@ -67,11 +76,11 @@ public class ChannelFile implements FileStream{
 	/**
 	 * 初始化文件头部
 	 */
-	protected void initHeader(){
+	protected void initHeader() {
 		this.headSize = 0;
 	}
 
-	private int remaining(){
+	private int remaining() {
 		return length - position;
 	}
 
@@ -99,7 +108,7 @@ public class ChannelFile implements FileStream{
 		try {
 			channel.force(true);
 		} catch (IOException e) {
-			logger.error("flush error.",e);
+			logger.error("flush error.", e);
 		}
 	}
 
@@ -109,7 +118,16 @@ public class ChannelFile implements FileStream{
 		try {
 			channel.close();
 		} catch (IOException e) {
-			logger.error("channel close failed.",e);
+			logger.error("channel close failed.", e);
 		}
+	}
+
+
+	public File getFile() {
+		return file;
+	}
+
+	public FileChannel getChannel() {
+		return channel;
 	}
 }

@@ -1,8 +1,9 @@
 package pers.cy.iris.broker.store.file;
 
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.io.File;
+import java.io.RandomAccessFile;
 
 /**
  * @Author:cy
@@ -11,20 +12,40 @@ import org.testng.annotations.Test;
  */
 public class TestChannelFile {
 
+	private final String baseDir = "/export/test/iris/store";
 	private ChannelFile channelFile;
 
-	@BeforeTest
-	public void beforeTest(){
+	@BeforeClass
+	public void beforeClass() {
+		File f = new File(baseDir);
+		if (!f.exists()) {
+			f.mkdirs();
+		}
+		f = new File(baseDir + File.separator + this.getClass().getName());
+		if (f.exists()) {
+			f.delete();
+		}
 
+		try {
+			RandomAccessFile rf = new RandomAccessFile(f,"rw");
+			rf.setLength(123);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(f.length());
+		channelFile = new ChannelFile(f);
 	}
 
-	@AfterTest
-	public void afterTest(){
-
+	@AfterClass
+	public void afterClass() {
+		channelFile.close();
+		if(channelFile.getFile().exists()){
+			channelFile.getFile().delete();
+		}
 	}
 
 	@Test
-	public void testAppend(){
+	public void testAppend() {
 
 	}
 
