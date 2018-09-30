@@ -1,5 +1,6 @@
 package pers.cy.iris.coordinator;
 
+import org.apache.zookeeper.server.quorum.QuorumPeerMain;
 import pers.cy.iris.commons.network.netty.server.NettyServer;
 import pers.cy.iris.commons.service.Service;
 import pers.cy.iris.commons.util.ArgumentUtil;
@@ -33,6 +34,11 @@ public class CoordinatorService extends Service{
 	public void beforeStart() throws Exception {
 		ArgumentUtil.isNotNull("CoordinatorConfig", coordinatorConfig);
 		ArgumentUtil.isNotNull("NettyServerConfig", coordinatorConfig.getNettyServerConfig());
+
+		// 启动zk
+		String zookeeperFilePath = Object.class.getResource("/").getPath()+ "zoo.cfg";
+		String[] args1 = new String[]{zookeeperFilePath};
+		QuorumPeerMain.main(args1);
 
 		CoordinatorHandlerFactory coordinatorHandlerFactory = new CoordinatorHandlerFactory();
 		if(nettyServer == null) {
