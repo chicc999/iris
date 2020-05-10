@@ -59,13 +59,13 @@ public class CoordinatorService extends Service{
 	@Override
 	public void doStart() throws Exception {
 		// 启动zk
-		String zookeeperFilePath = Object.class.getResource("/").getPath()+ "zoo.cfg";
-		String[] args1 = new String[]{zookeeperFilePath};
-		QuorumPeerMain.main(args1);
+//		String zookeeperFilePath = Object.class.getResource("/").getPath()+ "zoo.cfg";
+//		String[] args1 = new String[]{zookeeperFilePath};
+//		QuorumPeerMain.main(args1);
 
 
 		nettyServer.start();
-		clusterManager.start();
+		//clusterManager.start();
 	}
 
 	@Override
