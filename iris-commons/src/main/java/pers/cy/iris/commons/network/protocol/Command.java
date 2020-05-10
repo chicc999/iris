@@ -83,14 +83,14 @@ public abstract class Command {
 	public static final int UPDATE_JOURNAL_ACK = 153;
 	// Slave在线命令
 	public static final int ONLINE = 54;
-	// 投票选举master
-	public static final int VOTE = 55;
-	// 复制同步方式
-	public static final int UPDATE_SYNC_MODE = 56;
-	// 复制增量命令
-	public static final int INCREMENTAL = 57;
-	// 复制增量应答
-	public static final int INCREMENTAL_ACK = 157;
+	// 投票选举
+	public static final int REQUEST_VOTE = 55;
+	// 选举结果
+	public static final int REQUEST_VOTE_ACK = 151;
+	// 追加日志
+	public static final int APPEND_ENTRIES= 57;
+	// 响应追加日志
+	public static final int APPEND_ENTRIES_ACK = 157;
 	// 同步消费位置
 	public static final int GET_CONSUMER_OFFSET = 58;
 	// 同步消费位置确认

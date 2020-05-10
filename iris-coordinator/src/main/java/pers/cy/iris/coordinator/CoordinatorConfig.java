@@ -2,6 +2,8 @@ package pers.cy.iris.coordinator;
 
 import pers.cy.iris.commons.network.netty.server.NettyServerConfig;
 
+import java.io.File;
+
 /**
  * Created by cy on 17/2/14.
  */
@@ -16,6 +18,8 @@ public class CoordinatorConfig {
 	private int sessionTimeout = 60 * 1000;
 
 	private String nameSpace = "iris";
+
+	private String persistentPath;
 
 	public void setNettyServerConfig(NettyServerConfig nettyServerConfig) {
 		this.nettyServerConfig = nettyServerConfig;
@@ -55,5 +59,16 @@ public class CoordinatorConfig {
 
 	public void setNameSpace(String nameSpace) {
 		this.nameSpace = nameSpace;
+	}
+
+	public String getPersistentPath() {
+		if(persistentPath == null){
+			persistentPath = System.getProperty("user.home") + File.separator + "iris";
+		}
+		return persistentPath;
+	}
+
+	public void setPersistentPath(String persistentPath) {
+		this.persistentPath = persistentPath;
 	}
 }
