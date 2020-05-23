@@ -3,6 +3,7 @@ package pers.cy.iris.coordinator.raft.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.cy.iris.commons.service.Service;
+import pers.cy.iris.commons.util.bootstrap.ServerType;
 import pers.cy.iris.coordinator.CoordinatorConfig;
 
 import java.io.File;
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 public class ClusterNode extends Service{
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ClusterNode.class);
+	private static final Logger logger = LoggerFactory.getLogger(ClusterNode.class);
 
 	/* ============ 在所有服务器上需要持久化的状态信息 ============ */
 	// 当前任期
@@ -65,6 +66,11 @@ public class ClusterNode extends Service{
 			throw new IllegalStateException("no permission to access directory. " + path.getPath());
 		}
 		stateFile = new File(path, "cluster_state_" + candidateId +".properties");
+
+
+		// 设定节点名称
+		candidateId = System.getProperty(ServerType.Coordinator.nameKey());
+
 
 	}
 
