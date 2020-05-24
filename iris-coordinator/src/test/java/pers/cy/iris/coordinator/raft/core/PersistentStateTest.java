@@ -17,7 +17,7 @@ public class PersistentStateTest {
 
 	@Test
 	public void testFlushAndRecover() throws Exception {
-		PersistentState persistentState = new PersistentState("/export/data");
+		PersistentState persistentState = new PersistentState("/export/data/aaa");
 		persistentState.start();
 		long term = new Random().nextLong();
 		String id = UUID.randomUUID().toString();

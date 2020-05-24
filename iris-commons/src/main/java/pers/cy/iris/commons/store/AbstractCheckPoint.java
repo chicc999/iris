@@ -29,26 +29,42 @@ public abstract class AbstractCheckPoint extends Service {
 	private File file;
 	private RandomAccessFile raf;
 
+	private String path;
+	private String fileName;
+
 	// 锁
 	protected final Lock writeLock = new ReentrantReadWriteLock().writeLock();
 
 	public AbstractCheckPoint() {
+		this.path = System.getProperty("user.home");
+		this.fileName = "checkPoint";
 	}
 
 	/**
 	 * 构造函数
 	 *
-	 * @param file 本地存储文件
 	 */
-	public AbstractCheckPoint(File file) {
-		this.file = file;
+	public AbstractCheckPoint(String path,String fileName) {
+		this.path = path;
+		this.fileName = fileName;
 	}
-
 
 	@Override
 	public void beforeStart() throws Exception {
 
-		ArgumentUtil.isNotNull(file.getName(), file);
+		File path = new File(this.path);
+		if (path.exists() && !path.isDirectory()) {
+			throw new IllegalStateException("config.persistentPath is not a directory. " + path.getPath());
+		}
+		if (!path.exists()) {
+			if (!path.mkdirs()) {
+				if (!path.exists()) {
+					throw new IllegalStateException("create directory error. " + path.getPath());
+				}
+			}
+		}
+
+		file = new File(path,fileName);
 
 		if (!FileUtil.createFile(file)) {
 			throw new IOException(String.format("create file error,%s", file.getPath()));

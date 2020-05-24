@@ -28,12 +28,8 @@ public class PersistentState extends AbstractCheckPoint {
 	public PersistentState() {
 	}
 
-	public PersistentState(File file) {
-		super(file);
-	}
-
 	public PersistentState(String path) {
-		super(new File(path, "persistent_state"));
+		super(path, "raft_persistent_state");
 	}
 
 	@Override
