@@ -94,6 +94,7 @@ public class ClusterNode extends Service {
 			persistentState.setVotedFor(requestVote.getCandidateId());
 			persistentState.setCurrentTerm(term);
 			// 发送投票响应前持久化投票状态和轮次，避免宕机重启后此轮重复投票
+			// update on stable storage before responding to RPCs
 			persistentState.flush();
 
 			requestVoteAck.setTerm(persistentState.getCurrentTerm());
