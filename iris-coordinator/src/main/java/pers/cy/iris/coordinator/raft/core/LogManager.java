@@ -6,4 +6,8 @@ package pers.cy.iris.coordinator.raft.core;
  * @Destription:
  */
 public class LogManager {
+
+	public LogEntry getLast(){
+		return null;
+	}
 }
