@@ -87,13 +87,6 @@ public class ClusterNode extends Service {
 
 		final long currentTerm = persistentState.getCurrentTerm();
 
-
-		if(term < currentTerm ){
-
-		}else {
-
-		}
-
 		if(term >= currentTerm
 				&& canVoted(requestVote.getCandidateId())
 				&& isUpToDate(requestVote.getLastLogTerm(),requestVote.getLastLogIndex())){
@@ -151,4 +144,6 @@ public class ClusterNode extends Service {
 					&& lastEntry.getIndex() <= index);
 
 	}
+
+
 }
