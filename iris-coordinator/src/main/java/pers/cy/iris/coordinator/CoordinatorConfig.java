@@ -21,6 +21,10 @@ public class CoordinatorConfig {
 
 	private String persistentPath;
 
+	private int fixedInterval ;
+
+	private int randomInterVal ;
+
 	public void setNettyServerConfig(NettyServerConfig nettyServerConfig) {
 		this.nettyServerConfig = nettyServerConfig;
 	}
@@ -70,5 +74,21 @@ public class CoordinatorConfig {
 
 	public void setPersistentPath(String persistentPath) {
 		this.persistentPath = persistentPath;
+	}
+
+	public int getFixedInterval() {
+		return fixedInterval;
+	}
+
+	public void setFixedInterval(int fixedInterval) {
+		this.fixedInterval = fixedInterval;
+	}
+
+	public int getRandomInterVal() {
+		return randomInterVal;
+	}
+
+	public void setRandomInterVal(int randomInterVal) {
+		this.randomInterVal = randomInterVal;
 	}
 }

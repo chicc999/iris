@@ -13,6 +13,7 @@ import pers.cy.iris.coordinator.raft.command.RequestVoteAck;
 
 import java.io.File;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author:cy
@@ -47,6 +48,7 @@ public class ClusterNode extends Service {
 
 	private String candidateId;
 
+	private ElectionCheckService electionCheck;
 
 	@Override
 	public void beforeStart() throws Exception {
@@ -57,12 +59,14 @@ public class ClusterNode extends Service {
 
 		persistentState = new PersistentState(config.getPersistentPath() + File.separator + candidateId);
 
+		electionCheck = new ElectionCheckService(config.getFixedInterval(),config.getRandomInterVal(), TimeUnit.MILLISECONDS);
 
 	}
 
 	@Override
 	public void doStart() throws Exception {
 
+		electionCheck.start();
 	}
 
 	@Override
