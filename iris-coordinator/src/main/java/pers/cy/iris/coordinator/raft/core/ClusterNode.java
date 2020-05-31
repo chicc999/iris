@@ -7,6 +7,7 @@ import pers.cy.iris.commons.service.Service;
 import pers.cy.iris.commons.util.ArgumentUtil;
 import pers.cy.iris.commons.util.bootstrap.ServerType;
 import pers.cy.iris.coordinator.CoordinatorConfig;
+import pers.cy.iris.coordinator.raft.command.AppendEntriesAck;
 import pers.cy.iris.coordinator.raft.command.RequestVote;
 import pers.cy.iris.coordinator.raft.command.RequestVoteAck;
 
@@ -144,6 +145,11 @@ public class ClusterNode extends Service {
 				|| (lastEntry.getTerm()==term
 					&& lastEntry.getIndex() <= index);
 
+	}
+
+
+	public AppendEntriesAck appendEntry(){
+		return null;
 	}
 
 
